@@ -100,12 +100,23 @@ const notificationHtml = (email) => `<!DOCTYPE html>
 <html><body style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#222;">
   <p>New waitlist signup on malikiatelier.com:</p>
   <p style="font-size:18px;font-weight:600;">${email}</p>
-  <p style="color:#777;font-size:12px;">Added to Resend audience &laquo;Maliki Atelier — Waitlist&raquo;.</p>
+  <p style="color:#777;font-size:12px;">Added to Resend audience &laquo;Waiting List&raquo;.</p>
 </body></html>`;
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
     return json(res, 405, { error: 'method_not_allowed' });
+  }
+
+  const host = req.headers.host || '';
+  const origin = req.headers.origin || '';
+  const referer = req.headers.referer || '';
+  const expected = [`https://${host}`, `http://${host}`];
+  const sameOrigin =
+    (origin && expected.includes(origin)) ||
+    (referer && expected.some((p) => referer.startsWith(p + '/') || referer === p));
+  if (!sameOrigin) {
+    return json(res, 403, { error: 'forbidden' });
   }
 
   let body = req.body;

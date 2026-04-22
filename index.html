@@ -5,6 +5,24 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Maliki Atelier — Coming Soon</title>
 <meta name="description" content="Maliki Atelier — a new standard of craftsmanship is arriving." />
+<meta name="theme-color" content="#0a0908" />
+
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="Maliki Atelier" />
+<meta property="og:title" content="Maliki Atelier — Coming Soon" />
+<meta property="og:description" content="A new standard of craftsmanship is arriving. By invitation only." />
+<meta property="og:url" content="https://www.malikiatelier.com/" />
+<meta property="og:image" content="https://www.malikiatelier.com/og.jpg" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Maliki Atelier — Coming Soon" />
+<meta name="twitter:description" content="A new standard of craftsmanship is arriving. By invitation only." />
+<meta name="twitter:image" content="https://www.malikiatelier.com/og.jpg" />
+
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Italiana&family=Pinyon+Script&display=swap" rel="stylesheet" />
@@ -411,6 +429,16 @@
     opacity: 1;
     transform: translateY(0);
   }
+  .thanks.error {
+    color: #d99a6c;
+  }
+
+  .notify.success .field,
+  .notify.success .consent {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.6s ease;
+  }
 
   /* ---------- Entry animation ---------- */
   .reveal { opacity: 0; transform: translateY(10px); animation: rise 1.6s cubic-bezier(.2,.7,.2,1) forwards; }
@@ -461,7 +489,7 @@
 <body>
   <div class="stage" aria-hidden="true">
     <video id="bg1" class="bg-video active" src="bg-1.mp4" muted playsinline preload="auto" autoplay></video>
-    <video id="bg2" class="bg-video"        src="bg-2.mp4" muted playsinline preload="auto"></video>
+    <video id="bg2" class="bg-video"        src="bg-2.mp4" muted playsinline preload="metadata"></video>
     <div class="weave"></div>
     <div class="vignette"></div>
   </div>
@@ -497,7 +525,7 @@
           <button type="submit" aria-label="Request access">Request Access</button>
         </label>
         <div class="consent">Private List · No Announcements, Only Invitations</div>
-        <div class="thanks" id="thanks">Thank you — your invitation will follow.</div>
+        <div class="thanks" id="thanks" role="status" aria-live="polite"></div>
       </form>
     </section>
 
@@ -538,33 +566,47 @@
       v1.addEventListener('ended', swap);
       v2.addEventListener('ended', swap);
 
-      // Loop each clip independently as a safety net if 'ended' doesn't fire
-      // (it won't if the clip is set to loop — so we keep loop off and rely on swap)
+      // Defer bg-2 download until bg-1 is buffered, to keep first-paint light
+      v1.addEventListener('loadeddata', () => { v2.preload = 'auto'; v2.load(); }, { once: true });
     })();
+
+    const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const ORIGINAL_LABEL = 'Request Access';
 
     const form = document.getElementById('notifyForm');
     const thanks = document.getElementById('thanks');
     const input = document.getElementById('email');
     const submitBtn = form.querySelector('button[type="submit"]');
 
-    const flashError = () => {
+    const setSubmitting = (busy) => {
+      submitBtn.disabled = busy;
+      submitBtn.textContent = busy ? 'Sending' : ORIGINAL_LABEL;
+      if (busy) submitBtn.setAttribute('aria-busy', 'true');
+      else submitBtn.removeAttribute('aria-busy');
+    };
+
+    const showError = (msg) => {
+      thanks.textContent = msg;
+      thanks.classList.add('visible', 'error');
       input.focus();
-      input.style.color = '#d99a6c';
-      setTimeout(() => (input.style.color = ''), 1200);
+    };
+
+    const showSuccess = () => {
+      thanks.classList.remove('error');
+      thanks.textContent = 'Thank you — your invitation will follow.';
+      thanks.classList.add('visible');
+      form.classList.add('success');
     };
 
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const value = input.value.trim();
-      const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
-      if (!valid) {
-        flashError();
+      if (!EMAIL_RX.test(value)) {
+        showError('Please enter a valid email address.');
         return;
       }
 
-      submitBtn.disabled = true;
-      const originalLabel = submitBtn.textContent;
-      submitBtn.textContent = 'Sending';
+      setSubmitting(true);
 
       try {
         const res = await fetch('/api/notify', {
@@ -573,14 +615,10 @@
           body: JSON.stringify({ email: value }),
         });
         if (!res.ok) throw new Error('signup_failed');
-        input.value = '';
-        input.blur();
-        thanks.classList.add('visible');
+        showSuccess();
       } catch (err) {
-        flashError();
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = originalLabel;
+        setSubmitting(false);
+        showError('Something went wrong. Please try again.');
       }
     });
   </script>
