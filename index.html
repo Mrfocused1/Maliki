@@ -545,20 +545,43 @@
     const form = document.getElementById('notifyForm');
     const thanks = document.getElementById('thanks');
     const input = document.getElementById('email');
+    const submitBtn = form.querySelector('button[type="submit"]');
 
-    form.addEventListener('submit', (e) => {
+    const flashError = () => {
+      input.focus();
+      input.style.color = '#d99a6c';
+      setTimeout(() => (input.style.color = ''), 1200);
+    };
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const value = input.value.trim();
       const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
       if (!valid) {
-        input.focus();
-        input.style.color = '#d99a6c';
-        setTimeout(() => (input.style.color = ''), 1200);
+        flashError();
         return;
       }
-      input.value = '';
-      input.blur();
-      thanks.classList.add('visible');
+
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = 'Sending';
+
+      try {
+        const res = await fetch('/api/notify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: value }),
+        });
+        if (!res.ok) throw new Error('signup_failed');
+        input.value = '';
+        input.blur();
+        thanks.classList.add('visible');
+      } catch (err) {
+        flashError();
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
     });
   </script>
 </body>
