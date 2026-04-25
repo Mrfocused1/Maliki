@@ -148,6 +148,10 @@
   }
   .navlink.active .badge { background: rgba(217, 176, 112, 0.16); color: var(--gold-1); }
   .nav-divider { height: 1px; background: var(--line-2); margin: 14px 8px; }
+  .navgroup {
+    font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--softest); padding: 14px 14px 6px; font-weight: 600;
+  }
   .sidebar .foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line-2); }
   .sidebar .foot .row { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px; gap: 8px; }
   .sidebar .foot .who { font-size: 11px; color: var(--softer); }
@@ -529,6 +533,152 @@
     color: var(--soft); margin-bottom: 12px;
   }
 
+  /* ---------- Sub-tabs (within a section) ---------- */
+  .subtabs {
+    display: flex; gap: 4px; margin-bottom: 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .subtab {
+    background: transparent; border: 0;
+    color: var(--softer);
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 12px 18px; cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+  }
+  .subtab:hover { color: var(--soft); }
+  .subtab.active { color: var(--gold-1); border-color: var(--gold-2); }
+
+  /* ---------- Bar chart ---------- */
+  .bars { display: flex; align-items: flex-end; gap: 8px; height: 200px; padding: 8px 0; }
+  .bar {
+    flex: 1; min-width: 0;
+    background: linear-gradient(180deg, rgba(217,176,112,0.6) 0%, rgba(217,176,112,0.18) 100%);
+    border-top: 2px solid var(--gold-1);
+    border-radius: 2px 2px 0 0;
+    position: relative;
+    transition: opacity 0.3s ease;
+  }
+  .bar:hover { opacity: 1; }
+  .bar { opacity: 0.85; }
+  .bar .lbl {
+    position: absolute; left: 0; right: 0; bottom: -22px;
+    text-align: center; font-size: 10px; color: var(--softest); letter-spacing: 0.04em;
+  }
+  .bar .v {
+    position: absolute; left: 0; right: 0; top: -18px;
+    text-align: center; font-size: 10px; color: var(--softer); letter-spacing: 0.04em;
+    opacity: 0; transition: opacity 0.2s ease;
+  }
+  .bar:hover .v { opacity: 1; }
+
+  /* ---------- Donut ---------- */
+  .donut-wrap { display: flex; gap: 24px; align-items: center; }
+  .donut-svg { width: 180px; height: 180px; flex-shrink: 0; }
+  .donut-legend { flex: 1; display: flex; flex-direction: column; gap: 10px; }
+  .donut-legend .row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 8px 0; border-bottom: 1px solid var(--line-2);
+    font-size: 13px;
+  }
+  .donut-legend .row:last-child { border-bottom: 0; }
+  .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 10px; vertical-align: middle; }
+
+  /* ---------- Email template card grid ---------- */
+  .tpl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  @media (max-width: 900px) { .tpl-grid { grid-template-columns: 1fr; } }
+  .tpl-card {
+    border: 1px solid var(--line);
+    background: var(--surface);
+    padding: 18px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: border-color 0.2s ease, transform 0.2s ease;
+  }
+  .tpl-card:hover { border-color: rgba(217, 176, 112, 0.45); transform: translateY(-2px); }
+  .tpl-card .key {
+    font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--gold-1); margin-bottom: 8px;
+  }
+  .tpl-card h3 {
+    font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400;
+    font-size: 22px; color: #f5ecda; margin-bottom: 8px;
+  }
+  .tpl-card .desc { color: var(--softer); font-size: 13px; line-height: 1.5; margin-bottom: 14px; }
+  .tpl-card .stats { display: flex; gap: 14px; font-size: 11px; color: var(--softest); letter-spacing: 0.06em; }
+
+  /* Email preview panel inside drawer */
+  .email-preview {
+    background: #f5ecda;
+    color: #1a120a;
+    padding: 32px;
+    border-radius: 4px;
+    font-family: Georgia, serif;
+    font-size: 14px;
+    line-height: 1.65;
+    white-space: pre-wrap;
+    border: 1px solid var(--line-2);
+  }
+  .email-preview .ep-from {
+    font-size: 11px; letter-spacing: 0.08em; color: #6b5837;
+    padding-bottom: 14px; border-bottom: 1px solid #d6c596; margin-bottom: 18px;
+  }
+  .email-preview .ep-subject {
+    font-weight: 500; font-size: 18px; margin-bottom: 16px; color: #1a120a;
+  }
+
+  /* ---------- Progress (usage) ---------- */
+  .progress {
+    width: 100%; height: 4px; background: var(--surface-3); border-radius: 4px; overflow: hidden;
+  }
+  .progress > span { display: block; height: 100%; background: var(--gold-1); }
+
+  /* ---------- Settings layout ---------- */
+  .settings-layout {
+    display: grid; grid-template-columns: 200px 1fr; gap: 28px;
+  }
+  @media (max-width: 880px) { .settings-layout { grid-template-columns: 1fr; } }
+  .settings-nav {
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .settings-nav button {
+    background: transparent; border: 0; color: var(--softer);
+    text-align: left; padding: 10px 14px; border-radius: 4px;
+    font-size: 13px; cursor: pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .settings-nav button:hover { background: var(--surface-2); color: var(--soft); }
+  .settings-nav button.active { background: var(--surface-3); color: var(--gold-1); }
+  .settings-section { display: flex; flex-direction: column; gap: 18px; }
+
+  .integration-card {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 20px;
+    border: 1px solid var(--line);
+    border-radius: 6px; background: var(--surface);
+  }
+  .integration-card .info .name { color: #f5ecda; font-weight: 500; margin-bottom: 4px; }
+  .integration-card .info .meta { font-size: 12px; color: var(--softer); }
+
+  /* Toggle switch */
+  .switch {
+    position: relative; display: inline-block;
+    width: 38px; height: 22px;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch .slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: var(--surface-3); border: 1px solid var(--line);
+    border-radius: 22px; transition: background 0.2s ease;
+  }
+  .switch .slider:before {
+    content: ''; position: absolute;
+    height: 14px; width: 14px; left: 3px; top: 50%; transform: translateY(-50%);
+    background: var(--soft); border-radius: 50%; transition: transform 0.2s ease;
+  }
+  .switch input:checked + .slider { background: linear-gradient(180deg, #d9b070, #b68a4e); border-color: transparent; }
+  .switch input:checked + .slider:before { transform: translateY(-50%) translateX(16px); background: #1a120a; }
+
   /* ---------- Toast ---------- */
   .toast {
     position: fixed; bottom: 24px; right: 24px;
@@ -612,6 +762,12 @@ const icon = (name) => {
     products: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
     orders: '<path d="M4 6h16M4 12h16M4 18h10"/>',
     customers: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 19c0-3 3-5.5 6.5-5.5s6.5 2.5 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M14 19c0-2.2 1.8-4 4-4 1.8 0 3.3 1.2 3.8 3"/>',
+    subscribers: '<path d="M3 8l9 6 9-6"/><rect x="3" y="6" width="18" height="14" rx="2"/>',
+    discounts: '<path d="M20 12L12 4H4v8l8 8z"/><circle cx="8" cy="8" r="1.5"/>',
+    emails: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/>',
+    reports: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
+    content: '<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
+    settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3 1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8 1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',
     shop: '<path d="M5 4h14l-1 4H6zM5 8h14v11H5z"/><path d="M9 11v3M15 11v3"/>',
     out: '<path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4M10 17l-5-5 5-5M5 12h11"/>',
   };
@@ -621,13 +777,18 @@ const icon = (name) => {
 // ---------- State ----------
 const state = {
   authed: false,
-  view: 'overview', // overview | products | orders | customers
+  view: 'overview',
   selectedOrder: null,
   selectedCustomer: null,
   productFilter: '',
   orderFilter: 'all',
   customerFilter: '',
-  editing: null, // product being edited in drawer; null = closed; 'new' = create
+  subscriberFilter: '',
+  emailTab: 'templates', // templates | activity
+  emailFilter: 'all',
+  settingsTab: 'general',
+  reportsRange: '90', // days
+  editing: null,
   draftImages: [],
 };
 
@@ -674,7 +835,6 @@ const renderLogin = (errMsg = '') => {
 
 // ---------- App shell ----------
 const renderApp = () => {
-  const orderCount = Store.orders().length;
   $('#root').innerHTML = `
     <div class="app">
       <aside class="sidebar">
@@ -685,13 +845,23 @@ const renderApp = () => {
           </div>
         </div>
 
+        <div class="navgroup">Commerce</div>
         <button class="navlink" data-view="overview">${icon('overview')} <span>Overview</span></button>
-        <button class="navlink" data-view="products">${icon('products')} <span>Products</span> <span class="badge">${Store.products().length}</span></button>
-        <button class="navlink" data-view="orders">${icon('orders')} <span>Orders</span> <span class="badge">${orderCount}</span></button>
-        <button class="navlink" data-view="customers">${icon('customers')} <span>Customers</span> <span class="badge">${Store.customers().length}</span></button>
+        <button class="navlink" data-view="orders">${icon('orders')} <span>Orders</span> <span class="badge" data-badge="orders"></span></button>
+        <button class="navlink" data-view="products">${icon('products')} <span>Products</span> <span class="badge" data-badge="products"></span></button>
+        <button class="navlink" data-view="customers">${icon('customers')} <span>Customers</span> <span class="badge" data-badge="customers"></span></button>
+
+        <div class="navgroup">Grow</div>
+        <button class="navlink" data-view="subscribers">${icon('subscribers')} <span>Subscribers</span> <span class="badge" data-badge="subscribers"></span></button>
+        <button class="navlink" data-view="discounts">${icon('discounts')} <span>Discounts</span> <span class="badge" data-badge="discounts"></span></button>
+        <button class="navlink" data-view="emails">${icon('emails')} <span>Emails</span> <span class="badge" data-badge="emails"></span></button>
+        <button class="navlink" data-view="reports">${icon('reports')} <span>Reports</span></button>
+
+        <div class="navgroup">Manage</div>
+        <button class="navlink" data-view="content">${icon('content')} <span>Content</span> <span class="badge" data-badge="pages"></span></button>
+        <button class="navlink" data-view="settings">${icon('settings')} <span>Settings</span></button>
 
         <div class="nav-divider"></div>
-
         <a class="navlink" href="/shop" target="_blank" rel="noopener">${icon('shop')} <span>View shop ↗</span></a>
 
         <div class="foot">
@@ -743,16 +913,25 @@ const render = () => {
     products: Store.products().length,
     orders: Store.orders().length,
     customers: Store.customers().length,
+    subscribers: Store.subscribers().filter((s) => s.status === 'subscribed').length,
+    discounts: Store.discounts().filter((d) => d.status === 'active').length,
+    emails: Store.emails().length,
+    pages: Store.pages().length,
   };
-  $$('.navlink[data-view]').forEach((b) => {
-    const badge = b.querySelector('.badge');
-    if (badge && badges[b.dataset.view] != null) badge.textContent = badges[b.dataset.view];
+  $$('[data-badge]').forEach((b) => {
+    if (badges[b.dataset.badge] != null) b.textContent = badges[b.dataset.badge];
   });
 
   if (state.view === 'overview') renderOverview();
   else if (state.view === 'products') renderProducts();
   else if (state.view === 'orders') renderOrders();
   else if (state.view === 'customers') renderCustomers();
+  else if (state.view === 'subscribers') renderSubscribers();
+  else if (state.view === 'discounts') renderDiscounts();
+  else if (state.view === 'emails') renderEmails();
+  else if (state.view === 'reports') renderReports();
+  else if (state.view === 'content') renderContent();
+  else if (state.view === 'settings') renderSettings();
 };
 
 // ---------- Overview ----------
@@ -1486,6 +1665,927 @@ const openCustomerDrawer = (customerId) => {
 
   $('#backdrop').classList.add('open');
   $('#drawer').classList.add('open');
+};
+
+// ====================================================================
+// Subscribers
+// ====================================================================
+const renderSubscribers = () => {
+  const all = Store.subscribers();
+  const subscribed = all.filter((s) => s.status === 'subscribed');
+  const last30 = subscribed.filter((s) => (Date.now() - new Date(s.subscribed_at).getTime()) < 30 * 86400000);
+
+  const filtered = all
+    .filter((s) => !state.subscriberFilter || s.email.toLowerCase().includes(state.subscriberFilter.toLowerCase()))
+    .sort((a, b) => new Date(b.subscribed_at) - new Date(a.subscribed_at));
+
+  $('#topbar').innerHTML = `
+    <h1>Subscribers <small>${subscribed.length} active</small></h1>
+    <div class="actions">
+      <button class="btn ghost sm" id="exportSubs">Export CSV</button>
+      <button class="btn" id="addSub">+ Add subscriber</button>
+    </div>
+  `;
+  $('#exportSubs').addEventListener('click', () => exportSubscribersCsv());
+  $('#addSub').addEventListener('click', () => openAddSubscriber());
+
+  $('#content').innerHTML = `
+    <div class="stat-grid" style="grid-template-columns:repeat(3,1fr)">
+      <div class="stat">
+        <div class="label">Total subscribers</div>
+        <div class="value">${subscribed.length}</div>
+        <div class="delta"><span style="color:var(--softest)">All-time, opted-in</span></div>
+      </div>
+      <div class="stat">
+        <div class="label">Last 30 days</div>
+        <div class="value">+${last30.length}</div>
+        <div class="delta"><span style="color:var(--softest)">New subscribers</span></div>
+      </div>
+      <div class="stat">
+        <div class="label">Unsubscribed</div>
+        <div class="value">${all.length - subscribed.length}</div>
+        <div class="delta"><span style="color:var(--softest)">All-time</span></div>
+      </div>
+    </div>
+
+    <div class="toolbar">
+      <div class="left">
+        <input class="input" id="subSearch" placeholder="Search by email…" value="${escape(state.subscriberFilter)}" />
+      </div>
+      <div class="left"><span class="pill">${filtered.length} shown</span></div>
+    </div>
+
+    <div class="card">
+      <div class="card-body flush">
+        <table class="t">
+          <thead><tr><th>Email</th><th>Source</th><th>Status</th><th>Subscribed</th><th></th></tr></thead>
+          <tbody>
+            ${filtered.length === 0
+              ? '<tr class="no-hover"><td colspan="5"><div class="empty">No subscribers match.</div></td></tr>'
+              : filtered.map((s) => `
+                <tr class="no-hover" data-sid="${escape(s.id)}">
+                  <td><strong style="color:#f5ecda">${escape(s.email)}</strong></td>
+                  <td><span class="pill">${escape(s.source)}</span></td>
+                  <td><span class="pill ${s.status === 'subscribed' ? 'live' : 'draft'}">${escape(s.status)}</span></td>
+                  <td style="color:var(--softer)">${escape(fmtDate(s.subscribed_at))}</td>
+                  <td>
+                    <div class="actions" style="display:flex;gap:6px;justify-content:flex-end">
+                      ${s.status === 'subscribed'
+                        ? `<button class="btn ghost sm" data-act="unsub">Unsubscribe</button>`
+                        : `<button class="btn ghost sm" data-act="resub">Re-subscribe</button>`}
+                      <button class="btn danger sm" data-act="rm">Remove</button>
+                    </div>
+                  </td>
+                </tr>
+              `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  $('#subSearch').addEventListener('input', (e) => {
+    state.subscriberFilter = e.target.value; render(); $('#subSearch').focus();
+  });
+  $$('tr[data-sid]').forEach((tr) => {
+    const id = tr.dataset.sid;
+    tr.querySelectorAll('button[data-act]').forEach((b) => {
+      b.addEventListener('click', () => {
+        if (b.dataset.act === 'unsub') { Store.updateSubscriber(id, { status: 'unsubscribed' }); toast('Unsubscribed'); }
+        else if (b.dataset.act === 'resub') { Store.updateSubscriber(id, { status: 'subscribed' }); toast('Re-subscribed'); }
+        else if (b.dataset.act === 'rm') {
+          if (confirm('Remove this subscriber?')) { Store.removeSubscriber(id); toast('Removed'); }
+        }
+      });
+    });
+  });
+};
+
+const openAddSubscriber = () => {
+  $('#drawerTitle').textContent = 'Add subscriber';
+  $('#drawerFoot').innerHTML = `
+    <div class="feedback" id="subFb"></div>
+    <button class="btn ghost" id="subCancel">Cancel</button>
+    <button class="btn" id="subSave">Add</button>
+  `;
+  $('#drawerBody').innerHTML = `
+    <div class="form-row">
+      <label for="addSubEmail">Email</label>
+      <input class="input" id="addSubEmail" type="email" autofocus />
+    </div>
+    <div class="form-row">
+      <label for="addSubSource">Source</label>
+      <select class="select" id="addSubSource">
+        <option value="manual">Manual</option>
+        <option value="waitlist">Waitlist</option>
+        <option value="checkout">Checkout</option>
+      </select>
+    </div>
+  `;
+  $('#subCancel').addEventListener('click', closeDrawer);
+  $('#subSave').addEventListener('click', () => {
+    const fb = $('#subFb');
+    const email = $('#addSubEmail').value.trim();
+    const source = $('#addSubSource').value;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { fb.textContent = 'Invalid email.'; fb.className = 'feedback error'; return; }
+    try {
+      Store.addSubscriber({ email, source });
+      toast('Subscriber added');
+      closeDrawer();
+    } catch (e) {
+      fb.textContent = e.message === 'already_subscribed' ? 'Already on the list.' : 'Could not add.';
+      fb.className = 'feedback error';
+    }
+  });
+  $('#backdrop').classList.add('open');
+  $('#drawer').classList.add('open');
+};
+
+const exportSubscribersCsv = () => {
+  const rows = [['email', 'source', 'status', 'subscribed_at']];
+  Store.subscribers().forEach((s) => rows.push([s.email, s.source, s.status, s.subscribed_at]));
+  const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `maliki-subscribers-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+
+// ====================================================================
+// Discounts
+// ====================================================================
+const renderDiscounts = () => {
+  const list = Store.discounts();
+
+  $('#topbar').innerHTML = `
+    <h1>Discounts <small>${list.filter((d) => d.status === 'active').length} active</small></h1>
+    <div class="actions"><button class="btn" id="newDiscount">+ New discount</button></div>
+  `;
+  $('#newDiscount').addEventListener('click', () => openDiscountDrawer(null));
+
+  $('#content').innerHTML = `
+    <div class="card">
+      <div class="card-body flush">
+        <table class="t">
+          <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Used</th><th>Status</th><th>Ends</th></tr></thead>
+          <tbody>
+            ${list.length === 0
+              ? '<tr class="no-hover"><td colspan="6"><div class="empty">No discounts yet.</div></td></tr>'
+              : list.map((d) => {
+                const valueLabel = d.type === 'percent' ? `${d.value}% off` : `${fmtPrice(d.value, 'GBP')} off`;
+                const limit = d.usage_limit || '∞';
+                const pct = d.usage_limit ? Math.min(100, Math.round((d.usage_count / d.usage_limit) * 100)) : 0;
+                return `
+                  <tr data-did="${escape(d.id)}">
+                    <td><strong style="color:#f5ecda;font-family:'Inter',sans-serif;letter-spacing:0.06em">${escape(d.code)}</strong></td>
+                    <td style="color:var(--softer);text-transform:capitalize">${escape(d.type)}</td>
+                    <td>${escape(valueLabel)}</td>
+                    <td>
+                      <div style="display:flex;flex-direction:column;gap:4px;min-width:120px">
+                        <div style="font-size:12px;color:var(--softer)">${d.usage_count} / ${limit}</div>
+                        ${d.usage_limit ? `<div class="progress"><span style="width:${pct}%"></span></div>` : ''}
+                      </div>
+                    </td>
+                    <td><span class="pill ${d.status === 'active' ? 'live' : (d.status === 'expired' ? 'refunded' : 'draft')}">${escape(d.status)}</span></td>
+                    <td style="color:var(--softer)">${d.ends_at ? escape(fmtDate(d.ends_at)) : 'No end'}</td>
+                  </tr>
+                `;
+              }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  $$('tr[data-did]').forEach((tr) =>
+    tr.addEventListener('click', () => openDiscountDrawer(tr.dataset.did))
+  );
+};
+
+const openDiscountDrawer = (id) => {
+  const d = id ? Store.discountById(id) : null;
+  state.editing = d ? d.id : 'new-disc';
+
+  $('#drawerTitle').textContent = d ? `Discount · ${d.code}` : 'New discount';
+  $('#drawerFoot').innerHTML = `
+    <div class="feedback" id="dscFb"></div>
+    ${d ? '<button class="btn danger" id="dscDelete">Delete</button>' : ''}
+    <button class="btn ghost" id="dscCancel">Cancel</button>
+    <button class="btn" id="dscSave">${d ? 'Save' : 'Create'}</button>
+  `;
+  $('#drawerBody').innerHTML = `
+    <div class="form-row">
+      <label for="d-code">Code</label>
+      <input class="input" id="d-code" value="${escape(d?.code || '')}" placeholder="e.g. ATELIER10" autofocus />
+      <div class="hint">Customers will type this at checkout. Uppercase, no spaces.</div>
+    </div>
+    <div class="form-row split-2">
+      <div class="form-row" style="margin:0">
+        <label for="d-type">Type</label>
+        <select class="select" id="d-type">
+          <option value="percent" ${d?.type !== 'fixed' ? 'selected' : ''}>Percentage</option>
+          <option value="fixed" ${d?.type === 'fixed' ? 'selected' : ''}>Fixed amount</option>
+        </select>
+      </div>
+      <div class="form-row" style="margin:0">
+        <label for="d-value">Value</label>
+        <input class="input" id="d-value" type="number" min="0" step="1" value="${d ? (d.type === 'percent' ? d.value : (d.value / 100)) : ''}" />
+        <div class="hint" id="dValueHint"></div>
+      </div>
+    </div>
+    <div class="form-row split-2">
+      <div class="form-row" style="margin:0">
+        <label for="d-min">Minimum spend</label>
+        <input class="input" id="d-min" type="number" min="0" step="1" value="${d ? (d.minimum_cents / 100) : ''}" placeholder="0 for no minimum" />
+        <div class="hint">In whole £.</div>
+      </div>
+      <div class="form-row" style="margin:0">
+        <label for="d-limit">Usage limit</label>
+        <input class="input" id="d-limit" type="number" min="0" step="1" value="${d?.usage_limit || ''}" placeholder="Leave blank for unlimited" />
+      </div>
+    </div>
+    <div class="form-row split-2">
+      <div class="form-row" style="margin:0">
+        <label for="d-starts">Starts on</label>
+        <input class="input" id="d-starts" type="date" value="${d?.starts_at ? d.starts_at.slice(0, 10) : new Date().toISOString().slice(0, 10)}" />
+      </div>
+      <div class="form-row" style="margin:0">
+        <label for="d-ends">Ends on</label>
+        <input class="input" id="d-ends" type="date" value="${d?.ends_at ? d.ends_at.slice(0, 10) : ''}" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="d-status">Status</label>
+      <select class="select" id="d-status">
+        <option value="active" ${d?.status === 'active' || !d ? 'selected' : ''}>Active</option>
+        <option value="scheduled" ${d?.status === 'scheduled' ? 'selected' : ''}>Scheduled</option>
+        <option value="paused" ${d?.status === 'paused' ? 'selected' : ''}>Paused</option>
+        <option value="expired" ${d?.status === 'expired' ? 'selected' : ''}>Expired</option>
+      </select>
+    </div>
+    <div class="form-row">
+      <label for="d-desc">Internal note</label>
+      <textarea class="textarea" id="d-desc" rows="3" placeholder="Optional — for staff only">${escape(d?.description || '')}</textarea>
+    </div>
+  `;
+
+  const updateValueHint = () => {
+    const t = $('#d-type').value;
+    $('#dValueHint').textContent = t === 'percent' ? '0–100, percentage off' : 'In whole £, e.g. 50 = £50 off';
+  };
+  $('#d-type').addEventListener('change', updateValueHint);
+  updateValueHint();
+
+  $('#dscCancel').addEventListener('click', closeDrawer);
+  $('#dscSave').addEventListener('click', () => {
+    const fb = $('#dscFb');
+    const type = $('#d-type').value;
+    const valNum = Number($('#d-value').value);
+    const data = {
+      code: $('#d-code').value.trim(),
+      type,
+      value: type === 'percent' ? Math.max(0, Math.min(100, valNum)) : Math.max(0, Math.round(valNum * 100)),
+      minimum_cents: Math.max(0, Math.round(Number($('#d-min').value || 0) * 100)),
+      usage_limit: $('#d-limit').value ? Math.max(0, Math.floor(Number($('#d-limit').value))) : null,
+      starts_at: $('#d-starts').value ? new Date($('#d-starts').value).toISOString() : new Date().toISOString(),
+      ends_at: $('#d-ends').value ? new Date($('#d-ends').value).toISOString() : null,
+      status: $('#d-status').value,
+      description: $('#d-desc').value,
+    };
+    if (!data.code) { fb.textContent = 'Code is required.'; fb.className = 'feedback error'; return; }
+    try {
+      if (d) Store.updateDiscount(d.id, data); else Store.addDiscount(data);
+      toast(d ? 'Discount updated' : 'Discount created');
+      closeDrawer();
+    } catch (e) {
+      fb.textContent = e.message === 'code_taken' ? 'That code is already in use.' : 'Save failed.';
+      fb.className = 'feedback error';
+    }
+  });
+  if (d) $('#dscDelete').addEventListener('click', () => {
+    if (confirm(`Delete code ${d.code}?`)) { Store.deleteDiscount(d.id); toast('Deleted'); closeDrawer(); }
+  });
+
+  $('#backdrop').classList.add('open');
+  $('#drawer').classList.add('open');
+};
+
+// ====================================================================
+// Emails — templates + activity log
+// ====================================================================
+const renderEmails = () => {
+  $('#topbar').innerHTML = `<h1>Emails <small>${Store.emails().length} sent · ${Store.emailTemplates().length} templates</small></h1>`;
+
+  const subtabs = `
+    <div class="subtabs">
+      <button class="subtab ${state.emailTab === 'templates' ? 'active' : ''}" data-tab="templates">Templates</button>
+      <button class="subtab ${state.emailTab === 'activity' ? 'active' : ''}" data-tab="activity">Activity</button>
+    </div>
+  `;
+
+  if (state.emailTab === 'templates') {
+    const templates = Store.emailTemplates();
+    const log = Store.emails();
+    const counts = templates.reduce((m, t) => {
+      m[t.key] = log.filter((e) => e.template_key === t.key).length;
+      return m;
+    }, {});
+
+    $('#content').innerHTML = `
+      ${subtabs}
+      <div class="tpl-grid">
+        ${templates.map((t) => `
+          <div class="tpl-card" data-tk="${escape(t.key)}">
+            <div class="key">${escape(t.key.replace(/_/g, ' '))}</div>
+            <h3>${escape(t.name)}</h3>
+            <div class="desc">${escape(t.description)}</div>
+            <div class="stats">
+              <span>Subject: <strong style="color:var(--soft)">${escape(t.subject.replace(/\{\{(\w+)\}\}/g, '⟨$1⟩'))}</strong></span>
+            </div>
+            <div class="stats" style="margin-top:8px">
+              <span>${counts[t.key] || 0} sent</span>
+              <span>·</span>
+              <span>Updated ${escape(fmtRel(t.updated_at))}</span>
+            </div>
+          </div>
+        `).join('')}
+      </div>
+    `;
+    $$('.tpl-card').forEach((c) =>
+      c.addEventListener('click', () => openTemplateDrawer(c.dataset.tk))
+    );
+  } else {
+    // Activity log
+    const all = Store.emails();
+    const filtered = state.emailFilter === 'all' ? all : all.filter((e) => e.template_key === state.emailFilter);
+    const types = ['all', ...new Set(all.map((e) => e.template_key))];
+
+    const filterButtons = types.map((k) =>
+      `<button class="filterbtn ${state.emailFilter === k ? 'active' : ''}" data-flt="${escape(k)}">${escape(k === 'all' ? 'All' : k.replace(/_/g, ' '))}</button>`
+    ).join('');
+
+    $('#content').innerHTML = `
+      ${subtabs}
+      <div class="toolbar">
+        <div class="left">${filterButtons}</div>
+        <div class="left"><span class="pill">${filtered.length} shown</span></div>
+      </div>
+      <div class="card">
+        <div class="card-body flush">
+          <table class="t">
+            <thead><tr><th>Recipient</th><th>Subject</th><th>Template</th><th>Status</th><th>Sent</th><th></th></tr></thead>
+            <tbody>
+              ${filtered.length === 0
+                ? '<tr class="no-hover"><td colspan="6"><div class="empty">No sent emails.</div></td></tr>'
+                : filtered.slice(0, 200).map((e) => `
+                  <tr class="no-hover" data-eid="${escape(e.id)}">
+                    <td>${escape(e.to_name || '—')}<br><small style="color:var(--softer)">${escape(e.to)}</small></td>
+                    <td style="color:var(--soft);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escape(e.subject)}</td>
+                    <td><span class="pill">${escape(e.template_key.replace(/_/g, ' '))}</span></td>
+                    <td><span class="pill ${e.status === 'opened' ? 'live' : (e.status === 'bounced' ? 'refunded' : 'paid')}">${escape(e.status)}</span></td>
+                    <td style="color:var(--softer)">${escape(fmtDate(e.sent_at, { dateStyle: 'medium', timeStyle: 'short' }))}</td>
+                    <td><button class="btn ghost sm" data-act="resend">Resend</button></td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+    $$('.filterbtn').forEach((b) =>
+      b.addEventListener('click', () => { state.emailFilter = b.dataset.flt; render(); })
+    );
+    $$('tr[data-eid]').forEach((tr) => {
+      tr.querySelectorAll('button[data-act="resend"]').forEach((b) =>
+        b.addEventListener('click', () => { Store.resendEmail(tr.dataset.eid); toast('Resent'); })
+      );
+    });
+  }
+
+  $$('.subtab').forEach((b) =>
+    b.addEventListener('click', () => { state.emailTab = b.dataset.tab; render(); })
+  );
+};
+
+const openTemplateDrawer = (key) => {
+  const t = Store.templateByKey(key);
+  if (!t) return;
+  state.editing = key;
+
+  $('#drawerTitle').textContent = `Template · ${t.name}`;
+  $('#drawerFoot').innerHTML = `
+    <div class="feedback" id="tplFb"></div>
+    <button class="btn ghost" id="tplCancel">Close</button>
+    <button class="btn" id="tplSave">Save changes</button>
+  `;
+  $('#drawerBody').innerHTML = `
+    <div class="form-row">
+      <label for="t-subject">Subject line</label>
+      <input class="input" id="t-subject" value="${escape(t.subject)}" />
+      <div class="hint">Available placeholders: <code style="color:var(--gold-1)">{{name}}</code>, <code style="color:var(--gold-1)">{{order_number}}</code>, <code style="color:var(--gold-1)">{{product}}</code></div>
+    </div>
+    <div class="form-row">
+      <label for="t-body">Body</label>
+      <textarea class="textarea" id="t-body" rows="14" style="font-family:Georgia,serif">${escape(t.body)}</textarea>
+    </div>
+    <div class="form-row">
+      <div class="lbl">Live preview</div>
+      <div class="email-preview" id="tplPreview"></div>
+    </div>
+  `;
+
+  const sample = { name: 'Eleanor Whitfield', order_number: 'MA-1042', product: 'The Celestine' };
+  const renderPreview = () => {
+    const subj = $('#t-subject').value.replace(/\{\{(\w+)\}\}/g, (_, k) => sample[k] || `{{${k}}}`);
+    const body = $('#t-body').value.replace(/\{\{(\w+)\}\}/g, (_, k) => sample[k] || `{{${k}}}`);
+    $('#tplPreview').innerHTML = `
+      <div class="ep-from">From: Maliki Atelier &lt;atelier@malikiatelier.com&gt;<br/>To: ${escape(sample.name)}</div>
+      <div class="ep-subject">${escape(subj)}</div>
+      ${escape(body)}
+    `;
+  };
+  $('#t-subject').addEventListener('input', renderPreview);
+  $('#t-body').addEventListener('input', renderPreview);
+  renderPreview();
+
+  $('#tplCancel').addEventListener('click', closeDrawer);
+  $('#tplSave').addEventListener('click', () => {
+    Store.updateTemplate(key, { subject: $('#t-subject').value, body: $('#t-body').value });
+    toast('Template saved');
+    closeDrawer();
+  });
+
+  $('#backdrop').classList.add('open');
+  $('#drawer').classList.add('open');
+};
+
+// ====================================================================
+// Reports
+// ====================================================================
+const renderReports = () => {
+  const orders = Store.orders().filter((o) => o.status !== 'refunded');
+  const days = Number(state.reportsRange);
+  const within = orders.filter((o) => (Date.now() - new Date(o.created_at).getTime()) < days * 86400000);
+
+  $('#topbar').innerHTML = `
+    <h1>Reports <small>Last ${days} days</small></h1>
+    <div class="actions">
+      ${[30, 90, 180, 365].map((d) =>
+        `<button class="filterbtn ${Number(state.reportsRange) === d ? 'active' : ''}" data-rng="${d}">${d}d</button>`
+      ).join('')}
+      <button class="btn ghost sm" id="exportOrdersCsv">Export orders CSV</button>
+    </div>
+  `;
+  $$('.filterbtn[data-rng]').forEach((b) =>
+    b.addEventListener('click', () => { state.reportsRange = b.dataset.rng; render(); })
+  );
+  $('#exportOrdersCsv').addEventListener('click', exportOrdersCsv);
+
+  // Revenue per month (last 12 months)
+  const months = [];
+  for (let i = 11; i >= 0; i--) {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i, 1);
+    months.push({ key: d.toISOString().slice(0, 7), label: d.toLocaleDateString(undefined, { month: 'short' }), rev: 0 });
+  }
+  for (const o of orders) {
+    const k = new Date(o.created_at).toISOString().slice(0, 7);
+    const m = months.find((x) => x.key === k);
+    if (m) m.rev += o.total_cents;
+  }
+  const maxMonthRev = Math.max(1, ...months.map((m) => m.rev));
+
+  // Order status distribution
+  const statusBuckets = ['pending', 'paid', 'fulfilled', 'refunded'].map((s) => ({
+    label: s, count: Store.orders().filter((o) => o.status === s).length,
+  }));
+  const totalOrders = statusBuckets.reduce((sum, s) => sum + s.count, 0) || 1;
+  const STATUS_COLORS = { pending: '#e2c373', paid: '#8db4d4', fulfilled: '#a3c08b', refunded: '#d99a6c' };
+
+  // Donut math
+  let acc = 0;
+  const C = 80, R = 64, SW = 24;
+  const segs = statusBuckets.map((s) => {
+    const frac = s.count / totalOrders;
+    const start = acc; acc += frac;
+    const ang0 = start * Math.PI * 2 - Math.PI / 2;
+    const ang1 = (start + frac) * Math.PI * 2 - Math.PI / 2;
+    const x0 = C + R * Math.cos(ang0), y0 = C + R * Math.sin(ang0);
+    const x1 = C + R * Math.cos(ang1), y1 = C + R * Math.sin(ang1);
+    const large = frac > 0.5 ? 1 : 0;
+    return frac > 0
+      ? `<path d="M ${x0} ${y0} A ${R} ${R} 0 ${large} 1 ${x1} ${y1}" stroke="${STATUS_COLORS[s.label]}" stroke-width="${SW}" fill="none"/>`
+      : '';
+  }).join('');
+
+  // Revenue by metal
+  const byMetal = {};
+  for (const o of within) {
+    for (const it of o.items) {
+      const p = Store.productById(it.product_id);
+      const metal = p ? p.metal : 'Unknown';
+      byMetal[metal] = (byMetal[metal] || 0) + it.price_cents * it.quantity;
+    }
+  }
+  const metalRows = Object.entries(byMetal).sort((a, b) => b[1] - a[1]);
+
+  // Top customers within range
+  const customerSpend = {};
+  for (const o of within) {
+    customerSpend[o.customer_id] = (customerSpend[o.customer_id] || 0) + o.total_cents;
+  }
+  const topCustomers = Object.entries(customerSpend)
+    .sort((a, b) => b[1] - a[1]).slice(0, 5)
+    .map(([cid, total]) => {
+      const c = Store.customerById(cid);
+      return c ? { ...c, total } : null;
+    }).filter(Boolean);
+
+  $('#content').innerHTML = `
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><h2>Revenue, last 12 months</h2></div>
+        <div class="card-body">
+          <div class="bars">
+            ${months.map((m) => {
+              const h = Math.round((m.rev / maxMonthRev) * 100);
+              return `<div class="bar" style="height:${h}%;min-height:3px">
+                <div class="v">${escape(fmtPrice(m.rev))}</div>
+                <div class="lbl">${escape(m.label)}</div>
+              </div>`;
+            }).join('')}
+          </div>
+          <div style="height:24px"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Orders by status</h2></div>
+        <div class="card-body">
+          <div class="donut-wrap">
+            <svg class="donut-svg" viewBox="0 0 160 160">
+              <circle cx="80" cy="80" r="${R}" stroke="var(--surface-3)" stroke-width="${SW}" fill="none"/>
+              ${segs}
+            </svg>
+            <div class="donut-legend">
+              ${statusBuckets.map((s) => `
+                <div class="row">
+                  <div><span class="swatch" style="background:${STATUS_COLORS[s.label]}"></span><span style="text-transform:capitalize">${s.label}</span></div>
+                  <div style="color:var(--soft)">${s.count} <span style="color:var(--softest)">(${Math.round((s.count / totalOrders) * 100)}%)</span></div>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head"><h2>Revenue by metal</h2><div class="tools"><span class="pill">Last ${days}d</span></div></div>
+        <div class="card-body flush">
+          <table class="t">
+            <thead><tr><th>Metal</th><th style="text-align:right">Revenue</th></tr></thead>
+            <tbody>
+              ${metalRows.length === 0
+                ? '<tr class="no-hover"><td colspan="2"><div class="empty">No sales in this range.</div></td></tr>'
+                : metalRows.map(([metal, rev]) => `
+                  <tr class="no-hover">
+                    <td>${escape(metal)}</td>
+                    <td style="text-align:right;color:#f5ecda;font-weight:500">${escape(fmtPrice(rev))}</td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Top customers</h2><div class="tools"><span class="pill">Last ${days}d</span></div></div>
+        <div class="card-body flush">
+          <table class="t">
+            <thead><tr><th>Customer</th><th style="text-align:right">Spent</th></tr></thead>
+            <tbody>
+              ${topCustomers.length === 0
+                ? '<tr class="no-hover"><td colspan="2"><div class="empty">No data in this range.</div></td></tr>'
+                : topCustomers.map((c) => `
+                  <tr class="no-hover">
+                    <td>${escape(c.name)}<br><small style="color:var(--softer)">${escape(c.email)}</small></td>
+                    <td style="text-align:right;color:#f5ecda;font-weight:500">${escape(fmtPrice(c.total))}</td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+};
+
+const exportOrdersCsv = () => {
+  const rows = [['order', 'customer', 'email', 'total_gbp', 'status', 'created_at', 'items']];
+  Store.orders().forEach((o) => {
+    rows.push([
+      o.number, o.customer_name, o.customer_email,
+      (o.total_cents / 100).toFixed(2), o.status, o.created_at,
+      o.items.map((i) => `${i.title} x${i.quantity}`).join(' | '),
+    ]);
+  });
+  const csv = rows.map((r) => r.map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',')).join('\n');
+  const blob = new Blob([csv], { type: 'text/csv' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = `maliki-orders-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+};
+
+// ====================================================================
+// Content (CMS pages)
+// ====================================================================
+const renderContent = () => {
+  const list = Store.pages();
+
+  $('#topbar').innerHTML = `
+    <h1>Content <small>${list.length} pages</small></h1>
+    <div class="actions"><button class="btn" id="newPage">+ New page</button></div>
+  `;
+  $('#newPage').addEventListener('click', () => openPageDrawer(null));
+
+  $('#content').innerHTML = `
+    <div class="card">
+      <div class="card-body flush">
+        <table class="t">
+          <thead><tr><th>Title</th><th>URL</th><th>Status</th><th>Updated</th></tr></thead>
+          <tbody>
+            ${list.length === 0
+              ? '<tr class="no-hover"><td colspan="4"><div class="empty">No pages yet.</div></td></tr>'
+              : list.map((p) => `
+                <tr data-pgid="${escape(p.id)}">
+                  <td><strong style="color:#f5ecda">${escape(p.title)}</strong></td>
+                  <td><code style="color:var(--softer);font-size:12px">/pages/${escape(p.slug)}</code></td>
+                  <td><span class="pill ${p.status === 'published' ? 'live' : 'draft'}">${escape(p.status)}</span></td>
+                  <td style="color:var(--softer)">${escape(fmtRel(p.updated_at))}</td>
+                </tr>
+              `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  $$('tr[data-pgid]').forEach((tr) => tr.addEventListener('click', () => openPageDrawer(tr.dataset.pgid)));
+};
+
+const openPageDrawer = (id) => {
+  const p = id ? Store.pageById(id) : null;
+  state.editing = p ? p.id : 'new-page';
+
+  $('#drawerTitle').textContent = p ? `Page · ${p.title}` : 'New page';
+  $('#drawerFoot').innerHTML = `
+    <div class="feedback" id="pgFb"></div>
+    ${p ? '<button class="btn danger" id="pgDelete">Delete</button>' : ''}
+    <button class="btn ghost" id="pgCancel">Cancel</button>
+    <button class="btn" id="pgSave">${p ? 'Save' : 'Create'}</button>
+  `;
+  $('#drawerBody').innerHTML = `
+    <div class="form-row">
+      <label for="pg-title">Title</label>
+      <input class="input" id="pg-title" value="${escape(p?.title || '')}" autofocus />
+    </div>
+    <div class="form-row">
+      <label for="pg-slug">URL slug</label>
+      <input class="input" id="pg-slug" value="${escape(p?.slug || '')}" />
+      <div class="hint">/pages/<span id="pgSlugPreview">${escape(p?.slug || '…')}</span></div>
+    </div>
+    <div class="form-row">
+      <label for="pg-body">Body</label>
+      <textarea class="textarea" id="pg-body" rows="14" style="font-family:Georgia,serif">${escape(p?.body || '')}</textarea>
+    </div>
+    <div class="form-row">
+      <label for="pg-status">Status</label>
+      <select class="select" id="pg-status">
+        <option value="published" ${(p?.status || 'published') === 'published' ? 'selected' : ''}>Published</option>
+        <option value="draft" ${p?.status === 'draft' ? 'selected' : ''}>Draft</option>
+      </select>
+    </div>
+  `;
+
+  let slugTouched = !!p?.slug;
+  $('#pg-title').addEventListener('input', (e) => {
+    if (!slugTouched) {
+      const s = slugify(e.target.value);
+      $('#pg-slug').value = s; $('#pgSlugPreview').textContent = s || '…';
+    }
+  });
+  $('#pg-slug').addEventListener('input', () => {
+    slugTouched = true;
+    $('#pgSlugPreview').textContent = slugify($('#pg-slug').value) || '…';
+  });
+
+  $('#pgCancel').addEventListener('click', closeDrawer);
+  $('#pgSave').addEventListener('click', () => {
+    const fb = $('#pgFb');
+    const data = {
+      title: $('#pg-title').value.trim(),
+      slug: slugify($('#pg-slug').value),
+      body: $('#pg-body').value,
+      status: $('#pg-status').value,
+    };
+    if (!data.title) { fb.textContent = 'Title is required.'; fb.className = 'feedback error'; return; }
+    if (!data.slug) { fb.textContent = 'Slug is required.'; fb.className = 'feedback error'; return; }
+    try {
+      if (p) Store.updatePage(p.id, data); else Store.addPage(data);
+      toast(p ? 'Page saved' : 'Page created');
+      closeDrawer();
+    } catch (e) { fb.textContent = 'Save failed.'; fb.className = 'feedback error'; }
+  });
+  if (p) $('#pgDelete').addEventListener('click', () => {
+    if (confirm(`Delete "${p.title}"?`)) { Store.deletePage(p.id); toast('Deleted'); closeDrawer(); }
+  });
+
+  $('#backdrop').classList.add('open');
+  $('#drawer').classList.add('open');
+};
+
+// ====================================================================
+// Settings
+// ====================================================================
+const renderSettings = () => {
+  $('#topbar').innerHTML = `<h1>Settings</h1>`;
+  const s = Store.settings();
+  const tabs = [
+    ['general', 'General'],
+    ['branding', 'Branding'],
+    ['integrations', 'Integrations'],
+    ['notifications', 'Notifications'],
+    ['shipping', 'Shipping'],
+    ['legal', 'Legal'],
+  ];
+
+  $('#content').innerHTML = `
+    <div class="settings-layout">
+      <nav class="settings-nav">
+        ${tabs.map(([k, lbl]) => `<button class="${state.settingsTab === k ? 'active' : ''}" data-st="${k}">${escape(lbl)}</button>`).join('')}
+      </nav>
+      <div class="settings-section" id="settingsBody"></div>
+    </div>
+  `;
+  $$('.settings-nav button').forEach((b) =>
+    b.addEventListener('click', () => { state.settingsTab = b.dataset.st; render(); })
+  );
+
+  const body = $('#settingsBody');
+
+  const saveBar = (sectionKey, gather) => {
+    const id = `save_${sectionKey}`;
+    const html = `<div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn" id="${id}">Save changes</button></div>`;
+    setTimeout(() => {
+      const btn = document.getElementById(id);
+      if (btn) btn.addEventListener('click', () => {
+        Store.updateSettings(sectionKey, gather());
+        toast('Saved');
+      });
+    }, 0);
+    return html;
+  };
+
+  if (state.settingsTab === 'general') {
+    const g = s.general || {};
+    body.innerHTML = `
+      <div class="card"><div class="card-head"><h2>Store</h2></div>
+        <div class="card-body">
+          <div class="form-row split-2">
+            <div class="form-row" style="margin:0"><label>Store name</label><input class="input" id="sg-name" value="${escape(g.store_name || '')}"/></div>
+            <div class="form-row" style="margin:0"><label>Contact email</label><input class="input" id="sg-email" value="${escape(g.store_email || '')}"/></div>
+          </div>
+          <div class="form-row split-2">
+            <div class="form-row" style="margin:0"><label>Default currency</label><input class="input" id="sg-currency" value="${escape(g.currency || 'GBP')}" maxlength="3"/></div>
+            <div class="form-row" style="margin:0"><label>Timezone</label><input class="input" id="sg-tz" value="${escape(g.timezone || '')}"/></div>
+          </div>
+          <div class="form-row"><label>Atelier address</label><textarea class="textarea" id="sg-addr" rows="3">${escape(g.address || '')}</textarea></div>
+          ${saveBar('general', () => ({
+            store_name: $('#sg-name').value.trim(),
+            store_email: $('#sg-email').value.trim(),
+            currency: ($('#sg-currency').value || 'GBP').toUpperCase().slice(0, 3),
+            timezone: $('#sg-tz').value.trim(),
+            address: $('#sg-addr').value.trim(),
+          }))}
+        </div>
+      </div>
+    `;
+  } else if (state.settingsTab === 'branding') {
+    const b = s.branding || {};
+    body.innerHTML = `
+      <div class="card"><div class="card-head"><h2>Brand</h2></div>
+        <div class="card-body">
+          <div class="form-row split-2">
+            <div class="form-row" style="margin:0"><label>Wordmark text</label><input class="input" id="sb-logo" value="${escape(b.logo_text || 'Maliki')}"/></div>
+            <div class="form-row" style="margin:0"><label>Accent colour</label><input class="input" id="sb-color" type="color" value="${escape(b.accent_color || '#d9b070')}" style="height:42px;padding:4px"/></div>
+          </div>
+          <div class="form-row">
+            <div class="lbl">Preview</div>
+            <div style="background:var(--bg);border:1px solid var(--line);padding:32px;text-align:center;border-radius:6px">
+              <div style="font-family:'Pinyon Script',serif;font-size:64px;color:${escape(b.accent_color || '#d9b070')};line-height:1">${escape(b.logo_text || 'Maliki')}</div>
+              <div style="font-family:'Italiana',serif;font-size:11px;letter-spacing:0.42em;color:var(--softer);margin-top:6px">Atelier</div>
+            </div>
+          </div>
+          ${saveBar('branding', () => ({
+            logo_text: $('#sb-logo').value.trim() || 'Maliki',
+            accent_color: $('#sb-color').value,
+          }))}
+        </div>
+      </div>
+    `;
+  } else if (state.settingsTab === 'integrations') {
+    const ints = s.integrations || {};
+    body.innerHTML = `
+      <div class="card"><div class="card-head"><h2>Integrations</h2></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          ${Object.entries(ints).map(([key, cfg]) => `
+            <div class="integration-card">
+              <div class="info">
+                <div class="name">${escape(cfg.label || key)}</div>
+                <div class="meta">${cfg.connected ? '<span style="color:var(--ok)">● Connected</span>' : '<span style="color:var(--softest)">○ Not connected</span>'}</div>
+              </div>
+              <button class="btn ghost sm" data-int="${escape(key)}">${cfg.connected ? 'Disconnect' : 'Connect'}</button>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    $$('button[data-int]').forEach((b) => b.addEventListener('click', () => {
+      const key = b.dataset.int;
+      const cur = (Store.settings().integrations || {})[key] || {};
+      const nextInts = { ...(Store.settings().integrations || {}) };
+      nextInts[key] = { ...cur, connected: !cur.connected };
+      Store.updateSettings('integrations', nextInts);
+      toast(`${cur.connected ? 'Disconnected' : 'Connected'}`);
+    }));
+  } else if (state.settingsTab === 'notifications') {
+    const n = s.notifications || {};
+    const ITEMS = [
+      ['new_order', 'A new order is placed'],
+      ['cancelled_order', 'An order is refunded or cancelled'],
+      ['new_subscriber', 'A new subscriber joins the list'],
+      ['low_stock', 'A product is low on stock'],
+      ['weekly_summary', 'Weekly summary digest'],
+    ];
+    body.innerHTML = `
+      <div class="card"><div class="card-head"><h2>Email me when…</h2></div>
+        <div class="card-body" style="display:flex;flex-direction:column;gap:12px">
+          ${ITEMS.map(([k, lbl]) => `
+            <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-2)">
+              <div style="color:var(--soft)">${escape(lbl)}</div>
+              <label class="switch"><input type="checkbox" data-nk="${k}" ${n[k] ? 'checked' : ''}/><span class="slider"></span></label>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    `;
+    $$('input[data-nk]').forEach((cb) => cb.addEventListener('change', () => {
+      const k = cb.dataset.nk;
+      const next = { ...(Store.settings().notifications || {}), [k]: cb.checked };
+      Store.updateSettings('notifications', next);
+      toast('Saved');
+    }));
+  } else if (state.settingsTab === 'shipping') {
+    const sh = s.shipping || {};
+    body.innerHTML = `
+      <div class="card"><div class="card-head"><h2>Shipping</h2></div>
+        <div class="card-body">
+          <div class="form-row split-2">
+            <div class="form-row" style="margin:0"><label>Flat rate</label><input class="input" id="ss-flat" type="number" min="0" step="1" value="${(sh.flat_rate_cents || 0) / 100}"/><div class="hint">£0 = included.</div></div>
+            <div class="form-row" style="margin:0"><label>Free over</label><input class="input" id="ss-free" type="number" min="0" step="1" value="${(sh.free_threshold_cents || 0) / 100}"/></div>
+          </div>
+          <div class="form-row"><label>Countries serviced</label><textarea class="textarea" id="ss-c" rows="3">${escape(sh.countries_serviced || '')}</textarea></div>
+          <div class="form-row"><label>Courier</label><input class="input" id="ss-cr" value="${escape(sh.courier || '')}"/></div>
+          ${saveBar('shipping', () => ({
+            flat_rate_cents: Math.max(0, Math.round(Number($('#ss-flat').value || 0) * 100)),
+            free_threshold_cents: Math.max(0, Math.round(Number($('#ss-free').value || 0) * 100)),
+            countries_serviced: $('#ss-c').value.trim(),
+            courier: $('#ss-cr').value.trim(),
+          }))}
+        </div>
+      </div>
+    `;
+  } else if (state.settingsTab === 'legal') {
+    const l = s.legal || {};
+    body.innerHTML = `
+      <div class="card"><div class="card-head"><h2>Legal</h2></div>
+        <div class="card-body">
+          <div class="form-row"><label>Terms URL</label><input class="input" id="sl-t" value="${escape(l.terms_url || '')}"/></div>
+          <div class="form-row"><label>Privacy URL</label><input class="input" id="sl-p" value="${escape(l.privacy_url || '')}"/></div>
+          <div class="form-row"><label>Company number</label><input class="input" id="sl-cn" value="${escape(l.company_number || '')}"/></div>
+          ${saveBar('legal', () => ({
+            terms_url: $('#sl-t').value.trim(),
+            privacy_url: $('#sl-p').value.trim(),
+            company_number: $('#sl-cn').value.trim(),
+          }))}
+        </div>
+      </div>
+    `;
+  }
 };
 
 // ---------- Drawer plumbing ----------

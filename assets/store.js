@@ -4,14 +4,25 @@
 // the seed version bumps.
 (function () {
   const KEYS = {
-    products:  'maliki.products',
-    customers: 'maliki.customers',
-    orders:    'maliki.orders',
-    cart:      'maliki.cart',
-    version:   'maliki.seed_version',
+    products:        'maliki.products',
+    customers:       'maliki.customers',
+    orders:          'maliki.orders',
+    cart:            'maliki.cart',
+    email_templates: 'maliki.email_templates',
+    email_log:       'maliki.email_log',
+    subscribers:     'maliki.subscribers',
+    discounts:       'maliki.discounts',
+    pages:           'maliki.pages',
+    settings:        'maliki.settings',
+    version:         'maliki.seed_version',
   };
 
-  const seed = () => window.MOCK_DATA || { products: [], customers: [], orders: [], seed_version: 0 };
+  const seed = () => window.MOCK_DATA || {
+    products: [], customers: [], orders: [],
+    email_templates: [], email_log: [], subscribers: [],
+    discounts: [], pages: [], settings: {},
+    seed_version: 0,
+  };
 
   const safeParse = (raw, fallback) => {
     if (!raw) return fallback;
@@ -25,9 +36,15 @@
     const s = seed();
     const stored = Number(localStorage.getItem(KEYS.version) || 0);
     if (stored !== s.seed_version) {
-      write(KEYS.products,  s.products);
-      write(KEYS.customers, s.customers);
-      write(KEYS.orders,    s.orders);
+      write(KEYS.products,        s.products);
+      write(KEYS.customers,       s.customers);
+      write(KEYS.orders,          s.orders);
+      write(KEYS.email_templates, s.email_templates || []);
+      write(KEYS.email_log,       s.email_log || []);
+      write(KEYS.subscribers,     s.subscribers || []);
+      write(KEYS.discounts,       s.discounts || []);
+      write(KEYS.pages,           s.pages || []);
+      write(KEYS.settings,        s.settings || {});
       localStorage.setItem(KEYS.version, String(s.seed_version));
       // Cart belongs to the visitor — don't wipe on seed bump.
       if (localStorage.getItem(KEYS.cart) === null) write(KEYS.cart, []);
@@ -238,14 +255,181 @@
     });
   };
 
+  // ---------- Email templates ----------
+  const emailTemplates = () => read(KEYS.email_templates, []);
+  const templateByKey = (key) => emailTemplates().find((t) => t.key === key) || null;
+  const updateTemplate = (key, patch) => {
+    const list = emailTemplates();
+    const i = list.findIndex((t) => t.key === key);
+    if (i < 0) return null;
+    list[i] = { ...list[i], ...patch, updated_at: new Date().toISOString() };
+    write(KEYS.email_templates, list);
+    notify('email_templates');
+    return list[i];
+  };
+
+  // ---------- Email log ----------
+  const emails = () => read(KEYS.email_log, []);
+  const sendEmail = ({ template_key, to, to_name, subject, order_id }) => {
+    const list = emails();
+    const e = {
+      id: uid('em'),
+      template_key,
+      to, to_name,
+      subject,
+      order_id,
+      status: 'queued',
+      sent_at: new Date().toISOString(),
+      opened_at: null,
+    };
+    list.unshift(e);
+    write(KEYS.email_log, list);
+    notify('email_log');
+    return e;
+  };
+  const resendEmail = (id) => {
+    const list = emails();
+    const i = list.findIndex((e) => e.id === id);
+    if (i < 0) return null;
+    const copy = { ...list[i], id: uid('em'), status: 'queued', sent_at: new Date().toISOString(), opened_at: null };
+    list.unshift(copy);
+    write(KEYS.email_log, list);
+    notify('email_log');
+    return copy;
+  };
+
+  // ---------- Subscribers ----------
+  const subscribers = () => read(KEYS.subscribers, []);
+  const subscriberByEmail = (email) => subscribers().find((s) => s.email.toLowerCase() === email.toLowerCase()) || null;
+  const addSubscriber = ({ email, source = 'manual' }) => {
+    if (!email) throw new Error('email_required');
+    const list = subscribers();
+    if (list.some((s) => s.email.toLowerCase() === email.toLowerCase())) {
+      throw new Error('already_subscribed');
+    }
+    const s = {
+      id: uid('sub'),
+      email: email.toLowerCase(),
+      source,
+      status: 'subscribed',
+      subscribed_at: new Date().toISOString(),
+    };
+    list.unshift(s);
+    write(KEYS.subscribers, list);
+    notify('subscribers');
+    return s;
+  };
+  const updateSubscriber = (id, patch) => {
+    const list = subscribers();
+    const i = list.findIndex((s) => s.id === id);
+    if (i < 0) return null;
+    list[i] = { ...list[i], ...patch };
+    write(KEYS.subscribers, list);
+    notify('subscribers');
+    return list[i];
+  };
+  const removeSubscriber = (id) => {
+    write(KEYS.subscribers, subscribers().filter((s) => s.id !== id));
+    notify('subscribers');
+  };
+
+  // ---------- Discounts ----------
+  const discounts = () => read(KEYS.discounts, []);
+  const discountById = (id) => discounts().find((d) => d.id === id) || null;
+  const addDiscount = (data) => {
+    const list = discounts();
+    if (list.some((d) => d.code.toLowerCase() === String(data.code || '').toLowerCase())) {
+      throw new Error('code_taken');
+    }
+    const d = {
+      id: uid('disc'),
+      code: String(data.code || '').toUpperCase().trim(),
+      type: data.type === 'fixed' ? 'fixed' : 'percent',
+      value: Math.max(0, Number(data.value) || 0),
+      minimum_cents: Math.max(0, Math.round(Number(data.minimum_cents) || 0)),
+      applies_to: data.applies_to || 'all',
+      status: data.status || 'active',
+      starts_at: data.starts_at || new Date().toISOString(),
+      ends_at: data.ends_at || null,
+      usage_count: 0,
+      usage_limit: data.usage_limit ? Math.max(0, Math.floor(Number(data.usage_limit))) : null,
+      description: String(data.description || ''),
+    };
+    if (!d.code) throw new Error('code_required');
+    list.unshift(d);
+    write(KEYS.discounts, list);
+    notify('discounts');
+    return d;
+  };
+  const updateDiscount = (id, patch) => {
+    const list = discounts();
+    const i = list.findIndex((d) => d.id === id);
+    if (i < 0) return null;
+    list[i] = { ...list[i], ...patch };
+    write(KEYS.discounts, list);
+    notify('discounts');
+    return list[i];
+  };
+  const deleteDiscount = (id) => {
+    write(KEYS.discounts, discounts().filter((d) => d.id !== id));
+    notify('discounts');
+  };
+
+  // ---------- Pages ----------
+  const pages = () => read(KEYS.pages, []);
+  const pageById = (id) => pages().find((p) => p.id === id) || null;
+  const pageBySlug = (slug) => pages().find((p) => p.slug === slug) || null;
+  const addPage = (data) => {
+    const list = pages();
+    let slug = slugify(data.slug || data.title);
+    if (!slug) throw new Error('slug_required');
+    let n = 2;
+    while (list.some((p) => p.slug === slug)) slug = `${slugify(data.title)}-${n++}`;
+    const p = {
+      id: uid('pg'),
+      slug,
+      title: String(data.title || '').trim(),
+      body: String(data.body || ''),
+      status: data.status === 'draft' ? 'draft' : 'published',
+      updated_at: new Date().toISOString(),
+    };
+    list.unshift(p);
+    write(KEYS.pages, list);
+    notify('pages');
+    return p;
+  };
+  const updatePage = (id, patch) => {
+    const list = pages();
+    const i = list.findIndex((p) => p.id === id);
+    if (i < 0) return null;
+    const next = { ...list[i], ...patch, updated_at: new Date().toISOString() };
+    if (patch.slug) next.slug = slugify(patch.slug) || list[i].slug;
+    list[i] = next;
+    write(KEYS.pages, list);
+    notify('pages');
+    return next;
+  };
+  const deletePage = (id) => {
+    write(KEYS.pages, pages().filter((p) => p.id !== id));
+    notify('pages');
+  };
+
+  // ---------- Settings ----------
+  const settings = () => read(KEYS.settings, {});
+  const updateSettings = (section, patch) => {
+    const cur = settings();
+    cur[section] = { ...(cur[section] || {}), ...patch };
+    write(KEYS.settings, cur);
+    notify('settings');
+    return cur;
+  };
+
   const reset = () => {
-    localStorage.removeItem(KEYS.version);
-    localStorage.removeItem(KEYS.cart);
+    Object.values(KEYS).forEach((k) => localStorage.removeItem(k));
     ensureSeeded();
-    notify('products');
-    notify('customers');
-    notify('orders');
-    notify('cart');
+    notify('products'); notify('customers'); notify('orders'); notify('cart');
+    notify('email_templates'); notify('email_log'); notify('subscribers');
+    notify('discounts'); notify('pages'); notify('settings');
   };
 
   ensureSeeded();
@@ -256,6 +440,12 @@
     customers, customersWithStats, customerById, upsertCustomer,
     orders, orderById, updateOrderStatus, placeOrder,
     cart, cartCount, addToCart, setCartQuantity, removeFromCart, clearCart,
+    emailTemplates, templateByKey, updateTemplate,
+    emails, sendEmail, resendEmail,
+    subscribers, subscriberByEmail, addSubscriber, updateSubscriber, removeSubscriber,
+    discounts, discountById, addDiscount, updateDiscount, deleteDiscount,
+    pages, pageById, pageBySlug, addPage, updatePage, deletePage,
+    settings, updateSettings,
     reset,
     on: (fn) => { listeners.add(fn); return () => listeners.delete(fn); },
   };
