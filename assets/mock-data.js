@@ -179,6 +179,10 @@
   const NOW = new Date('2026-04-22T16:00:00Z');
   const daysAgo = (d) => new Date(NOW.getTime() - d * 86400000).toISOString();
 
+  // Temporary placeholder image used for every seeded product. Swap per-product
+  // images via the admin when real photography is available.
+  const PLACEHOLDER_IMAGE = '/assets/ring-placeholder.jpg';
+
   const PRODUCTS = PRODUCT_DEFINITIONS.map((p, i) => ({
     id: p.id,
     slug: p.slug,
@@ -187,7 +191,7 @@
     description: p.description,
     price_cents: p.price_cents,
     currency: 'GBP',
-    images: [ring(p.style)],
+    images: [PLACEHOLDER_IMAGE],
     category: 'ring',
     metal: p.metal,
     stone: p.stone,
@@ -652,6 +656,6 @@ Returns are accepted within 14 days for an unworn piece in its original presenta
     discounts: DISCOUNTS,
     pages: PAGES,
     settings: SETTINGS,
-    seed_version: 2,
+    seed_version: 3,
   };
 })();
