@@ -11,16 +11,10 @@ const fromB64url = (s) => {
   return Buffer.from(s, 'base64');
 };
 
-// TEMPORARY: if ADMIN_SECRET env var isn't set, generate a random secret per
-// cold start. Sessions invalidate on every restart (~minutes of idle), but it
-// keeps things working until the env var is configured. Set ADMIN_SECRET in
-// Vercel for stable sessions.
-let _ephemeralSecret = null;
 const secret = () => {
   const s = process.env.ADMIN_SECRET;
-  if (s && s.length >= 16) return s;
-  if (!_ephemeralSecret) _ephemeralSecret = crypto.randomBytes(32).toString('hex');
-  return _ephemeralSecret;
+  if (!s || s.length < 16) throw new Error('admin_secret_missing');
+  return s;
 };
 
 const sign = (payloadStr) =>

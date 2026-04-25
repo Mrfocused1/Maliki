@@ -17,9 +17,11 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
   if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
-  // TEMPORARY: falls back to '12345' until ADMIN_PASSWORD env var is set in Vercel.
-  // Remove this fallback once the real password is configured.
-  const expected = process.env.ADMIN_PASSWORD || '12345';
+  const expected = process.env.ADMIN_PASSWORD;
+  if (!expected) {
+    console.error('login: ADMIN_PASSWORD not set');
+    return json(res, 500, { error: 'server_misconfigured' });
+  }
 
   let body = req.body;
   if (typeof body === 'string') {
