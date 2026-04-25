@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Cart — Maliki Atelier</title>
+<meta name="theme-color" content="#0a0908" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Italiana&family=Pinyon+Script&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --black: #0a0908;
+    --charcoal: #141311;
+    --soft: rgba(245, 236, 218, 0.94);
+    --softer: rgba(245, 236, 218, 0.66);
+    --softest: rgba(245, 236, 218, 0.40);
+    --gold-1: #e8c488;
+    --gold-2: #b68a4e;
+    --gold-hi: #f8e3b4;
+    --line: rgba(217, 176, 112, 0.20);
+    --ok: #a3c08b;
+    --danger: #d99a6c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--black); color: var(--soft);
+    font-family: 'Cormorant Garamond', serif;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+    min-height: 100%;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: clamp(20px, 3.6vh, 36px) clamp(20px, 5vw, 56px);
+    border-bottom: 1px solid var(--line);
+  }
+  .wordmark {
+    font-family: 'Pinyon Script', serif;
+    font-size: clamp(28px, 3.4vw, 38px); color: #d9b070; line-height: 1;
+  }
+  .nav {
+    display: flex; gap: clamp(20px, 3vw, 36px); align-items: center;
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
+  }
+  .nav a:hover { color: var(--gold-hi); }
+
+  .hero {
+    text-align: center;
+    padding: clamp(40px, 7vh, 80px) 24px clamp(28px, 5vh, 48px);
+  }
+  .eyebrow {
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.62em; text-indent: 0.62em;
+    text-transform: uppercase; color: var(--softer);
+    display: inline-block; padding-bottom: 14px;
+  }
+  .h1 {
+    font-family: 'Italiana', serif;
+    font-size: clamp(34px, 5vw, 56px); letter-spacing: 0.18em;
+    text-transform: uppercase; color: #f5ecda;
+  }
+  .h1 em {
+    font-family: 'Pinyon Script', serif;
+    font-style: normal; color: #d9b070;
+    font-size: 1.4em; letter-spacing: 0; text-transform: none;
+    vertical-align: -0.1em; margin: 0 0.05em;
+  }
+
+  .layout {
+    display: grid;
+    grid-template-columns: 1.4fr 1fr;
+    gap: clamp(28px, 4vw, 64px);
+    padding: 0 clamp(20px, 5vw, 56px) clamp(60px, 10vh, 120px);
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: start;
+  }
+  @media (max-width: 880px) { .layout { grid-template-columns: 1fr; } }
+
+  .panel {
+    border: 1px solid var(--line);
+    background: rgba(20, 19, 17, 0.5);
+  }
+  .panel header {
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--line);
+  }
+  .panel header h2 {
+    font-family: 'Italiana', serif;
+    font-size: 14px; letter-spacing: 0.42em; text-transform: uppercase; color: #f5ecda; font-weight: 400;
+  }
+  .panel .body { padding: 6px 22px; }
+
+  /* ---------- Line items ---------- */
+  .line {
+    display: grid;
+    grid-template-columns: 96px 1fr auto;
+    gap: 18px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line);
+    align-items: center;
+  }
+  .line:last-child { border-bottom: 0; }
+  .line .img {
+    aspect-ratio: 1 / 1;
+    background: var(--charcoal);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .line .img img { width: 100%; height: 100%; object-fit: cover; }
+  .line .info .title {
+    font-family: 'Italiana', serif;
+    font-size: 14px; letter-spacing: 0.22em; text-transform: uppercase; color: #f5ecda;
+    margin-bottom: 4px;
+  }
+  .line .info .subtitle {
+    color: var(--softer); font-style: italic; font-size: 14px; letter-spacing: 0.04em;
+  }
+  .line .info .controls {
+    margin-top: 12px;
+    display: flex; gap: 16px; align-items: center;
+  }
+  .qty {
+    display: inline-flex; align-items: center;
+    border: 1px solid var(--line); border-radius: 4px;
+  }
+  .qty button {
+    background: transparent; border: 0; color: var(--soft);
+    width: 32px; height: 36px; font-size: 16px;
+  }
+  .qty button:hover { color: var(--gold-hi); }
+  .qty span { min-width: 28px; text-align: center; font-style: italic; }
+  .remove {
+    background: transparent; border: 0; color: var(--softer);
+    font-family: 'Italiana', serif;
+    font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
+    transition: color 0.3s ease;
+  }
+  .remove:hover { color: var(--danger); }
+  .line .price {
+    font-style: italic; color: #f3d89e; letter-spacing: 0.12em; font-size: 16px; text-align: right; min-width: 100px;
+  }
+
+  /* ---------- Empty ---------- */
+  .empty {
+    text-align: center; padding: 80px 20px;
+  }
+  .empty h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-weight: 400; font-size: 22px; color: #f5ecda;
+    margin-bottom: 14px;
+  }
+  .empty p { color: var(--softer); font-style: italic; letter-spacing: 0.06em; margin-bottom: 28px; }
+  .empty .cta {
+    display: inline-block;
+    background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
+    color: #1a120a; font-weight: 600;
+    font-family: 'Italiana', serif;
+    font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 13px 26px; border-radius: 4px;
+  }
+
+  /* ---------- Summary / checkout ---------- */
+  .summary .row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding: 10px 0; color: var(--soft); font-size: 15px;
+  }
+  .summary .row .lbl { color: var(--softer); letter-spacing: 0.06em; }
+  .summary .row.total {
+    border-top: 1px solid var(--line);
+    padding-top: 16px; margin-top: 6px;
+  }
+  .summary .row.total .lbl {
+    font-family: 'Italiana', serif; font-size: 12px;
+    letter-spacing: 0.42em; text-transform: uppercase; color: var(--soft);
+  }
+  .summary .row.total .val {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 28px; color: #f5ecda;
+  }
+
+  .form { padding: 20px 0 0; display: flex; flex-direction: column; gap: 14px; }
+  .form .lbl {
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--soft);
+    margin-bottom: 8px;
+  }
+  .form .field {
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--line);
+    transition: border-color 0.4s ease;
+  }
+  .form .field:focus-within { border-color: rgba(217, 176, 112, 0.7); }
+  .form .field input, .form .field select {
+    flex: 1;
+    background: transparent; border: 0; outline: 0;
+    color: #f5ecda;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 15px; letter-spacing: 0.16em;
+    padding: 12px 2px;
+  }
+  .form .field input::placeholder {
+    color: var(--softer); font-style: italic; letter-spacing: 0.18em;
+  }
+  .form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  .place {
+    margin-top: 10px;
+    background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
+    border: 0; color: #1a120a; font-weight: 600;
+    font-family: 'Italiana', serif;
+    font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 16px 26px; border-radius: 4px;
+    transition: filter 0.3s ease;
+  }
+  .place:hover { filter: brightness(1.06); }
+  .place:disabled { opacity: 0.5; cursor: not-allowed; }
+  .feedback {
+    min-height: 14px;
+    margin-top: 6px;
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--danger); opacity: 0; transition: opacity 0.3s ease;
+  }
+  .feedback.show { opacity: 1; }
+
+  .legal {
+    margin-top: 16px;
+    font-size: 12px; color: var(--softest); letter-spacing: 0.04em; line-height: 1.6; font-style: italic; text-align: center;
+  }
+
+  /* ---------- Confirmation ---------- */
+  .confirm {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 30px;
+    border: 1px solid var(--line);
+    background: rgba(20, 19, 17, 0.5);
+  }
+  .confirm .seal {
+    font-family: 'Pinyon Script', serif;
+    color: #d9b070; font-size: 64px; line-height: 1;
+    margin-bottom: 12px;
+  }
+  .confirm h2 {
+    font-family: 'Italiana', serif;
+    font-size: 20px; letter-spacing: 0.42em; text-transform: uppercase; color: #f5ecda; font-weight: 400;
+    margin-bottom: 12px;
+  }
+  .confirm p {
+    color: var(--soft); font-style: italic; font-size: 17px; line-height: 1.6;
+    max-width: 520px; margin: 0 auto 18px;
+  }
+  .confirm .order {
+    display: inline-block;
+    margin: 22px auto 8px;
+    padding: 8px 22px;
+    border: 1px solid var(--line);
+    font-family: 'Italiana', serif;
+    font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--gold-1);
+  }
+  .confirm .back {
+    display: inline-block; margin-top: 24px;
+    color: var(--softer);
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    border-bottom: 1px solid var(--line); padding-bottom: 4px;
+  }
+  .confirm .back:hover { color: var(--gold-hi); }
+
+  .footer {
+    border-top: 1px solid var(--line);
+    padding: 24px clamp(20px, 5vw, 56px);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: 'Italiana', serif;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
+  }
+</style>
+</head>
+<body>
+  <header class="topbar">
+    <a href="/" class="wordmark" aria-label="Maliki Atelier home">Maliki</a>
+    <nav class="nav">
+      <a href="/shop">The Rings</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Atelier</div>
+    <h1 class="h1">Your <em>Cart</em></h1>
+  </section>
+
+  <main id="root" class="layout"></main>
+
+  <footer class="footer">
+    <span>© Maliki Atelier</span>
+    <span>White-Glove Courier · Insured Worldwide</span>
+  </footer>
+
+  <script src="/assets/ring-svg.js"></script>
+  <script src="/assets/mock-data.js"></script>
+  <script src="/assets/store.js"></script>
+  <script>
+    const fmtPrice = (cents, currency) => {
+      try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0 }).format((cents || 0) / 100); }
+      catch { return `£${((cents || 0) / 100).toFixed(0)}`; }
+    };
+    const escape = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+    const COUNTRIES = ['United Kingdom','Ireland','France','Italy','Spain','Germany','Switzerland','Austria','Netherlands','Belgium','Sweden','Norway','Denmark','Greece','Portugal','United States','Canada','Australia','New Zealand','Singapore','Japan','South Korea','Hong Kong','UAE','Nigeria','South Africa'];
+
+    const root = document.getElementById('root');
+
+    const cartLines = () => {
+      return Store.cart()
+        .map((it) => {
+          const p = Store.productById(it.product_id);
+          if (!p) return null;
+          return { product: p, quantity: it.quantity };
+        })
+        .filter(Boolean);
+    };
+
+    const renderEmpty = () => {
+      root.innerHTML = `
+        <div class="confirm" style="grid-column:1/-1">
+          <h2>Your cart is empty</h2>
+          <p>Begin with the collection.</p>
+          <a class="back" href="/shop">View the rings</a>
+        </div>
+      `;
+    };
+
+    const renderCart = () => {
+      const lines = cartLines();
+      if (lines.length === 0) return renderEmpty();
+
+      const subtotal = lines.reduce((s, l) => s + l.product.price_cents * l.quantity, 0);
+      const shipping = 0;
+      const total = subtotal + shipping;
+      const currency = lines[0].product.currency;
+
+      root.innerHTML = `
+        <section class="panel">
+          <header><h2>Items</h2></header>
+          <div class="body" id="lines">
+            ${lines.map((l) => `
+              <div class="line" data-pid="${escape(l.product.id)}">
+                <div class="img"><img src="${escape((l.product.images || [])[0] || '')}" alt=""></div>
+                <div class="info">
+                  <div class="title">${escape(l.product.title)}</div>
+                  <div class="subtitle">${escape(l.product.subtitle || '')}</div>
+                  <div class="controls">
+                    <div class="qty">
+                      <button type="button" data-act="dec" aria-label="Decrease">−</button>
+                      <span>${l.quantity}</span>
+                      <button type="button" data-act="inc" aria-label="Increase">+</button>
+                    </div>
+                    <button class="remove" type="button" data-act="rm">Remove</button>
+                  </div>
+                </div>
+                <div class="price">${escape(fmtPrice(l.product.price_cents * l.quantity, l.product.currency))}</div>
+              </div>
+            `).join('')}
+          </div>
+        </section>
+
+        <aside class="panel summary">
+          <header><h2>Summary</h2></header>
+          <div class="body">
+            <div class="row"><span class="lbl">Subtotal</span><span>${escape(fmtPrice(subtotal, currency))}</span></div>
+            <div class="row"><span class="lbl">Shipping</span><span>White-glove courier</span></div>
+            <div class="row total"><span class="lbl">Total</span><span class="val">${escape(fmtPrice(total, currency))}</span></div>
+
+            <form class="form" id="checkoutForm" novalidate>
+              <div class="lbl">Your details</div>
+              <div class="row2">
+                <label class="field"><input id="ckName" type="text" autocomplete="name" placeholder="Full name" required /></label>
+                <label class="field"><input id="ckEmail" type="email" autocomplete="email" placeholder="Email" required /></label>
+              </div>
+              <div class="row2">
+                <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" /></label>
+                <label class="field">
+                  <select id="ckCountry">
+                    <option value="">Select country</option>
+                    ${COUNTRIES.map((c) => `<option value="${escape(c)}">${escape(c)}</option>`).join('')}
+                  </select>
+                </label>
+              </div>
+
+              <button class="place" id="placeBtn" type="submit">Place Order</button>
+              <div class="feedback" id="checkoutFeedback"></div>
+              <div class="legal">This is a demonstration store — no payment is taken. Submitting will record a mock order in the admin dashboard.</div>
+            </form>
+          </div>
+        </aside>
+      `;
+
+      // Bind line controls
+      document.querySelectorAll('.line').forEach((row) => {
+        const id = row.dataset.pid;
+        const cur = Store.cart().find((c) => c.product_id === id);
+        row.querySelectorAll('button[data-act]').forEach((b) => {
+          b.addEventListener('click', () => {
+            if (!cur) return;
+            if (b.dataset.act === 'inc') Store.setCartQuantity(id, cur.quantity + 1);
+            else if (b.dataset.act === 'dec') Store.setCartQuantity(id, cur.quantity - 1);
+            else if (b.dataset.act === 'rm') Store.removeFromCart(id);
+          });
+        });
+      });
+
+      const form = document.getElementById('checkoutForm');
+      const fb = document.getElementById('checkoutFeedback');
+      const placeBtn = document.getElementById('placeBtn');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const name = document.getElementById('ckName').value.trim();
+        const email = document.getElementById('ckEmail').value.trim();
+        const city = document.getElementById('ckCity').value.trim();
+        const country = document.getElementById('ckCountry').value;
+        if (!name) return fail('Please add your name.');
+        if (!EMAIL_RX.test(email)) return fail('Please add a valid email.');
+        if (!country) return fail('Please choose a country.');
+
+        placeBtn.disabled = true; placeBtn.textContent = 'Placing…';
+        try {
+          const customer = Store.upsertCustomer({ name, email, city, country });
+          const items = Store.cart();
+          const order = Store.placeOrder({
+            customer,
+            items,
+            shipping_address: { city, country },
+          });
+          Store.clearCart();
+          renderConfirmation(order);
+        } catch (err) {
+          fail('Something went wrong. Please try again.');
+          placeBtn.disabled = false; placeBtn.textContent = 'Place Order';
+        }
+      });
+
+      function fail(msg) { fb.textContent = msg; fb.classList.add('show'); }
+    };
+
+    const renderConfirmation = (order) => {
+      root.innerHTML = `
+        <div class="confirm">
+          <div class="seal">M</div>
+          <h2>Thank You</h2>
+          <p>Your order has been received. The atelier will be in touch shortly to arrange your white-glove delivery.</p>
+          <div class="order">${escape(order.number)}</div>
+          <p style="font-size:14px;color:var(--softer);margin-top:18px">A confirmation has been recorded against <strong style="color:var(--soft)">${escape(order.customer_email)}</strong>.</p>
+          <a class="back" href="/shop">Continue browsing</a>
+        </div>
+      `;
+    };
+
+    Store.on(() => renderCart());
+    renderCart();
+  </script>
+</body>
+</html>

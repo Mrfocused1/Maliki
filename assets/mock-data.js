@@ -1,0 +1,303 @@
+// Seed catalogue, customers, and order history for the demo store.
+// Loaded after assets/ring-svg.js so RingSvg is available.
+(function () {
+  const ring = (window.RingSvg && window.RingSvg.ring) || (() => '');
+
+  // ---------- Products (12 rings) ----------
+  const PRODUCT_DEFINITIONS = [
+    {
+      id: 'prd_celestine',
+      slug: 'celestine-solitaire',
+      title: 'The Celestine',
+      subtitle: 'Brilliant-cut diamond solitaire',
+      description: `A single brilliant-cut diamond elevated above a softly tapered band. The Celestine is the atelier's reference solitaire — calm, certain, made to be worn for a lifetime.`,
+      price_cents: 420000,
+      metal: '18k Yellow Gold',
+      stone: 'Diamond, 1.10ct',
+      hand_size: 'UK J – Q',
+      stock: 4,
+      featured: true,
+      style: { metal: 'gold', stone: 'diamond', style: 'solitaire' },
+    },
+    {
+      id: 'prd_maris',
+      slug: 'maris-halo',
+      title: 'The Maris Halo',
+      subtitle: 'Ceylon sapphire surrounded by pavé',
+      description: `An untreated Ceylon sapphire of unusual depth, encircled by a halo of micro-set diamonds. Hand-finished in white gold to draw light into the stone.`,
+      price_cents: 680000,
+      metal: '18k White Gold',
+      stone: 'Ceylon Sapphire, 1.40ct',
+      hand_size: 'UK K – P',
+      stock: 2,
+      featured: true,
+      style: { metal: 'white-gold', stone: 'sapphire', style: 'halo' },
+    },
+    {
+      id: 'prd_jardin',
+      slug: 'jardin-eternity',
+      title: 'Jardin Éternité',
+      subtitle: 'Emerald eternity band',
+      description: `Twenty-six Colombian emeralds run the full circumference of the band, each held in a hand-cut bezel. A piece for the second decade of a story.`,
+      price_cents: 840000,
+      metal: '18k Yellow Gold',
+      stone: 'Colombian Emerald, 2.10ct total',
+      hand_size: 'Made to order',
+      stock: 1,
+      featured: false,
+      style: { metal: 'gold', stone: 'emerald', style: 'eternity' },
+    },
+    {
+      id: 'prd_aubade',
+      slug: 'aubade-pave',
+      title: 'Aubade Pavé',
+      subtitle: 'Diamond crown in rose gold',
+      description: `Nine pavé-set diamonds form a softly rising crown across the top of the band. Worn alone or stacked beside the Celestine.`,
+      price_cents: 320000,
+      metal: '18k Rose Gold',
+      stone: 'Diamond, 0.65ct total',
+      hand_size: 'UK H – P',
+      stock: 6,
+      featured: false,
+      style: { metal: 'rose-gold', stone: 'diamond', style: 'pave' },
+    },
+    {
+      id: 'prd_minuit',
+      slug: 'minuit-signet',
+      title: 'The Minuit Signet',
+      subtitle: 'Hand-engraved oval signet',
+      description: `A traditional gentleman's signet, with an oval face engraved by hand. Optionally personalised with an initial or family device on commission.`,
+      price_cents: 195000,
+      metal: '18k Yellow Gold',
+      stone: 'None',
+      hand_size: 'UK L – U',
+      stock: 8,
+      featured: false,
+      style: { metal: 'gold', stone: 'diamond', style: 'signet' },
+    },
+    {
+      id: 'prd_trinite',
+      slug: 'trinite',
+      title: 'Trinité',
+      subtitle: 'Three-stone diamond in platinum',
+      description: `Past, present, and to come — three brilliant-cut diamonds set in a low platinum band. A discreet alternative to the solitaire.`,
+      price_cents: 920000,
+      metal: 'Platinum 950',
+      stone: 'Diamond, 1.85ct total',
+      hand_size: 'UK I – P',
+      stock: 2,
+      featured: true,
+      style: { metal: 'platinum', stone: 'diamond', style: 'threeStone' },
+    },
+    {
+      id: 'prd_volupte',
+      slug: 'volupte',
+      title: 'Volupté',
+      subtitle: 'Burmese ruby halo',
+      description: `A pigeon-blood Burmese ruby cradled by a halo of diamonds, set in rose gold to warm the stone. Each ruby is selected on commission.`,
+      price_cents: 540000,
+      metal: '18k Rose Gold',
+      stone: 'Burmese Ruby, 1.20ct',
+      hand_size: 'UK J – O',
+      stock: 1,
+      featured: false,
+      style: { metal: 'rose-gold', stone: 'ruby', style: 'halo' },
+    },
+    {
+      id: 'prd_chant',
+      slug: 'chant-dor',
+      title: 'Chant d’Or',
+      subtitle: 'Diamond eternity in yellow gold',
+      description: `A continuous line of brilliant diamonds set into an 18k yellow gold band — the most generous of the eternity rings the atelier offers.`,
+      price_cents: 720000,
+      metal: '18k Yellow Gold',
+      stone: 'Diamond, 1.95ct total',
+      hand_size: 'Made to order',
+      stock: 0,
+      featured: false,
+      style: { metal: 'gold', stone: 'diamond', style: 'eternity' },
+    },
+    {
+      id: 'prd_beaumont',
+      slug: 'beaumont',
+      title: 'The Beaumont',
+      subtitle: 'Morganite solitaire in rose gold',
+      description: `A cushion-cut morganite of soft rose, on a tapered rose gold band. Considered, romantic, distinctly modern.`,
+      price_cents: 240000,
+      metal: '18k Rose Gold',
+      stone: 'Morganite, 2.40ct',
+      hand_size: 'UK J – P',
+      stock: 5,
+      featured: false,
+      style: { metal: 'rose-gold', stone: 'morganite', style: 'solitaire' },
+    },
+    {
+      id: 'prd_onyx',
+      slug: 'onyx-sceau',
+      title: 'Onyx Sceau',
+      subtitle: 'Black onyx signet, white gold',
+      description: `A flat black onyx face inlaid into a white gold signet. Quiet, architectural — designed to be worn every day.`,
+      price_cents: 165000,
+      metal: '18k White Gold',
+      stone: 'Black Onyx',
+      hand_size: 'UK L – U',
+      stock: 4,
+      featured: false,
+      style: { metal: 'white-gold', stone: 'onyx', style: 'signet' },
+    },
+    {
+      id: 'prd_aurora',
+      slug: 'aurora',
+      title: 'Aurora',
+      subtitle: 'Amethyst three-stone',
+      description: `Three graduated amethysts in 18k yellow gold, hand-set in a low rub-over collet. A piece with a quiet sense of theatre.`,
+      price_cents: 480000,
+      metal: '18k Yellow Gold',
+      stone: 'Amethyst, 2.80ct total',
+      hand_size: 'UK K – Q',
+      stock: 3,
+      featured: false,
+      style: { metal: 'gold', stone: 'amethyst', style: 'threeStone' },
+    },
+    {
+      id: 'prd_lumen',
+      slug: 'lumen-halo',
+      title: 'Lumen Halo',
+      subtitle: 'Diamond halo in platinum',
+      description: `A brilliant centre stone framed by a sweeping diamond halo and a pavé-set band — the most luminous of the atelier's halo settings.`,
+      price_cents: 1150000,
+      metal: 'Platinum 950',
+      stone: 'Diamond, 2.40ct total',
+      hand_size: 'Made to order',
+      stock: 1,
+      featured: true,
+      style: { metal: 'platinum', stone: 'diamond', style: 'halo' },
+    },
+  ];
+
+  // Today is fixed for the demo so order/customer dates stay coherent.
+  const NOW = new Date('2026-04-22T16:00:00Z');
+  const daysAgo = (d) => new Date(NOW.getTime() - d * 86400000).toISOString();
+
+  const PRODUCTS = PRODUCT_DEFINITIONS.map((p, i) => ({
+    id: p.id,
+    slug: p.slug,
+    title: p.title,
+    subtitle: p.subtitle,
+    description: p.description,
+    price_cents: p.price_cents,
+    currency: 'GBP',
+    images: [ring(p.style)],
+    category: 'ring',
+    metal: p.metal,
+    stone: p.stone,
+    hand_size: p.hand_size,
+    stock: p.stock,
+    published: true,
+    featured: !!p.featured,
+    created_at: daysAgo(180 - i * 8),
+    updated_at: daysAgo(30 - (i % 12)),
+  }));
+
+  // ---------- Customers ----------
+  const CUSTOMERS = [
+    { id: 'cus_001', name: 'Eleanor Whitfield',  email: 'eleanor.whitfield@example.com', city: 'London',     country: 'United Kingdom', joined_at: daysAgo(180) },
+    { id: 'cus_002', name: 'Marcus Adebayo',     email: 'marcus.adebayo@example.com',    city: 'Lagos',      country: 'Nigeria',         joined_at: daysAgo(165) },
+    { id: 'cus_003', name: 'Sofia Castellano',   email: 'sofia.castellano@example.com',  city: 'Milan',      country: 'Italy',           joined_at: daysAgo(152) },
+    { id: 'cus_004', name: 'Henrietta Park',     email: 'h.park@example.com',            city: 'New York',   country: 'United States',   joined_at: daysAgo(140) },
+    { id: 'cus_005', name: 'Imogen Caldwell',    email: 'imogen.c@example.com',          city: 'Edinburgh',  country: 'United Kingdom',  joined_at: daysAgo(128) },
+    { id: 'cus_006', name: 'Théodore Beaumont',  email: 'theo.beaumont@example.com',     city: 'Paris',      country: 'France',          joined_at: daysAgo(115) },
+    { id: 'cus_007', name: 'Anastasia Volkov',   email: 'anastasia.v@example.com',       city: 'Geneva',     country: 'Switzerland',     joined_at: daysAgo(101) },
+    { id: 'cus_008', name: 'Aldous Hartwell',    email: 'aldous.hartwell@example.com',   city: 'Bath',       country: 'United Kingdom',  joined_at: daysAgo(94)  },
+    { id: 'cus_009', name: 'Cassia Renner',      email: 'cassia.renner@example.com',     city: 'Vienna',     country: 'Austria',         joined_at: daysAgo(86)  },
+    { id: 'cus_010', name: 'Olamide Adesanya',   email: 'olamide.a@example.com',         city: 'Lagos',      country: 'Nigeria',         joined_at: daysAgo(74)  },
+    { id: 'cus_011', name: 'Beatrice Sinclair',  email: 'beatrice.s@example.com',        city: 'Manhattan',  country: 'United States',   joined_at: daysAgo(68)  },
+    { id: 'cus_012', name: 'Frédéric Laurent',   email: 'frederic.laurent@example.com',  city: 'Lyon',       country: 'France',          joined_at: daysAgo(60)  },
+    { id: 'cus_013', name: 'Vivienne Marchetti', email: 'v.marchetti@example.com',       city: 'Florence',   country: 'Italy',           joined_at: daysAgo(54)  },
+    { id: 'cus_014', name: 'Quentin Ashworth',   email: 'q.ashworth@example.com',        city: 'Oxford',     country: 'United Kingdom',  joined_at: daysAgo(46)  },
+    { id: 'cus_015', name: 'Adaeze Eze',         email: 'adaeze.eze@example.com',        city: 'London',     country: 'United Kingdom',  joined_at: daysAgo(40)  },
+    { id: 'cus_016', name: 'Kazimir Petrov',     email: 'k.petrov@example.com',          city: 'Berlin',     country: 'Germany',         joined_at: daysAgo(33)  },
+    { id: 'cus_017', name: 'Claudia Wexford',    email: 'claudia.w@example.com',         city: 'Dublin',     country: 'Ireland',         joined_at: daysAgo(28)  },
+    { id: 'cus_018', name: 'Augusto Romano',     email: 'augusto.r@example.com',         city: 'Rome',       country: 'Italy',           joined_at: daysAgo(20)  },
+    { id: 'cus_019', name: 'Margaux Delacroix',  email: 'margaux.d@example.com',         city: 'Paris',      country: 'France',          joined_at: daysAgo(13)  },
+    { id: 'cus_020', name: 'Constantin Roussos', email: 'c.roussos@example.com',         city: 'Athens',     country: 'Greece',          joined_at: daysAgo(6)   },
+  ];
+
+  // ---------- Orders ----------
+  // Mix of statuses — pending (just placed), paid (awaiting fulfilment),
+  // fulfilled (delivered), refunded.
+  const ORDER_DEFINITIONS = [
+    { customer: 'cus_001', items: [['prd_celestine', 1]], status: 'fulfilled', daysAgo: 175 },
+    { customer: 'cus_002', items: [['prd_minuit', 1]],     status: 'fulfilled', daysAgo: 162 },
+    { customer: 'cus_003', items: [['prd_maris', 1]],      status: 'fulfilled', daysAgo: 148 },
+    { customer: 'cus_004', items: [['prd_aubade', 1], ['prd_celestine', 1]], status: 'fulfilled', daysAgo: 140 },
+    { customer: 'cus_005', items: [['prd_jardin', 1]],     status: 'fulfilled', daysAgo: 121 },
+    { customer: 'cus_006', items: [['prd_volupte', 1]],    status: 'fulfilled', daysAgo: 108 },
+    { customer: 'cus_001', items: [['prd_aubade', 1]],     status: 'fulfilled', daysAgo: 96  },
+    { customer: 'cus_007', items: [['prd_lumen', 1]],      status: 'fulfilled', daysAgo: 88  },
+    { customer: 'cus_008', items: [['prd_minuit', 1]],     status: 'refunded',  daysAgo: 80  },
+    { customer: 'cus_009', items: [['prd_trinite', 1]],    status: 'fulfilled', daysAgo: 72  },
+    { customer: 'cus_010', items: [['prd_beaumont', 1]],   status: 'fulfilled', daysAgo: 64  },
+    { customer: 'cus_011', items: [['prd_chant', 1]],      status: 'fulfilled', daysAgo: 58  },
+    { customer: 'cus_012', items: [['prd_onyx', 1]],       status: 'fulfilled', daysAgo: 50  },
+    { customer: 'cus_004', items: [['prd_aurora', 1]],     status: 'fulfilled', daysAgo: 44  },
+    { customer: 'cus_013', items: [['prd_aubade', 2]],     status: 'fulfilled', daysAgo: 38  },
+    { customer: 'cus_014', items: [['prd_celestine', 1]],  status: 'fulfilled', daysAgo: 32  },
+    { customer: 'cus_015', items: [['prd_maris', 1]],      status: 'fulfilled', daysAgo: 26  },
+    { customer: 'cus_016', items: [['prd_minuit', 1]],     status: 'fulfilled', daysAgo: 21  },
+    { customer: 'cus_001', items: [['prd_lumen', 1]],      status: 'paid',      daysAgo: 16  },
+    { customer: 'cus_017', items: [['prd_jardin', 1]],     status: 'paid',      daysAgo: 12  },
+    { customer: 'cus_018', items: [['prd_volupte', 1]],    status: 'paid',      daysAgo: 9   },
+    { customer: 'cus_019', items: [['prd_aubade', 1], ['prd_minuit', 1]], status: 'paid', daysAgo: 6 },
+    { customer: 'cus_020', items: [['prd_beaumont', 1]],   status: 'paid',      daysAgo: 4   },
+    { customer: 'cus_011', items: [['prd_trinite', 1]],    status: 'pending',   daysAgo: 2   },
+    { customer: 'cus_006', items: [['prd_celestine', 1]],  status: 'pending',   daysAgo: 1   },
+  ];
+
+  const findProduct = (id) => PRODUCTS.find((p) => p.id === id);
+  const findCustomer = (id) => CUSTOMERS.find((c) => c.id === id);
+
+  const SHIPPING_FLAT_CENTS = 0; // White-glove courier included.
+
+  const ORDERS = ORDER_DEFINITIONS.map((def, i) => {
+    const items = def.items.map(([pid, qty]) => {
+      const p = findProduct(pid);
+      return {
+        product_id: pid,
+        title: p.title,
+        image: p.images[0],
+        quantity: qty,
+        price_cents: p.price_cents,
+      };
+    });
+    const subtotal = items.reduce((s, it) => s + it.price_cents * it.quantity, 0);
+    const c = findCustomer(def.customer);
+    const num = String(1042 + i).padStart(4, '0');
+    return {
+      id: `ord_${num}`,
+      number: `MA-${num}`,
+      customer_id: def.customer,
+      customer_email: c.email,
+      customer_name: c.name,
+      items,
+      subtotal_cents: subtotal,
+      shipping_cents: SHIPPING_FLAT_CENTS,
+      total_cents: subtotal + SHIPPING_FLAT_CENTS,
+      currency: 'GBP',
+      status: def.status,
+      created_at: daysAgo(def.daysAgo),
+      shipping_address: {
+        line1: '—',
+        city: c.city,
+        country: c.country,
+      },
+    };
+  });
+
+  window.MOCK_DATA = {
+    products: PRODUCTS,
+    customers: CUSTOMERS,
+    orders: ORDERS,
+    seed_version: 1,
+  };
+})();

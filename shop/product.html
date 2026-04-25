@@ -14,249 +14,180 @@
   :root {
     --black: #0a0908;
     --charcoal: #141311;
-    --soft: rgba(245, 236, 218, 0.92);
-    --softer: rgba(245, 236, 218, 0.62);
+    --soft: rgba(245, 236, 218, 0.94);
+    --softer: rgba(245, 236, 218, 0.66);
+    --softest: rgba(245, 236, 218, 0.40);
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
-    --gold-highlight: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.22);
+    --gold-hi: #f8e3b4;
+    --line: rgba(217, 176, 112, 0.20);
+    --ok: #a3c08b;
+    --warn: #e2c373;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: var(--black);
-    color: var(--soft);
+    background: var(--black); color: var(--soft);
     font-family: 'Cormorant Garamond', serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     min-height: 100%;
   }
   a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
 
   .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     padding: clamp(20px, 3.6vh, 36px) clamp(20px, 5vw, 56px);
     border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; background: var(--black); z-index: 5;
   }
   .wordmark {
     font-family: 'Pinyon Script', serif;
-    font-size: clamp(28px, 3.4vw, 38px);
-    color: #d9b070;
-    line-height: 1;
+    font-size: clamp(28px, 3.4vw, 38px); color: #d9b070; line-height: 1;
   }
   .nav {
-    display: flex;
-    gap: clamp(20px, 3vw, 36px);
+    display: flex; gap: clamp(20px, 3vw, 36px); align-items: center;
     font-family: 'Italiana', serif;
-    font-size: 11px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    color: var(--softer);
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
   }
-  .nav a:hover { color: var(--gold-highlight); }
+  .nav a:hover { color: var(--gold-hi); }
+  .cart-btn {
+    background: transparent; border: 1px solid var(--line); color: var(--soft);
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    padding: 9px 16px; border-radius: 4px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .cart-btn:hover { color: var(--gold-hi); border-color: rgba(217, 176, 112, 0.5); }
+  .cart-btn .count {
+    display: inline-block; background: var(--gold-1); color: #1a120a;
+    border-radius: 100px; padding: 1px 7px; font-size: 10px; font-weight: 600; letter-spacing: 0;
+  }
 
   .crumbs {
     padding: 22px clamp(20px, 5vw, 56px) 0;
     font-family: 'Italiana', serif;
-    font-size: 10px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    color: var(--softer);
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
   }
-  .crumbs a:hover { color: var(--gold-highlight); }
+  .crumbs a:hover { color: var(--gold-hi); }
 
   .product {
     display: grid;
     grid-template-columns: 1.1fr 1fr;
     gap: clamp(28px, 5vw, 80px);
     padding: clamp(28px, 6vh, 64px) clamp(20px, 5vw, 56px) clamp(60px, 10vh, 120px);
-    max-width: 1280px;
-    margin: 0 auto;
-    align-items: start;
+    max-width: 1320px; margin: 0 auto; align-items: start;
   }
   @media (max-width: 880px) { .product { grid-template-columns: 1fr; } }
 
   .gallery { display: flex; flex-direction: column; gap: 18px; }
   .main-img {
     aspect-ratio: 1 / 1;
-    background: var(--charcoal);
-    border: 1px solid var(--line);
-    overflow: hidden;
-    position: relative;
+    background: var(--charcoal); border: 1px solid var(--line);
+    overflow: hidden; position: relative;
   }
-  .main-img img {
-    width: 100%; height: 100%; object-fit: cover;
-    filter: saturate(0.95);
-  }
-  .main-img.empty {
-    display: flex; align-items: center; justify-content: center;
-    color: var(--softer);
-    font-family: 'Italiana', serif;
-    font-size: 12px; letter-spacing: 0.4em; text-transform: uppercase;
-  }
+  .main-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.96); }
   .thumbs { display: flex; gap: 10px; flex-wrap: wrap; }
   .thumbs button {
     width: 64px; height: 64px;
-    background: var(--charcoal);
-    border: 1px solid var(--line);
-    padding: 0;
-    cursor: pointer;
-    overflow: hidden;
+    background: var(--charcoal); border: 1px solid var(--line); padding: 0; overflow: hidden;
     transition: border-color 0.4s ease;
   }
   .thumbs button.active { border-color: var(--gold-1); }
   .thumbs button img { width: 100%; height: 100%; object-fit: cover; display: block; }
 
-  .info { display: flex; flex-direction: column; gap: 22px; }
+  .info { display: flex; flex-direction: column; gap: 18px; }
   .info .eyebrow {
-    font-family: 'Italiana', serif;
-    font-size: 11px;
-    letter-spacing: 0.62em;
-    text-transform: uppercase;
-    color: var(--softer);
+    font-family: 'Italiana', serif; font-size: 11px;
+    letter-spacing: 0.62em; text-transform: uppercase; color: var(--softer);
   }
   .info h1 {
     font-family: 'Italiana', serif;
     font-size: clamp(28px, 3.6vw, 44px);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #f5ecda;
-    font-weight: 400;
+    letter-spacing: 0.18em; text-transform: uppercase; color: #f5ecda; font-weight: 400;
+  }
+  .info .subtitle {
+    font-style: italic; color: var(--soft); font-size: 17px; letter-spacing: 0.06em;
   }
   .info .price {
-    font-style: italic;
-    font-size: clamp(18px, 1.8vw, 22px);
-    letter-spacing: 0.14em;
-    color: #f3d89e;
+    font-style: italic; font-size: clamp(20px, 1.9vw, 24px);
+    letter-spacing: 0.14em; color: #f3d89e;
   }
-  .rule {
-    width: 80px; height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(217, 176, 112, 0.55), transparent);
-  }
+  .rule { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, rgba(217, 176, 112, 0.55), transparent); }
   .info .desc {
-    color: var(--soft);
-    line-height: 1.75;
-    font-size: 16px;
-    letter-spacing: 0.04em;
-    white-space: pre-wrap;
-  }
-  .stock {
-    font-family: 'Italiana', serif;
-    font-size: 11px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    color: var(--softer);
+    color: var(--soft); line-height: 1.75; font-size: 16px; letter-spacing: 0.03em; white-space: pre-wrap;
   }
 
-  /* Inquiry form */
-  .inquire {
-    margin-top: 14px;
+  .specs {
     border-top: 1px solid var(--line);
-    padding-top: 28px;
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
-  }
-  .inquire .label {
-    font-family: 'Italiana', serif;
-    font-size: 12px;
-    letter-spacing: 0.5em;
-    text-transform: uppercase;
-    color: var(--soft);
-  }
-  .inquire .row {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 18px;
-  }
-  @media (max-width: 520px) { .inquire .row { grid-template-columns: 1fr; } }
-
-  .field {
-    position: relative;
-    display: flex;
-    align-items: center;
     border-bottom: 1px solid var(--line);
-    transition: border-color 0.6s ease;
+    padding: 16px 0;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 12px 24px;
   }
-  .field:focus-within { border-color: rgba(217, 176, 112, 0.7); }
-  .field input,
-  .field textarea {
-    flex: 1;
-    background: transparent;
-    border: 0;
-    outline: 0;
-    padding: 12px 2px;
-    color: #f5ecda;
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 15px;
-    letter-spacing: 0.18em;
-    resize: vertical;
+  .specs .label {
+    font-family: 'Italiana', serif; font-size: 10px;
+    letter-spacing: 0.42em; text-transform: uppercase; color: var(--softest); margin-bottom: 4px;
   }
-  .field textarea { min-height: 96px; padding-top: 14px; }
-  .field input::placeholder,
-  .field textarea::placeholder {
-    color: var(--softer);
-    font-style: italic;
-    letter-spacing: 0.22em;
-  }
+  .specs .value { color: var(--soft); font-style: italic; font-size: 15px; letter-spacing: 0.04em; }
 
-  .submit {
-    align-self: flex-start;
-    background: transparent;
-    border: 1px solid rgba(217, 176, 112, 0.4);
-    color: #f3d89e;
-    font-family: 'Italiana', serif;
-    font-size: 12px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    padding: 14px 28px;
-    cursor: pointer;
-    transition: color 0.4s ease, border-color 0.4s ease, letter-spacing 0.4s ease;
+  .stock {
+    font-family: 'Italiana', serif; font-size: 11px;
+    letter-spacing: 0.42em; text-transform: uppercase;
   }
-  .submit:hover {
-    color: var(--gold-highlight);
-    border-color: var(--gold-1);
-    letter-spacing: 0.5em;
-  }
-  .submit:disabled { opacity: 0.5; cursor: not-allowed; }
+  .stock.in { color: var(--ok); }
+  .stock.low { color: var(--warn); }
+  .stock.out { color: var(--softest); }
 
-  .feedback {
-    min-height: 16px;
-    font-family: 'Italiana', serif;
-    font-size: 11px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    color: rgba(217, 176, 112, 0.9);
-    opacity: 0;
-    transition: opacity 0.4s ease;
+  .actions {
+    display: flex; gap: 12px; align-items: center; flex-wrap: wrap;
   }
-  .feedback.visible { opacity: 1; }
-  .feedback.error { color: #d99a6c; }
+  .qty {
+    display: inline-flex; align-items: center;
+    border: 1px solid var(--line); border-radius: 4px;
+  }
+  .qty button {
+    background: transparent; border: 0; color: var(--soft);
+    width: 38px; height: 44px; font-size: 18px;
+    transition: color 0.3s ease;
+  }
+  .qty button:hover { color: var(--gold-hi); }
+  .qty span {
+    min-width: 32px; text-align: center; color: #f5ecda;
+    font-style: italic; font-size: 16px; letter-spacing: 0.06em;
+  }
+  .add {
+    flex: 1; min-width: 200px;
+    background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
+    border: 0; color: #1a120a; font-weight: 600;
+    font-family: 'Italiana', serif;
+    font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 14px 28px; border-radius: 4px;
+    transition: filter 0.3s ease;
+  }
+  .add:hover { filter: brightness(1.06); }
+  .add:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .added {
+    margin-top: 8px;
+    color: var(--ok);
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .added.show { opacity: 1; }
 
   .loading, .notfound {
-    text-align: center;
-    padding: 120px 20px;
-    color: var(--softer);
-    font-style: italic;
-    letter-spacing: 0.14em;
+    text-align: center; padding: 120px 20px;
+    color: var(--softer); font-style: italic; letter-spacing: 0.14em;
   }
-  .notfound a {
-    color: var(--gold-1);
-    border-bottom: 1px solid var(--line);
-  }
+  .notfound a { color: var(--gold-1); border-bottom: 1px solid var(--line); }
 
   .footer {
     border-top: 1px solid var(--line);
     padding: 24px clamp(20px, 5vw, 56px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     font-family: 'Italiana', serif;
-    font-size: 10px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    color: var(--softer);
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
   }
 </style>
 </head>
@@ -265,42 +196,34 @@
     <a href="/" class="wordmark" aria-label="Maliki Atelier home">Maliki</a>
     <nav class="nav">
       <a href="/shop">The Rings</a>
+      <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
     </nav>
   </header>
 
   <nav class="crumbs"><a href="/shop">The Rings</a> <span style="margin:0 10px;color:var(--line)">/</span> <span id="crumb-title">…</span></nav>
 
-  <main id="root">
-    <div class="loading">Loading…</div>
-  </main>
+  <main id="root"><div class="loading">Loading…</div></main>
 
   <footer class="footer">
     <span>© Maliki Atelier</span>
-    <span>By Appointment</span>
+    <span>White-Glove Courier · Insured Worldwide</span>
   </footer>
 
+  <script src="/assets/ring-svg.js"></script>
+  <script src="/assets/mock-data.js"></script>
+  <script src="/assets/store.js"></script>
   <script>
-    const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     const fmtPrice = (cents, currency) => {
-      try {
-        return new Intl.NumberFormat(undefined, {
-          style: 'currency',
-          currency: currency || 'GBP',
-          maximumFractionDigits: 0,
-        }).format((cents || 0) / 100);
-      } catch {
-        return `${((cents || 0) / 100).toFixed(0)} ${currency || ''}`.trim();
-      }
+      try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0 }).format((cents || 0) / 100); }
+      catch { return `£${((cents || 0) / 100).toFixed(0)}`; }
     };
-    const escape = (s) =>
-      String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
-        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
-      );
+    const escape = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
     const slug = new URLSearchParams(location.search).get('slug');
     const root = document.getElementById('root');
     const crumbTitle = document.getElementById('crumb-title');
+
+    let qty = 1;
 
     const renderNotFound = () => {
       crumbTitle.textContent = 'Not found';
@@ -312,12 +235,12 @@
       `;
     };
 
-    const stockLine = (p) => {
-      if (p.stock === null || p.stock === undefined) return '';
-      if (p.stock <= 0) return '<div class="stock">Reserved · Awaiting next piece</div>';
-      if (p.stock === 1) return '<div class="stock">One piece available</div>';
-      if (p.stock <= 3) return `<div class="stock">${p.stock} pieces available</div>`;
-      return '';
+    const stockBadge = (p) => {
+      if (p.stock == null) return `<div class="stock in">Made to order</div>`;
+      if (p.stock === 0) return `<div class="stock out">Currently with another patron</div>`;
+      if (p.stock === 1) return `<div class="stock low">One piece available</div>`;
+      if (p.stock <= 3) return `<div class="stock low">Only ${p.stock} pieces available</div>`;
+      return `<div class="stock in">In stock</div>`;
     };
 
     const renderProduct = (p) => {
@@ -327,16 +250,14 @@
       const images = (p.images || []).filter(Boolean);
       const main = images[0]
         ? `<div class="main-img"><img id="mainImg" src="${escape(images[0])}" alt="${escape(p.title)}"></div>`
-        : `<div class="main-img empty">No Image</div>`;
+        : `<div class="main-img"><div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--softer)">No image</div></div>`;
       const thumbs = images.length > 1
-        ? `<div class="thumbs">
-             ${images.map((src, i) => `
-               <button type="button" data-src="${escape(src)}" class="${i === 0 ? 'active' : ''}">
-                 <img src="${escape(src)}" alt="">
-               </button>
-             `).join('')}
-           </div>`
+        ? `<div class="thumbs">${images.map((src, i) =>
+            `<button type="button" data-src="${escape(src)}" class="${i === 0 ? 'active' : ''}"><img src="${escape(src)}" alt=""></button>`
+          ).join('')}</div>`
         : '';
+
+      const outOfStock = p.stock === 0;
 
       root.innerHTML = `
         <article class="product">
@@ -347,27 +268,29 @@
           <div class="info">
             <div class="eyebrow">The Rings</div>
             <h1>${escape(p.title)}</h1>
+            ${p.subtitle ? `<div class="subtitle">${escape(p.subtitle)}</div>` : ''}
             <div class="price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
             <div class="rule"></div>
             <div class="desc">${escape(p.description || '')}</div>
-            ${stockLine(p)}
 
-            <form class="inquire" id="inquireForm" novalidate>
-              <div class="label">Request to Acquire</div>
-              <div class="row">
-                <label class="field">
-                  <input id="inqName" type="text" autocomplete="name" placeholder="Your Name" />
-                </label>
-                <label class="field">
-                  <input id="inqEmail" type="email" autocomplete="email" placeholder="Your Email" required />
-                </label>
+            <div class="specs">
+              ${p.metal ? `<div><div class="label">Metal</div><div class="value">${escape(p.metal)}</div></div>` : ''}
+              ${p.stone ? `<div><div class="label">Stone</div><div class="value">${escape(p.stone)}</div></div>` : ''}
+              ${p.hand_size ? `<div><div class="label">Hand size</div><div class="value">${escape(p.hand_size)}</div></div>` : ''}
+              <div><div class="label">Delivery</div><div class="value">White-glove, insured</div></div>
+            </div>
+
+            ${stockBadge(p)}
+
+            <div class="actions">
+              <div class="qty">
+                <button type="button" id="qtyMinus" aria-label="Decrease">−</button>
+                <span id="qtyVal">${qty}</span>
+                <button type="button" id="qtyPlus" aria-label="Increase">+</button>
               </div>
-              <label class="field">
-                <textarea id="inqMessage" placeholder="A note for the atelier (optional)"></textarea>
-              </label>
-              <button class="submit" type="submit" id="inqSubmit">Send Request</button>
-              <div class="feedback" id="inqFeedback" role="status" aria-live="polite"></div>
-            </form>
+              <button class="add" id="addBtn" ${outOfStock ? 'disabled' : ''}>${outOfStock ? 'Sold Out' : 'Add to Cart'}</button>
+            </div>
+            <div class="added" id="added">Added to cart</div>
           </div>
         </article>
       `;
@@ -381,57 +304,34 @@
         });
       });
 
-      const form = document.getElementById('inquireForm');
-      const feedback = document.getElementById('inqFeedback');
-      const submit = document.getElementById('inqSubmit');
-      form.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const email = document.getElementById('inqEmail').value.trim();
-        if (!EMAIL_RX.test(email)) {
-          feedback.textContent = 'Please enter a valid email.';
-          feedback.classList.add('visible', 'error');
-          return;
-        }
-        submit.disabled = true;
-        submit.textContent = 'Sending';
-        feedback.classList.remove('visible', 'error');
-        try {
-          const res = await fetch('/api/inquiries', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              product_id: p.id,
-              email,
-              name: document.getElementById('inqName').value.trim(),
-              message: document.getElementById('inqMessage').value.trim(),
-            }),
-          });
-          if (!res.ok) throw new Error('failed');
-          feedback.textContent = 'Thank you — the atelier will be in touch shortly.';
-          feedback.classList.add('visible');
-          form.querySelectorAll('input, textarea, button').forEach((el) => (el.disabled = true));
-        } catch (err) {
-          submit.disabled = false;
-          submit.textContent = 'Send Request';
-          feedback.textContent = 'Something went wrong. Please try again.';
-          feedback.classList.add('visible', 'error');
-        }
-      });
+      const qtyEl = document.getElementById('qtyVal');
+      document.getElementById('qtyMinus').addEventListener('click', () => { qty = Math.max(1, qty - 1); qtyEl.textContent = qty; });
+      document.getElementById('qtyPlus').addEventListener('click', () => { qty = Math.min(p.stock == null ? 99 : Math.min(99, p.stock), qty + 1); qtyEl.textContent = qty; });
+
+      const addBtn = document.getElementById('addBtn');
+      const added = document.getElementById('added');
+      if (!outOfStock) {
+        addBtn.addEventListener('click', () => {
+          Store.addToCart(p.id, qty);
+          added.classList.add('show');
+          setTimeout(() => added.classList.remove('show'), 1800);
+        });
+      }
     };
 
-    (async () => {
-      if (!slug) return renderNotFound();
-      try {
-        const res = await fetch(`/api/products?slug=${encodeURIComponent(slug)}`);
-        if (!res.ok) throw new Error('fetch');
-        const { products } = await res.json();
-        const p = (products || [])[0];
-        if (!p) return renderNotFound();
-        renderProduct(p);
-      } catch (e) {
-        renderNotFound();
-      }
-    })();
+    const updateCartCount = () => {
+      document.getElementById('cartCount').textContent = Store.cartCount();
+    };
+
+    Store.on(() => updateCartCount());
+
+    if (!slug) renderNotFound();
+    else {
+      const p = Store.productBySlug(slug);
+      if (!p || p.published === false) renderNotFound();
+      else renderProduct(p);
+    }
+    updateCartCount();
   </script>
 </body>
 </html>

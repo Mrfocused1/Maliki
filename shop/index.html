@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Maliki Atelier — The Rings</title>
-<meta name="description" content="The Maliki Atelier ring collection — by appointment only." />
+<meta name="description" content="The Maliki Atelier ring collection." />
 <meta name="theme-color" content="#0a0908" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,105 +14,112 @@
   :root {
     --black: #0a0908;
     --charcoal: #141311;
-    --soft: rgba(245, 236, 218, 0.92);
-    --softer: rgba(245, 236, 218, 0.62);
+    --soft: rgba(245, 236, 218, 0.94);
+    --softer: rgba(245, 236, 218, 0.66);
+    --softest: rgba(245, 236, 218, 0.40);
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
-    --gold-highlight: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.22);
+    --gold-hi: #f8e3b4;
+    --line: rgba(217, 176, 112, 0.20);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: var(--black);
-    color: var(--soft);
+    background: var(--black); color: var(--soft);
     font-family: 'Cormorant Garamond', serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     min-height: 100%;
   }
   a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
 
   .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     padding: clamp(20px, 3.6vh, 36px) clamp(20px, 5vw, 56px);
     border-bottom: 1px solid var(--line);
+    position: sticky; top: 0; background: var(--black); z-index: 5;
   }
   .wordmark {
     font-family: 'Pinyon Script', serif;
-    font-size: clamp(28px, 3.4vw, 38px);
-    color: #d9b070;
-    line-height: 1;
-    letter-spacing: 0.005em;
+    font-size: clamp(28px, 3.4vw, 38px); color: #d9b070; line-height: 1;
   }
   .nav {
-    display: flex;
-    gap: clamp(20px, 3vw, 36px);
+    display: flex; gap: clamp(20px, 3vw, 36px); align-items: center;
     font-family: 'Italiana', serif;
-    font-size: 11px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
     color: var(--softer);
   }
-  .nav a:hover { color: var(--gold-highlight); }
+  .nav a:hover { color: var(--gold-hi); }
+  .cart-btn {
+    background: transparent; border: 1px solid var(--line); color: var(--soft);
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    padding: 9px 16px; border-radius: 4px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .cart-btn:hover { color: var(--gold-hi); border-color: rgba(217, 176, 112, 0.5); }
+  .cart-btn .count {
+    display: inline-block; background: var(--gold-1); color: #1a120a;
+    border-radius: 100px; padding: 1px 7px; font-size: 10px; font-weight: 600; letter-spacing: 0;
+  }
 
   .hero {
     text-align: center;
-    padding: clamp(56px, 11vh, 120px) 24px clamp(40px, 7vh, 72px);
+    padding: clamp(48px, 9vh, 100px) 24px clamp(32px, 6vh, 56px);
   }
   .eyebrow {
     font-family: 'Italiana', serif;
-    font-size: 11px;
-    letter-spacing: 0.62em;
-    text-indent: 0.62em;
-    text-transform: uppercase;
-    color: var(--softer);
-    display: inline-block;
-    padding-bottom: 18px;
+    font-size: 11px; letter-spacing: 0.62em; text-indent: 0.62em;
+    text-transform: uppercase; color: var(--softer);
+    display: inline-block; padding-bottom: 16px;
   }
   .h1 {
     font-family: 'Italiana', serif;
-    font-size: clamp(36px, 5.2vw, 64px);
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: #f5ecda;
+    font-size: clamp(36px, 5vw, 60px); letter-spacing: 0.18em;
+    text-transform: uppercase; color: #f5ecda;
   }
   .h1 em {
     font-family: 'Pinyon Script', serif;
-    font-style: normal;
-    color: #d9b070;
-    font-size: 1.4em;
-    letter-spacing: 0;
-    text-transform: none;
-    vertical-align: -0.1em;
-    margin: 0 0.05em;
+    font-style: normal; color: #d9b070;
+    font-size: 1.4em; letter-spacing: 0; text-transform: none;
+    vertical-align: -0.1em; margin: 0 0.05em;
   }
   .lede {
-    margin: 22px auto 0;
-    max-width: 560px;
-    font-style: italic;
-    font-size: clamp(14px, 1.3vw, 17px);
-    letter-spacing: 0.12em;
-    color: var(--soft);
-    line-height: 1.6;
+    margin: 22px auto 0; max-width: 560px;
+    font-style: italic; font-size: clamp(14px, 1.3vw, 17px);
+    letter-spacing: 0.12em; line-height: 1.6;
   }
+
+  .filters {
+    display: flex; gap: 10px; justify-content: center;
+    padding: 0 20px clamp(28px, 6vh, 56px);
+    flex-wrap: wrap;
+  }
+  .filterpill {
+    background: transparent; border: 1px solid var(--line);
+    color: var(--softer);
+    font-family: 'Italiana', serif;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    padding: 8px 16px; border-radius: 100px;
+    transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+  }
+  .filterpill:hover { color: var(--soft); }
+  .filterpill.active { color: var(--gold-1); border-color: rgba(217, 176, 112, 0.5); background: rgba(217, 176, 112, 0.06); }
 
   .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: clamp(28px, 4vw, 56px);
     padding: 0 clamp(20px, 5vw, 56px) clamp(60px, 10vh, 120px);
-    max-width: 1280px;
-    margin: 0 auto;
+    max-width: 1320px; margin: 0 auto;
   }
   @media (max-width: 900px) { .grid { grid-template-columns: repeat(2, 1fr); } }
   @media (max-width: 560px) { .grid { grid-template-columns: 1fr; } }
 
   .card {
-    display: block;
-    color: inherit;
-    transition: transform 0.6s cubic-bezier(.2,.7,.2,1);
+    display: block; color: inherit;
+    transition: transform 0.5s cubic-bezier(.2,.7,.2,1);
+    position: relative;
   }
   .card:hover { transform: translateY(-4px); }
   .frame {
@@ -123,75 +130,54 @@
     border: 1px solid var(--line);
   }
   .frame img {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
     transition: transform 1.4s cubic-bezier(.2,.7,.2,1), filter 0.8s ease;
-    filter: saturate(0.95);
+    filter: saturate(0.96);
   }
   .card:hover .frame img { transform: scale(1.04); filter: saturate(1.05); }
   .frame.empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     color: var(--softer);
     font-family: 'Italiana', serif;
-    font-size: 12px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
+    font-size: 12px; letter-spacing: 0.4em; text-transform: uppercase;
+  }
+  .ribbon {
+    position: absolute; top: 12px; left: 12px;
+    background: rgba(10,9,8,0.78);
+    color: var(--gold-1);
+    border: 1px solid var(--line);
+    font-family: 'Italiana', serif;
+    font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase;
+    padding: 4px 9px;
   }
   .meta {
     padding: 18px 4px 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+    display: flex; flex-direction: column; gap: 6px;
   }
   .title {
     font-family: 'Italiana', serif;
-    font-size: 16px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: #f5ecda;
+    font-size: 16px; letter-spacing: 0.22em; text-transform: uppercase; color: #f5ecda;
+  }
+  .subtitle {
+    font-style: italic; color: var(--softer); letter-spacing: 0.06em; font-size: 13px;
   }
   .price {
-    font-style: italic;
-    color: var(--softer);
-    letter-spacing: 0.12em;
-    font-size: 15px;
+    font-style: italic; color: #f3d89e; letter-spacing: 0.12em; font-size: 15px; margin-top: 2px;
   }
 
   .empty-state {
     grid-column: 1 / -1;
-    text-align: center;
-    padding: 80px 20px;
-    color: var(--softer);
-    font-style: italic;
-    letter-spacing: 0.14em;
-  }
-  .empty-state strong {
-    display: block;
-    font-family: 'Italiana', serif;
-    font-style: normal;
-    font-size: 14px;
-    letter-spacing: 0.5em;
-    text-transform: uppercase;
-    color: var(--soft);
-    margin-bottom: 12px;
+    text-align: center; padding: 80px 20px;
+    color: var(--softer); font-style: italic; letter-spacing: 0.14em;
   }
 
   .footer {
     border-top: 1px solid var(--line);
     padding: 24px clamp(20px, 5vw, 56px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    display: flex; justify-content: space-between; align-items: center;
     font-family: 'Italiana', serif;
-    font-size: 10px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    color: var(--softer);
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
   }
 </style>
 </head>
@@ -200,78 +186,102 @@
     <a href="/" class="wordmark" aria-label="Maliki Atelier home">Maliki</a>
     <nav class="nav">
       <a href="/shop">The Rings</a>
+      <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
     </nav>
   </header>
 
   <section class="hero">
     <div class="eyebrow">The Collection</div>
     <h1 class="h1">The <em>Rings</em></h1>
-    <p class="lede">Each piece made by hand, in limited number. Acquired by appointment.</p>
+    <p class="lede">Twelve pieces, hand-finished in the atelier. Each one made to be worn for a long time.</p>
   </section>
+
+  <div class="filters" id="filters"></div>
 
   <main class="grid" id="grid"></main>
 
   <footer class="footer">
     <span>© Maliki Atelier</span>
-    <span>By Appointment</span>
+    <span>White-Glove Courier · Insured Worldwide</span>
   </footer>
 
+  <script src="/assets/ring-svg.js"></script>
+  <script src="/assets/mock-data.js"></script>
+  <script src="/assets/store.js"></script>
   <script>
     const fmtPrice = (cents, currency) => {
       try {
-        return new Intl.NumberFormat(undefined, {
-          style: 'currency',
-          currency: currency || 'GBP',
-          maximumFractionDigits: 0,
-        }).format((cents || 0) / 100);
-      } catch {
-        return `${((cents || 0) / 100).toFixed(0)} ${currency || ''}`.trim();
-      }
+        return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0 }).format((cents || 0) / 100);
+      } catch { return `£${((cents || 0) / 100).toFixed(0)}`; }
     };
-
     const escape = (s) =>
       String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
       );
 
-    const renderEmpty = (msg) => `
-      <div class="empty-state">
-        <strong>The atelier is preparing</strong>
-        <span>${escape(msg || 'New rings will appear here shortly.')}</span>
-      </div>
-    `;
+    const FILTERS = [
+      { key: 'all', label: 'All' },
+      { key: 'featured', label: 'Featured' },
+      { key: 'solitaire', label: 'Solitaire', match: (p) => /solitaire/i.test(p.subtitle) },
+      { key: 'halo', label: 'Halo', match: (p) => /halo/i.test(p.subtitle) },
+      { key: 'eternity', label: 'Eternity', match: (p) => /eternity|éternit/i.test(p.subtitle + ' ' + p.title) },
+      { key: 'signet', label: 'Signet', match: (p) => /signet|sceau/i.test(p.subtitle + ' ' + p.title) },
+    ];
 
-    const renderCard = (p) => {
-      const cover = (p.images && p.images[0]) || '';
-      const frame = cover
-        ? `<div class="frame"><img src="${escape(cover)}" alt="${escape(p.title)}" loading="lazy"></div>`
-        : `<div class="frame empty">No Image</div>`;
-      return `
-        <a class="card" href="/shop/${escape(p.slug)}">
-          ${frame}
-          <div class="meta">
-            <div class="title">${escape(p.title)}</div>
-            <div class="price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
-          </div>
-        </a>
-      `;
+    let active = 'all';
+
+    const renderFilters = () => {
+      const el = document.getElementById('filters');
+      el.innerHTML = FILTERS.map((f) =>
+        `<button class="filterpill ${active === f.key ? 'active' : ''}" data-k="${f.key}">${escape(f.label)}</button>`
+      ).join('');
+      el.querySelectorAll('.filterpill').forEach((b) =>
+        b.addEventListener('click', () => { active = b.dataset.k; renderFilters(); renderGrid(); })
+      );
     };
 
-    (async () => {
+    const filterProducts = (list) => {
+      if (active === 'all') return list;
+      if (active === 'featured') return list.filter((p) => p.featured);
+      const f = FILTERS.find((x) => x.key === active);
+      return f && f.match ? list.filter(f.match) : list;
+    };
+
+    const renderGrid = () => {
       const grid = document.getElementById('grid');
-      try {
-        const res = await fetch('/api/products');
-        if (!res.ok) throw new Error('fetch_failed');
-        const { products } = await res.json();
-        if (!products || products.length === 0) {
-          grid.innerHTML = renderEmpty();
-          return;
-        }
-        grid.innerHTML = products.map(renderCard).join('');
-      } catch (e) {
-        grid.innerHTML = renderEmpty('Please check back shortly.');
+      const all = Store.publishedProducts();
+      const list = filterProducts(all);
+      if (list.length === 0) {
+        grid.innerHTML = `<div class="empty-state">Nothing matches that filter just yet.</div>`;
+        return;
       }
-    })();
+      grid.innerHTML = list.map((p) => {
+        const cover = (p.images || [])[0];
+        const ribbon = p.featured ? '<div class="ribbon">Featured</div>' : (p.stock === 1 ? '<div class="ribbon">One left</div>' : '');
+        const frame = cover
+          ? `<div class="frame">${ribbon}<img src="${escape(cover)}" alt="${escape(p.title)}" loading="lazy"></div>`
+          : `<div class="frame empty">No Image</div>`;
+        return `
+          <a class="card" href="/shop/${escape(p.slug)}">
+            ${frame}
+            <div class="meta">
+              <div class="title">${escape(p.title)}</div>
+              <div class="subtitle">${escape(p.subtitle || '')}</div>
+              <div class="price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    };
+
+    const updateCartCount = () => {
+      document.getElementById('cartCount').textContent = Store.cartCount();
+    };
+
+    Store.on(() => { renderGrid(); updateCartCount(); });
+    renderFilters();
+    renderGrid();
+    updateCartCount();
   </script>
 </body>
 </html>

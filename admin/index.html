@@ -9,25 +9,31 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Italiana&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Italiana&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --black: #0a0908;
-    --charcoal: #141311;
-    --graphite: #1d1b18;
-    --line: rgba(217, 176, 112, 0.20);
-    --soft: rgba(245, 236, 218, 0.92);
-    --softer: rgba(245, 236, 218, 0.62);
-    --softest: rgba(245, 236, 218, 0.38);
-    --gold-1: #e8c488;
-    --gold-2: #b68a4e;
-    --gold-highlight: #f8e3b4;
-    --danger: #d99a6c;
-    --ok: #a3c08b;
+    --bg:        #0a0908;
+    --surface:   #131210;
+    --surface-2: #1b1916;
+    --surface-3: #232019;
+    --line:      rgba(217, 176, 112, 0.16);
+    --line-2:    rgba(245, 236, 218, 0.08);
+    --soft:      rgba(245, 236, 218, 0.94);
+    --softer:    rgba(245, 236, 218, 0.66);
+    --softest:   rgba(245, 236, 218, 0.40);
+    --gold-1:    #e8c488;
+    --gold-2:    #b68a4e;
+    --gold-3:    #8a6531;
+    --gold-hi:   #f8e3b4;
+    --danger:    #d99a6c;
+    --danger-2:  #c46d3e;
+    --ok:        #a3c08b;
+    --warn:      #e2c373;
+    --info:      #8db4d4;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: var(--black);
+    background: var(--bg);
     color: var(--soft);
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
     font-size: 14px;
@@ -37,38 +43,35 @@
   }
   a { color: inherit; text-decoration: none; }
   button { font-family: inherit; }
+  input, textarea, select { font-family: inherit; }
+  ::selection { background: rgba(232, 196, 136, 0.32); color: #fff; }
 
   /* ---------- Login ---------- */
   .login-wrap {
     min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     padding: 24px;
+    background:
+      radial-gradient(ellipse at 30% 20%, rgba(217, 176, 112, 0.06) 0%, transparent 60%),
+      radial-gradient(ellipse at 70% 90%, rgba(0, 0, 0, 0.4) 0%, transparent 70%),
+      var(--bg);
   }
   .login-card {
     width: 100%;
     max-width: 380px;
     border: 1px solid var(--line);
-    background: var(--charcoal);
+    background: var(--surface);
     padding: 40px 36px;
     text-align: center;
   }
   .login-card .mark {
     font-family: 'Italiana', serif;
-    font-size: 11px;
-    letter-spacing: 0.5em;
-    text-transform: uppercase;
-    color: var(--softer);
-    margin-bottom: 8px;
+    font-size: 11px; letter-spacing: 0.5em; text-transform: uppercase;
+    color: var(--softer); margin-bottom: 8px;
   }
   .login-card h1 {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-size: 26px;
-    color: #f5ecda;
-    font-weight: 400;
-    margin-bottom: 28px;
+    font-style: italic; font-size: 28px; color: #f5ecda; font-weight: 400; margin-bottom: 28px;
   }
   .login-card .field {
     border-bottom: 1px solid var(--line);
@@ -77,753 +80,1440 @@
   }
   .login-card .field:focus-within { border-color: rgba(217, 176, 112, 0.7); }
   .login-card input {
-    width: 100%;
-    background: transparent;
-    border: 0;
-    outline: 0;
+    width: 100%; background: transparent; border: 0; outline: 0;
     color: #f5ecda;
     font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    letter-spacing: 0.2em;
-    padding: 12px 4px;
-    text-align: center;
+    font-size: 16px; letter-spacing: 0.2em; padding: 12px 4px; text-align: center;
   }
-  .login-card input::placeholder {
-    color: var(--softer);
-    font-style: italic;
-  }
+  .login-card input::placeholder { color: var(--softer); font-style: italic; }
   .login-card button {
-    background: transparent;
-    border: 1px solid rgba(217, 176, 112, 0.4);
+    background: transparent; border: 1px solid rgba(217, 176, 112, 0.4);
     color: #f3d89e;
     font-family: 'Italiana', serif;
-    font-size: 11px;
-    letter-spacing: 0.42em;
-    text-transform: uppercase;
-    padding: 12px 24px;
-    cursor: pointer;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 12px 24px; cursor: pointer;
     transition: color 0.4s ease, border-color 0.4s ease;
   }
-  .login-card button:hover {
-    color: var(--gold-highlight);
-    border-color: var(--gold-1);
-  }
+  .login-card button:hover { color: var(--gold-hi); border-color: var(--gold-1); }
   .login-card button:disabled { opacity: 0.5; cursor: not-allowed; }
-  .login-card .err {
-    margin-top: 14px;
-    color: var(--danger);
-    font-size: 12px;
-    letter-spacing: 0.16em;
-    min-height: 14px;
+  .login-card .err { margin-top: 14px; color: var(--danger); font-size: 12px; letter-spacing: 0.16em; min-height: 14px; }
+  .login-card .hint {
+    margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--line);
+    font-size: 11px; color: var(--softest); letter-spacing: 0.04em; line-height: 1.5;
   }
 
-  /* ---------- App ---------- */
-  .app { display: flex; flex-direction: column; min-height: 100vh; }
-  .topbar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 16px 28px;
-    border-bottom: 1px solid var(--line);
-    background: var(--charcoal);
+  /* ---------- App layout ---------- */
+  .app { display: grid; grid-template-columns: 232px 1fr; min-height: 100vh; }
+  .sidebar {
+    background: var(--surface);
+    border-right: 1px solid var(--line);
+    display: flex; flex-direction: column;
+    padding: 22px 16px;
+    position: sticky; top: 0; height: 100vh;
   }
   .brand {
-    display: flex;
-    align-items: baseline;
-    gap: 10px;
+    display: flex; align-items: center; gap: 10px;
+    padding: 4px 8px 22px;
+    border-bottom: 1px solid var(--line-2);
+    margin-bottom: 18px;
   }
-  .brand .m {
+  .brand .ml {
+    font-family: 'Pinyon Script', serif;
+    font-size: 28px; line-height: 1; color: #d9b070;
+  }
+  .brand .mt {
     font-family: 'Italiana', serif;
-    font-size: 14px;
-    letter-spacing: 0.4em;
-    text-transform: uppercase;
-    color: #f5ecda;
+    font-size: 9px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
+    margin-top: 4px;
   }
-  .brand .sub {
-    font-family: 'Inter', sans-serif;
-    font-size: 11px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+  .navlink {
+    display: flex; align-items: center; gap: 12px;
+    padding: 11px 14px;
+    border-radius: 6px;
     color: var(--softer);
-  }
-  .topbar nav { display: flex; gap: 4px; }
-  .tab {
-    background: transparent;
-    border: 0;
-    color: var(--softer);
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    padding: 8px 14px;
+    font-size: 13px; font-weight: 500; letter-spacing: 0.02em;
     cursor: pointer;
-    border-bottom: 1px solid transparent;
-    transition: color 0.3s ease, border-color 0.3s ease;
+    transition: background 0.2s ease, color 0.2s ease;
+    border: 0; background: transparent; width: 100%; text-align: left;
   }
-  .tab:hover { color: var(--soft); }
-  .tab.active { color: var(--gold-1); border-color: var(--gold-2); }
-  .topbar .right { display: flex; align-items: center; gap: 14px; }
-  .ghost {
-    background: transparent;
-    border: 1px solid var(--line);
+  .navlink:hover { background: var(--surface-2); color: var(--soft); }
+  .navlink.active { background: var(--surface-3); color: var(--gold-1); }
+  .navlink .icon { width: 16px; height: 16px; flex-shrink: 0; opacity: 0.85; }
+  .navlink .badge {
+    margin-left: auto;
+    background: var(--surface-3);
     color: var(--softer);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    padding: 8px 14px;
-    cursor: pointer;
-    transition: color 0.3s ease, border-color 0.3s ease;
+    font-size: 10px; font-weight: 600;
+    padding: 2px 7px; border-radius: 100px; letter-spacing: 0.04em;
   }
-  .ghost:hover { color: var(--soft); border-color: rgba(217, 176, 112, 0.5); }
+  .navlink.active .badge { background: rgba(217, 176, 112, 0.16); color: var(--gold-1); }
+  .nav-divider { height: 1px; background: var(--line-2); margin: 14px 8px; }
+  .sidebar .foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line-2); }
+  .sidebar .foot .row { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px; gap: 8px; }
+  .sidebar .foot .who { font-size: 11px; color: var(--softer); }
+  .sidebar .foot .who strong { color: var(--soft); display: block; font-weight: 500; font-size: 13px; }
+  .iconbtn {
+    background: transparent; border: 1px solid var(--line);
+    color: var(--softer); padding: 6px 9px;
+    font-size: 11px; letter-spacing: 0.06em; cursor: pointer; border-radius: 4px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .iconbtn:hover { color: var(--soft); border-color: rgba(217, 176, 112, 0.4); }
 
-  .main { flex: 1; padding: 28px; max-width: 1280px; width: 100%; margin: 0 auto; }
-  .panel-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
+  .main {
+    background: var(--bg);
+    min-height: 100vh;
+    overflow-x: hidden;
   }
-  .panel-head h2 {
-    font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: 22px;
-    color: #f5ecda;
-    letter-spacing: 0.04em;
-  }
-  .primary {
-    background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
-    border: 0;
-    color: #1a120a;
-    font-weight: 500;
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    padding: 10px 18px;
-    cursor: pointer;
-    transition: filter 0.3s ease, transform 0.3s ease;
-  }
-  .primary:hover { filter: brightness(1.08); }
-  .primary:disabled { opacity: 0.5; cursor: not-allowed; }
-
-  /* ---------- Tables ---------- */
-  table { width: 100%; border-collapse: collapse; }
-  th, td {
-    text-align: left;
-    padding: 12px 14px;
+  .topbar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 28px;
     border-bottom: 1px solid var(--line);
-    vertical-align: middle;
+    background: var(--bg);
+    position: sticky; top: 0; z-index: 5;
   }
-  th {
-    font-size: 10px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--softest);
-    font-weight: 500;
+  .topbar h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-weight: 400;
+    font-size: 24px; color: #f5ecda;
   }
-  td { color: var(--soft); }
-  tr:hover td { background: rgba(255,255,255,0.015); }
-  .thumb {
-    width: 48px;
-    height: 48px;
-    object-fit: cover;
-    background: var(--graphite);
+  .topbar h1 small {
+    color: var(--softest); font-size: 13px; margin-left: 12px; font-style: normal;
+    letter-spacing: 0.06em;
+  }
+  .topbar .actions { display: flex; gap: 10px; align-items: center; }
+
+  .content { padding: 26px 28px 60px; max-width: 1320px; }
+
+  /* ---------- Buttons / shared controls ---------- */
+  .btn {
+    background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
+    border: 0; color: #1a120a; font-weight: 600;
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 10px 18px; cursor: pointer; border-radius: 4px;
+    transition: filter 0.2s, transform 0.2s;
+  }
+  .btn:hover { filter: brightness(1.08); }
+  .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .btn.ghost {
+    background: transparent; border: 1px solid var(--line); color: var(--softer); font-weight: 500;
+  }
+  .btn.ghost:hover { color: var(--soft); border-color: rgba(217, 176, 112, 0.4); }
+  .btn.danger {
+    background: transparent; border: 1px solid rgba(217, 154, 108, 0.4); color: var(--danger); font-weight: 500;
+  }
+  .btn.danger:hover { color: var(--danger-2); border-color: rgba(217, 154, 108, 0.7); }
+  .btn.sm { padding: 7px 13px; font-size: 11px; letter-spacing: 0.12em; }
+
+  .input, .select, .textarea {
+    background: var(--surface);
     border: 1px solid var(--line);
+    color: var(--soft);
+    padding: 10px 12px;
+    font-size: 14px;
+    border-radius: 4px;
+    outline: none;
+    width: 100%;
+    transition: border-color 0.2s ease;
+  }
+  .input:focus, .select:focus, .textarea:focus { border-color: rgba(217, 176, 112, 0.6); }
+  .input::placeholder, .textarea::placeholder { color: var(--softest); }
+  .textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+
+  /* ---------- Stat cards ---------- */
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+  }
+  @media (max-width: 1100px) { .stat-grid { grid-template-columns: repeat(2, 1fr); } }
+  .stat {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 18px 20px;
+  }
+  .stat .label {
+    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--softest); margin-bottom: 8px;
+  }
+  .stat .value {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 32px; font-weight: 400; color: #f5ecda;
+    line-height: 1.1;
+  }
+  .stat .delta {
+    margin-top: 8px;
+    font-size: 12px; letter-spacing: 0.04em;
+    color: var(--softer);
+    display: flex; align-items: center; gap: 6px;
+  }
+  .stat .delta .up { color: var(--ok); }
+  .stat .delta .down { color: var(--danger); }
+
+  /* ---------- Cards / sections ---------- */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .card-head {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--line-2);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .card-head h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic; font-weight: 400;
+    font-size: 19px; color: #f5ecda;
+  }
+  .card-head .tools { display: flex; gap: 8px; align-items: center; }
+  .card-body { padding: 18px 20px; }
+  .card-body.flush { padding: 0; }
+
+  .grid-2 { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; }
+  @media (max-width: 1100px) { .grid-2 { grid-template-columns: 1fr; } }
+
+  /* ---------- Sales chart ---------- */
+  .chart {
+    width: 100%; height: 220px;
     display: block;
   }
-  .thumb.empty {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--softest);
-    font-size: 9px;
-    letter-spacing: 0.2em;
+  .chart .area { fill: url(#areaGrad); }
+  .chart .line { fill: none; stroke: #d9b070; stroke-width: 2; }
+  .chart .grid { stroke: var(--line-2); stroke-width: 1; }
+  .chart .tick { fill: var(--softest); font-size: 10px; letter-spacing: 0.04em; }
+  .chart .dot { fill: #f8e3b4; }
+
+  /* ---------- Tables ---------- */
+  table.t {
+    width: 100%; border-collapse: collapse;
   }
+  table.t th, table.t td {
+    text-align: left; padding: 12px 16px;
+    border-bottom: 1px solid var(--line-2);
+    vertical-align: middle;
+  }
+  table.t th {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--softest); font-weight: 500;
+    background: var(--surface);
+    position: sticky; top: 0;
+  }
+  table.t td { color: var(--soft); font-size: 13px; }
+  table.t tbody tr { cursor: pointer; transition: background 0.15s ease; }
+  table.t tbody tr:hover { background: var(--surface-2); }
+  table.t tbody tr.no-hover { cursor: default; background: transparent; }
+
+  .thumb {
+    width: 44px; height: 44px;
+    background: var(--surface-3);
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .thumb.empty { color: var(--softest); font-size: 9px; letter-spacing: 0.2em; }
+  .cell-product { display: flex; align-items: center; gap: 12px; min-width: 0; }
+  .cell-product .meta { min-width: 0; }
+  .cell-product .meta .t { color: #f5ecda; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 240px; }
+  .cell-product .meta .s { color: var(--softer); font-size: 11px; letter-spacing: 0.06em; }
+
   .pill {
     display: inline-block;
     padding: 3px 10px;
     border: 1px solid var(--line);
     border-radius: 100px;
-    font-size: 10px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--softer);
+    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--softer); white-space: nowrap;
   }
-  .pill.on { color: var(--ok); border-color: rgba(163, 192, 139, 0.4); }
-  .pill.off { color: var(--softest); }
-  .actions { display: flex; gap: 8px; justify-content: flex-end; }
-  .row-btn {
-    background: transparent;
-    border: 1px solid var(--line);
-    color: var(--softer);
-    font-size: 11px;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    padding: 6px 12px;
+  .pill.live { color: var(--ok); border-color: rgba(163, 192, 139, 0.35); }
+  .pill.draft { color: var(--softest); }
+  .pill.pending { color: var(--warn); border-color: rgba(226, 195, 115, 0.35); }
+  .pill.paid { color: var(--info); border-color: rgba(141, 180, 212, 0.35); }
+  .pill.fulfilled { color: var(--ok); border-color: rgba(163, 192, 139, 0.35); }
+  .pill.refunded { color: var(--danger); border-color: rgba(217, 154, 108, 0.35); }
+  .pill.featured { color: var(--gold-1); border-color: rgba(217, 176, 112, 0.35); }
+
+  /* ---------- Toolbar ---------- */
+  .toolbar {
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 12px; flex-wrap: wrap;
+    margin-bottom: 16px;
+  }
+  .toolbar .left { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+  .toolbar .input { width: 280px; }
+
+  .filterbtn {
+    background: transparent; border: 1px solid var(--line);
+    color: var(--softer); font-size: 12px; letter-spacing: 0.04em;
+    padding: 8px 14px; border-radius: 4px; cursor: pointer;
+    transition: color 0.2s, border-color 0.2s, background 0.2s;
+  }
+  .filterbtn:hover { color: var(--soft); }
+  .filterbtn.active { color: var(--gold-1); border-color: rgba(217, 176, 112, 0.5); background: rgba(217, 176, 112, 0.06); }
+
+  /* ---------- Activity / lists ---------- */
+  .list-item {
+    display: grid; grid-template-columns: 1fr auto;
+    gap: 4px 16px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line-2);
     cursor: pointer;
-    transition: color 0.3s ease, border-color 0.3s ease;
+    transition: background 0.15s ease;
   }
-  .row-btn:hover { color: var(--soft); border-color: rgba(217, 176, 112, 0.5); }
-  .row-btn.danger:hover { color: var(--danger); border-color: rgba(217, 154, 108, 0.5); }
+  .list-item:hover { background: var(--surface-2); }
+  .list-item:last-child { border-bottom: 0; }
+  .list-item .who { color: #f5ecda; font-weight: 500; }
+  .list-item .who small { color: var(--softer); font-weight: 400; margin-left: 6px; font-size: 12px; }
+  .list-item .right { text-align: right; }
+  .list-item .right .amt { color: #f5ecda; font-weight: 500; }
+  .list-item .right .when { color: var(--softest); font-size: 11px; letter-spacing: 0.08em; }
+  .list-item .what { grid-column: 1 / -1; color: var(--softer); font-size: 12px; }
 
-  .empty-row td {
-    text-align: center;
-    color: var(--softest);
-    padding: 60px 20px;
-    font-style: italic;
-  }
-
-  /* ---------- Drawer (form) ---------- */
+  /* ---------- Drawer ---------- */
   .drawer-backdrop {
     position: fixed; inset: 0;
-    background: rgba(0,0,0,0.6);
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s ease;
+    background: rgba(0,0,0,0.6); opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
     z-index: 50;
   }
   .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
   .drawer {
-    position: fixed;
-    top: 0; right: 0;
-    height: 100vh;
-    width: min(560px, 100%);
-    background: var(--charcoal);
+    position: fixed; top: 0; right: 0; height: 100vh;
+    width: min(640px, 100%);
+    background: var(--surface);
     border-left: 1px solid var(--line);
     transform: translateX(100%);
-    transition: transform 0.4s cubic-bezier(.2,.7,.2,1);
+    transition: transform 0.35s cubic-bezier(.2,.7,.2,1);
     z-index: 60;
-    display: flex;
-    flex-direction: column;
+    display: flex; flex-direction: column;
   }
   .drawer.open { transform: translateX(0); }
   .drawer header {
     padding: 18px 24px;
-    border-bottom: 1px solid var(--line);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    border-bottom: 1px solid var(--line-2);
+    display: flex; justify-content: space-between; align-items: center;
   }
   .drawer header h3 {
     font-family: 'Cormorant Garamond', serif;
-    font-style: italic;
-    font-weight: 400;
-    font-size: 20px;
-    color: #f5ecda;
+    font-style: italic; font-weight: 400; font-size: 22px; color: #f5ecda;
   }
-  .drawer .body {
-    padding: 22px 24px 100px;
-    overflow-y: auto;
-    flex: 1;
-  }
+  .drawer .body { padding: 22px 24px 100px; overflow-y: auto; flex: 1; }
   .drawer footer {
     padding: 14px 24px;
-    border-top: 1px solid var(--line);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    background: var(--charcoal);
+    border-top: 1px solid var(--line-2);
+    display: flex; justify-content: space-between; align-items: center; gap: 10px;
+    background: var(--surface);
   }
+  .drawer footer .feedback { flex: 1; font-size: 12px; color: var(--softer); }
+  .drawer footer .feedback.error { color: var(--danger); }
+  .drawer footer .feedback.ok { color: var(--ok); }
 
+  /* ---------- Form ---------- */
   .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
-  .form-row.split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-  .form-row label {
-    font-size: 10px;
-    letter-spacing: 0.24em;
-    text-transform: uppercase;
-    color: var(--softest);
+  .form-row.split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-row.split-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .form-row > label, .form-row > .lbl {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--softest);
   }
-  .form-row input[type="text"],
-  .form-row input[type="number"],
-  .form-row textarea {
-    background: var(--graphite);
-    border: 1px solid var(--line);
-    color: var(--soft);
-    padding: 10px 12px;
-    font-family: inherit;
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.3s ease;
-  }
-  .form-row input:focus,
-  .form-row textarea:focus { border-color: rgba(217, 176, 112, 0.6); }
-  .form-row textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
-  .form-row .hint {
-    font-size: 11px;
-    color: var(--softest);
-    letter-spacing: 0.04em;
-    margin-top: 2px;
-  }
+  .form-row .hint { font-size: 11px; color: var(--softest); }
   .checkbox {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    cursor: pointer;
-    user-select: none;
+    display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;
   }
   .checkbox input { width: 16px; height: 16px; accent-color: #d9b070; }
   .checkbox span {
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--soft);
+    font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase; color: var(--soft);
   }
 
-  .form-feedback {
-    flex: 1;
-    font-size: 12px;
-    color: var(--softer);
-    letter-spacing: 0.04em;
+  /* ---------- Image dropzone ---------- */
+  .dropzone {
+    border: 1.5px dashed var(--line);
+    background: rgba(255,255,255,0.015);
+    border-radius: 6px;
+    padding: 22px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
   }
-  .form-feedback.error { color: var(--danger); }
-  .form-feedback.ok { color: var(--ok); }
-
-  /* ---------- Inquiries ---------- */
-  .inquiry {
+  .dropzone:hover, .dropzone.over {
+    border-color: rgba(217, 176, 112, 0.55);
+    background: rgba(217, 176, 112, 0.04);
+  }
+  .dropzone .dz-title {
+    font-size: 13px; color: var(--soft); letter-spacing: 0.04em; margin-bottom: 4px;
+  }
+  .dropzone .dz-sub { font-size: 11px; color: var(--softest); letter-spacing: 0.04em; }
+  .img-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px;
+  }
+  .img-tile {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    background: var(--surface-3);
+    border: 1px solid var(--line-2);
+    border-radius: 4px;
+    overflow: hidden;
+  }
+  .img-tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .img-tile .rm {
+    position: absolute; top: 4px; right: 4px;
+    width: 22px; height: 22px;
+    background: rgba(10, 9, 8, 0.85); color: var(--soft);
     border: 1px solid var(--line);
-    padding: 16px 18px;
-    margin-bottom: 12px;
-    display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 4px 16px;
+    border-radius: 4px;
+    font-size: 12px; line-height: 1;
+    cursor: pointer; display: flex; align-items: center; justify-content: center;
   }
-  .inquiry .who {
-    color: #f5ecda;
-    font-weight: 500;
-    letter-spacing: 0.04em;
+  .img-tile .rm:hover { color: var(--danger); border-color: rgba(217, 154, 108, 0.5); }
+  .img-tile .cover-tag {
+    position: absolute; bottom: 4px; left: 4px;
+    background: rgba(217, 176, 112, 0.92); color: #1a120a;
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;
+    padding: 2px 6px; border-radius: 2px;
   }
-  .inquiry .who small {
-    color: var(--softer);
-    font-weight: 400;
-    margin-left: 8px;
+
+  /* ---------- Order detail / customer detail ---------- */
+  .detail-meta {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 14px 24px;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--line-2);
+    margin-bottom: 18px;
   }
-  .inquiry .when {
-    color: var(--softest);
-    font-size: 11px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    text-align: right;
+  .detail-meta .label {
+    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--softest);
+    margin-bottom: 4px;
   }
-  .inquiry .product {
-    grid-column: 1 / -1;
-    color: var(--gold-1);
-    font-size: 12px;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
+  .detail-meta .value { color: var(--soft); font-size: 14px; }
+  .detail-meta .value.lg { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #f5ecda; font-style: italic; }
+
+  .line-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--line-2);
   }
-  .inquiry .product a:hover { color: var(--gold-highlight); }
-  .inquiry .msg {
-    grid-column: 1 / -1;
+  .line-item:last-child { border-bottom: 0; }
+  .line-item .info { flex: 1; }
+  .line-item .info .t { color: #f5ecda; font-weight: 500; }
+  .line-item .info .s { color: var(--softer); font-size: 11px; letter-spacing: 0.06em; }
+  .line-item .qty { color: var(--softer); font-size: 13px; padding: 0 12px; }
+  .line-item .amt { color: #f5ecda; font-weight: 500; }
+
+  .totals { padding-top: 12px; }
+  .totals .row {
+    display: flex; justify-content: space-between; padding: 6px 0;
+    font-size: 13px; color: var(--soft);
+  }
+  .totals .row.total {
+    border-top: 1px solid var(--line-2);
     margin-top: 6px;
-    color: var(--soft);
-    line-height: 1.6;
-    white-space: pre-wrap;
+    padding-top: 12px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 22px;
+    color: #f5ecda;
   }
+
+  .empty {
+    text-align: center; padding: 80px 20px;
+    color: var(--softest); font-style: italic;
+  }
+  .empty strong {
+    display: block; font-style: normal;
+    font-family: 'Italiana', serif;
+    font-size: 14px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--soft); margin-bottom: 12px;
+  }
+
+  /* ---------- Toast ---------- */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 12px 18px;
+    color: var(--soft);
+    font-size: 13px;
+    transform: translateY(20px); opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    z-index: 100; max-width: 360px;
+  }
+  .toast.show { transform: translateY(0); opacity: 1; }
+  .toast.ok { border-color: rgba(163, 192, 139, 0.5); }
+  .toast.err { border-color: rgba(217, 154, 108, 0.5); }
 </style>
 </head>
 <body>
-  <div id="root"></div>
+<div id="root"></div>
 
-  <script>
-    const $ = (s, r = document) => r.querySelector(s);
+<script src="/assets/ring-svg.js"></script>
+<script src="/assets/mock-data.js"></script>
+<script src="/assets/store.js"></script>
+<script src="/assets/image-upload.js"></script>
 
-    const escape = (s) =>
-      String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
-        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
-      );
+<script>
+'use strict';
 
-    const fmtPrice = (cents, currency) => {
-      try {
-        return new Intl.NumberFormat(undefined, {
-          style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0,
-        }).format((cents || 0) / 100);
-      } catch { return `${((cents || 0) / 100).toFixed(0)} ${currency || ''}`.trim(); }
-    };
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
 
-    const fmtDate = (iso) => {
-      try { return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }); }
-      catch { return iso; }
-    };
+const escape = (s) =>
+  String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+  );
 
-    const slugify = (s) =>
-      String(s || '').toLowerCase().trim()
-        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+const fmtPrice = (cents, currency) => {
+  try {
+    return new Intl.NumberFormat('en-GB', {
+      style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0,
+    }).format((cents || 0) / 100);
+  } catch { return `£${((cents || 0) / 100).toFixed(0)}`; }
+};
 
-    // ---------- Auth bootstrap ----------
-    const state = {
-      authed: false,
-      tab: 'rings',
-      products: [],
-      inquiries: [],
-      editing: null, // null = new, otherwise product object
-    };
+const fmtDate = (iso, opts = { dateStyle: 'medium' }) => {
+  try { return new Date(iso).toLocaleString(undefined, opts); } catch { return iso; }
+};
 
-    const renderLogin = (errMsg = '') => {
-      document.getElementById('root').innerHTML = `
-        <div class="login-wrap">
-          <form class="login-card" id="loginForm">
-            <div class="mark">Maliki Atelier</div>
-            <h1>Admin</h1>
-            <div class="field">
-              <input id="pw" type="password" autocomplete="current-password" placeholder="Password" autofocus />
-            </div>
-            <button type="submit" id="loginBtn">Enter</button>
-            <div class="err" id="loginErr">${escape(errMsg)}</div>
-          </form>
+const fmtRel = (iso) => {
+  const ms = new Date(iso).getTime() - Date.now();
+  const min = Math.round(ms / 60000);
+  const fmt = new Intl.RelativeTimeFormat('en', { numeric: 'auto' });
+  if (Math.abs(min) < 60) return fmt.format(min, 'minute');
+  const hr = Math.round(min / 60);
+  if (Math.abs(hr) < 24) return fmt.format(hr, 'hour');
+  const d = Math.round(hr / 24);
+  return fmt.format(d, 'day');
+};
+
+const slugify = (s) =>
+  String(s || '').toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+
+const toast = (msg, kind = 'ok') => {
+  const t = document.createElement('div');
+  t.className = `toast ${kind}`;
+  t.textContent = msg;
+  document.body.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 300);
+  }, 2600);
+};
+
+// Tiny inline icons (16x16). Stroke uses currentColor.
+const icon = (name) => {
+  const paths = {
+    overview: '<path d="M3 3h7v7H3zM13 3h6v4h-6zM13 9h6v8h-6zM3 13h7v6H3z"/>',
+    products: '<path d="M3 7l9-4 9 4v10l-9 4-9-4z"/><path d="M3 7l9 4 9-4M12 11v10"/>',
+    orders: '<path d="M4 6h16M4 12h16M4 18h10"/>',
+    customers: '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 19c0-3 3-5.5 6.5-5.5s6.5 2.5 6.5 5.5"/><circle cx="17" cy="9" r="2.5"/><path d="M14 19c0-2.2 1.8-4 4-4 1.8 0 3.3 1.2 3.8 3"/>',
+    shop: '<path d="M5 4h14l-1 4H6zM5 8h14v11H5z"/><path d="M9 11v3M15 11v3"/>',
+    out: '<path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4M10 17l-5-5 5-5M5 12h11"/>',
+  };
+  return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${paths[name] || ''}</svg>`;
+};
+
+// ---------- State ----------
+const state = {
+  authed: false,
+  view: 'overview', // overview | products | orders | customers
+  selectedOrder: null,
+  selectedCustomer: null,
+  productFilter: '',
+  orderFilter: 'all',
+  customerFilter: '',
+  editing: null, // product being edited in drawer; null = closed; 'new' = create
+  draftImages: [],
+};
+
+// ---------- Login ----------
+const renderLogin = (errMsg = '') => {
+  $('#root').innerHTML = `
+    <div class="login-wrap">
+      <form class="login-card" id="loginForm">
+        <div class="mark">Maliki Atelier</div>
+        <h1>Admin</h1>
+        <div class="field">
+          <input id="pw" type="password" autocomplete="current-password" placeholder="Password" autofocus />
         </div>
-      `;
-      $('#loginForm').addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const password = $('#pw').value;
-        const btn = $('#loginBtn');
-        const err = $('#loginErr');
-        btn.disabled = true; btn.textContent = '…'; err.textContent = '';
-        try {
-          const res = await fetch('/api/admin/login', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ password }),
-          });
-          if (!res.ok) {
-            err.textContent = res.status === 401 ? 'Incorrect password.' : 'Sign-in failed.';
-            btn.disabled = false; btn.textContent = 'Enter';
-            return;
-          }
-          state.authed = true;
-          await Promise.all([loadProducts(), loadInquiries()]);
-          renderApp();
-        } catch {
-          err.textContent = 'Sign-in failed.';
-          btn.disabled = false; btn.textContent = 'Enter';
-        }
+        <button type="submit" id="loginBtn">Enter</button>
+        <div class="err" id="loginErr">${escape(errMsg)}</div>
+        <div class="hint">Demo password is <strong style="color:var(--gold-1)">12345</strong>.<br/>All data lives in this browser only.</div>
+      </form>
+    </div>
+  `;
+  $('#loginForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const password = $('#pw').value;
+    const btn = $('#loginBtn');
+    const err = $('#loginErr');
+    btn.disabled = true; btn.textContent = '…'; err.textContent = '';
+    try {
+      const res = await fetch('/api/admin/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password }),
       });
-    };
-
-    // ---------- Data ----------
-    const loadProducts = async () => {
-      const r = await fetch('/api/products');
-      if (!r.ok) { state.products = []; return; }
-      const { products } = await r.json();
-      state.products = products || [];
-    };
-    const loadInquiries = async () => {
-      const r = await fetch('/api/inquiries');
-      if (!r.ok) { state.inquiries = []; return; }
-      const { inquiries } = await r.json();
-      state.inquiries = inquiries || [];
-    };
-
-    // ---------- App shell ----------
-    const renderApp = () => {
-      document.getElementById('root').innerHTML = `
-        <div class="app">
-          <header class="topbar">
-            <div class="brand">
-              <span class="m">Maliki</span>
-              <span class="sub">Admin</span>
-            </div>
-            <nav>
-              <button class="tab ${state.tab === 'rings' ? 'active' : ''}" data-tab="rings">Rings</button>
-              <button class="tab ${state.tab === 'inquiries' ? 'active' : ''}" data-tab="inquiries">
-                Inquiries${state.inquiries.length ? ` (${state.inquiries.length})` : ''}
-              </button>
-            </nav>
-            <div class="right">
-              <a class="ghost" href="/shop" target="_blank" rel="noopener">View shop ↗</a>
-              <button class="ghost" id="logoutBtn">Sign out</button>
-            </div>
-          </header>
-          <main class="main" id="panel"></main>
-        </div>
-
-        <div class="drawer-backdrop" id="backdrop"></div>
-        <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
-          <header>
-            <h3 id="drawerTitle">New ring</h3>
-            <button class="ghost" id="closeDrawer">Close</button>
-          </header>
-          <div class="body" id="drawerBody"></div>
-          <footer>
-            <div class="form-feedback" id="formFeedback"></div>
-            <button class="ghost" id="cancelBtn">Cancel</button>
-            <button class="primary" id="saveBtn">Save</button>
-          </footer>
-        </aside>
-      `;
-      document.querySelectorAll('.tab').forEach((b) =>
-        b.addEventListener('click', () => { state.tab = b.dataset.tab; renderPanel(); renderTabs(); })
-      );
-      $('#logoutBtn').addEventListener('click', logout);
-      $('#closeDrawer').addEventListener('click', closeDrawer);
-      $('#cancelBtn').addEventListener('click', closeDrawer);
-      $('#backdrop').addEventListener('click', closeDrawer);
-      $('#saveBtn').addEventListener('click', saveProduct);
-      renderPanel();
-    };
-
-    const renderTabs = () => {
-      document.querySelectorAll('.tab').forEach((b) => {
-        b.classList.toggle('active', b.dataset.tab === state.tab);
-      });
-    };
-
-    const renderPanel = () => {
-      const panel = $('#panel');
-      if (state.tab === 'rings') panel.innerHTML = renderRings();
-      else panel.innerHTML = renderInquiries();
-      bindRingActions();
-    };
-
-    // ---------- Rings panel ----------
-    const renderRings = () => `
-      <div class="panel-head">
-        <h2>Rings (${state.products.length})</h2>
-        <button class="primary" id="newBtn">+ New ring</button>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th></th>
-            <th>Title</th>
-            <th>Slug</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Status</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody>
-          ${state.products.length === 0
-            ? `<tr class="empty-row"><td colspan="7">No rings yet. Add the first one.</td></tr>`
-            : state.products.map((p) => {
-                const cover = (p.images || [])[0];
-                const thumb = cover
-                  ? `<img class="thumb" src="${escape(cover)}" alt="">`
-                  : `<div class="thumb empty">—</div>`;
-                return `
-                  <tr data-id="${escape(p.id)}">
-                    <td>${thumb}</td>
-                    <td>${escape(p.title)}</td>
-                    <td><code style="color:var(--softer);font-size:12px">${escape(p.slug)}</code></td>
-                    <td>${escape(fmtPrice(p.price_cents, p.currency))}</td>
-                    <td>${p.stock == null ? '—' : escape(String(p.stock))}</td>
-                    <td><span class="pill ${p.published ? 'on' : 'off'}">${p.published ? 'Live' : 'Draft'}</span></td>
-                    <td>
-                      <div class="actions">
-                        <button class="row-btn" data-act="edit">Edit</button>
-                        <button class="row-btn danger" data-act="delete">Delete</button>
-                      </div>
-                    </td>
-                  </tr>
-                `;
-              }).join('')
-          }
-        </tbody>
-      </table>
-    `;
-
-    const bindRingActions = () => {
-      const newBtn = $('#newBtn');
-      if (newBtn) newBtn.addEventListener('click', () => openDrawer(null));
-      document.querySelectorAll('tr[data-id]').forEach((tr) => {
-        const id = tr.dataset.id;
-        tr.querySelectorAll('button[data-act]').forEach((b) => {
-          b.addEventListener('click', () => {
-            const product = state.products.find((p) => p.id === id);
-            if (b.dataset.act === 'edit') openDrawer(product);
-            if (b.dataset.act === 'delete') deleteProduct(product);
-          });
-        });
-      });
-    };
-
-    // ---------- Drawer (create/edit) ----------
-    const openDrawer = (product) => {
-      state.editing = product;
-      $('#drawerTitle').textContent = product ? 'Edit ring' : 'New ring';
-      $('#formFeedback').textContent = '';
-      $('#formFeedback').className = 'form-feedback';
-      const p = product || {};
-      $('#drawerBody').innerHTML = `
-        <div class="form-row">
-          <label for="f-title">Title</label>
-          <input id="f-title" type="text" value="${escape(p.title || '')}" autofocus />
-        </div>
-        <div class="form-row split">
-          <div>
-            <label for="f-slug">Slug</label>
-            <input id="f-slug" type="text" value="${escape(p.slug || '')}" />
-            <div class="hint">Used in the URL: /shop/<span id="slugPreview">${escape(p.slug || '…')}</span></div>
-          </div>
-          <div>
-            <label for="f-currency">Currency</label>
-            <input id="f-currency" type="text" value="${escape(p.currency || 'GBP')}" maxlength="3" />
-          </div>
-        </div>
-        <div class="form-row split">
-          <div>
-            <label for="f-price">Price</label>
-            <input id="f-price" type="number" min="0" step="1" value="${escape(p.price_cents != null ? (p.price_cents / 100).toString() : '')}" />
-            <div class="hint">In whole units (e.g., 2400 = £2,400).</div>
-          </div>
-          <div>
-            <label for="f-stock">Stock</label>
-            <input id="f-stock" type="number" min="0" step="1" value="${escape(p.stock != null ? String(p.stock) : '')}" placeholder="Leave blank for made-to-order" />
-          </div>
-        </div>
-        <div class="form-row">
-          <label for="f-desc">Description</label>
-          <textarea id="f-desc" rows="6">${escape(p.description || '')}</textarea>
-        </div>
-        <div class="form-row">
-          <label for="f-images">Images</label>
-          <textarea id="f-images" rows="4" placeholder="One URL per line">${escape((p.images || []).join('\n'))}</textarea>
-          <div class="hint">First image is the cover. Use Supabase Storage public URLs or any CDN.</div>
-        </div>
-        <div class="form-row">
-          <label class="checkbox">
-            <input id="f-pub" type="checkbox" ${p.published ? 'checked' : ''} />
-            <span>Published — visible on /shop</span>
-          </label>
-        </div>
-      `;
-      // Auto-slug from title until user touches slug
-      const titleEl = $('#f-title');
-      const slugEl = $('#f-slug');
-      const preview = $('#slugPreview');
-      let slugTouched = !!(p.slug);
-      slugEl.addEventListener('input', () => { slugTouched = true; preview.textContent = slugify(slugEl.value) || '…'; });
-      titleEl.addEventListener('input', () => {
-        if (!slugTouched) {
-          slugEl.value = slugify(titleEl.value);
-          preview.textContent = slugEl.value || '…';
-        }
-      });
-      $('#backdrop').classList.add('open');
-      $('#drawer').classList.add('open');
-    };
-
-    const closeDrawer = () => {
-      $('#backdrop').classList.remove('open');
-      $('#drawer').classList.remove('open');
-      state.editing = null;
-    };
-
-    const collectForm = () => {
-      const priceUnits = Number($('#f-price').value);
-      const stockRaw = $('#f-stock').value.trim();
-      return {
-        title: $('#f-title').value.trim(),
-        slug: slugify($('#f-slug').value),
-        currency: ($('#f-currency').value || 'GBP').toUpperCase().slice(0, 3),
-        price_cents: Number.isFinite(priceUnits) ? Math.round(priceUnits * 100) : 0,
-        stock: stockRaw === '' ? null : Math.max(0, Math.floor(Number(stockRaw) || 0)),
-        description: $('#f-desc').value,
-        images: $('#f-images').value.split('\n').map((s) => s.trim()).filter(Boolean),
-        published: $('#f-pub').checked,
-      };
-    };
-
-    const saveProduct = async () => {
-      const fb = $('#formFeedback');
-      const btn = $('#saveBtn');
-      const data = collectForm();
-      if (!data.title) { fb.textContent = 'Title is required.'; fb.className = 'form-feedback error'; return; }
-      if (!data.slug) { fb.textContent = 'Slug is required.'; fb.className = 'form-feedback error'; return; }
-
-      btn.disabled = true; btn.textContent = 'Saving…';
-      fb.textContent = ''; fb.className = 'form-feedback';
-
-      try {
-        const editing = state.editing;
-        const res = await fetch(
-          editing ? `/api/products/${editing.id}` : '/api/products',
-          {
-            method: editing ? 'PATCH' : 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(data),
-          }
-        );
-        if (!res.ok) {
-          const body = await res.json().catch(() => ({}));
-          fb.textContent = body.error === 'slug_taken'
-            ? 'That slug is already in use.'
-            : `Save failed (${res.status}).`;
-          fb.className = 'form-feedback error';
-          btn.disabled = false; btn.textContent = 'Save';
-          return;
-        }
-        await loadProducts();
-        renderPanel();
-        closeDrawer();
-      } catch {
-        fb.textContent = 'Save failed.';
-        fb.className = 'form-feedback error';
-      } finally {
-        btn.disabled = false; btn.textContent = 'Save';
+      if (!res.ok) {
+        err.textContent = res.status === 401 ? 'Incorrect password.' : 'Sign-in failed.';
+        btn.disabled = false; btn.textContent = 'Enter'; return;
       }
-    };
+      state.authed = true;
+      renderApp();
+    } catch {
+      err.textContent = 'Sign-in failed.';
+      btn.disabled = false; btn.textContent = 'Enter';
+    }
+  });
+};
 
-    const deleteProduct = async (p) => {
-      if (!p) return;
-      if (!confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
-      const res = await fetch(`/api/products/${p.id}`, { method: 'DELETE' });
-      if (!res.ok) { alert('Delete failed.'); return; }
-      await loadProducts();
-      renderPanel();
-    };
+// ---------- App shell ----------
+const renderApp = () => {
+  const orderCount = Store.orders().length;
+  $('#root').innerHTML = `
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div>
+            <div class="ml">Maliki</div>
+            <div class="mt">Admin</div>
+          </div>
+        </div>
 
-    // ---------- Inquiries panel ----------
-    const renderInquiries = () => `
-      <div class="panel-head">
-        <h2>Inquiries (${state.inquiries.length})</h2>
-        <button class="ghost" id="reloadInq">Refresh</button>
-      </div>
-      ${state.inquiries.length === 0
-        ? `<div style="text-align:center;color:var(--softest);padding:60px 20px;font-style:italic">No inquiries yet.</div>`
-        : state.inquiries.map((q) => `
-          <div class="inquiry">
+        <button class="navlink" data-view="overview">${icon('overview')} <span>Overview</span></button>
+        <button class="navlink" data-view="products">${icon('products')} <span>Products</span> <span class="badge">${Store.products().length}</span></button>
+        <button class="navlink" data-view="orders">${icon('orders')} <span>Orders</span> <span class="badge">${orderCount}</span></button>
+        <button class="navlink" data-view="customers">${icon('customers')} <span>Customers</span> <span class="badge">${Store.customers().length}</span></button>
+
+        <div class="nav-divider"></div>
+
+        <a class="navlink" href="/shop" target="_blank" rel="noopener">${icon('shop')} <span>View shop ↗</span></a>
+
+        <div class="foot">
+          <div class="row">
             <div class="who">
-              ${escape(q.name || '—')}
-              <small>&lt;<a href="mailto:${escape(q.email)}" style="color:var(--gold-1)">${escape(q.email)}</a>&gt;</small>
+              <strong>Atelier</strong>
+              Signed in
             </div>
-            <div class="when">${escape(fmtDate(q.created_at))}</div>
-            <div class="product">
-              ${q.product
-                ? `<a href="/shop/${escape(q.product.slug)}" target="_blank" rel="noopener">${escape(q.product.title)}</a>`
-                : 'General inquiry'}
+            <button class="iconbtn" id="logoutBtn" title="Sign out">${icon('out')}</button>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <header class="topbar" id="topbar"></header>
+        <section class="content" id="content"></section>
+      </main>
+    </div>
+
+    <div class="drawer-backdrop" id="backdrop"></div>
+    <aside class="drawer" id="drawer" role="dialog" aria-modal="true">
+      <header>
+        <h3 id="drawerTitle">Drawer</h3>
+        <button class="btn ghost sm" id="closeDrawer">Close</button>
+      </header>
+      <div class="body" id="drawerBody"></div>
+      <footer id="drawerFoot"></footer>
+    </aside>
+  `;
+
+  $$('.navlink[data-view]').forEach((b) =>
+    b.addEventListener('click', () => { state.view = b.dataset.view; render(); })
+  );
+  $('#logoutBtn').addEventListener('click', logout);
+  $('#closeDrawer').addEventListener('click', closeDrawer);
+  $('#backdrop').addEventListener('click', closeDrawer);
+
+  Store.on(() => render());
+  render();
+};
+
+const render = () => {
+  // Active nav state
+  $$('.navlink[data-view]').forEach((b) =>
+    b.classList.toggle('active', b.dataset.view === state.view)
+  );
+  // Update badges
+  const badges = {
+    products: Store.products().length,
+    orders: Store.orders().length,
+    customers: Store.customers().length,
+  };
+  $$('.navlink[data-view]').forEach((b) => {
+    const badge = b.querySelector('.badge');
+    if (badge && badges[b.dataset.view] != null) badge.textContent = badges[b.dataset.view];
+  });
+
+  if (state.view === 'overview') renderOverview();
+  else if (state.view === 'products') renderProducts();
+  else if (state.view === 'orders') renderOrders();
+  else if (state.view === 'customers') renderCustomers();
+};
+
+// ---------- Overview ----------
+const computeStats = () => {
+  const orders = Store.orders().filter((o) => o.status !== 'refunded');
+  const now = Date.now();
+  const within = (iso, days) => (now - new Date(iso).getTime()) <= days * 86400000;
+  const between = (iso, from, to) => {
+    const t = new Date(iso).getTime();
+    return now - t >= from * 86400000 && now - t < to * 86400000;
+  };
+
+  const last30 = orders.filter((o) => within(o.created_at, 30));
+  const prev30 = orders.filter((o) => between(o.created_at, 30, 60));
+
+  const sum = (arr) => arr.reduce((s, o) => s + o.total_cents, 0);
+  const rev = sum(last30);
+  const prevRev = sum(prev30);
+  const aov = last30.length ? Math.round(rev / last30.length) : 0;
+  const prevAov = prev30.length ? Math.round(prevRev / prev30.length) : 0;
+
+  const pct = (a, b) => {
+    if (b === 0) return a === 0 ? 0 : 100;
+    return Math.round(((a - b) / b) * 100);
+  };
+
+  return {
+    revenue: rev, revDelta: pct(rev, prevRev),
+    orders: last30.length, ordDelta: pct(last30.length, prev30.length),
+    customers: Store.customers().length,
+    aov, aovDelta: pct(aov, prevAov),
+    seriesByDay: (() => {
+      const buckets = new Array(30).fill(0);
+      for (const o of last30) {
+        const day = Math.floor((now - new Date(o.created_at).getTime()) / 86400000);
+        if (day >= 0 && day < 30) buckets[29 - day] += o.total_cents;
+      }
+      return buckets;
+    })(),
+  };
+};
+
+const renderChart = (series) => {
+  const W = 800, H = 220, P = { l: 36, r: 16, t: 16, b: 26 };
+  const w = W - P.l - P.r;
+  const h = H - P.t - P.b;
+  const max = Math.max(1, ...series);
+  const xStep = w / (series.length - 1);
+  const pts = series.map((v, i) => [P.l + i * xStep, P.t + h - (v / max) * h]);
+  const path = pts.map(([x, y], i) => (i === 0 ? `M${x},${y}` : `L${x},${y}`)).join(' ');
+  const areaPath = `${path} L${P.l + w},${P.t + h} L${P.l},${P.t + h} Z`;
+  const ticks = [0, max / 2, max].map((v, i) => {
+    const y = P.t + h - (v / max) * h;
+    return `<g><line class="grid" x1="${P.l}" y1="${y}" x2="${P.l + w}" y2="${y}"/><text class="tick" x="${P.l - 6}" y="${y + 3}" text-anchor="end">${fmtPrice(v)}</text></g>`;
+  }).join('');
+  const xLabels = [29, 22, 15, 8, 1].map((daysBack) => {
+    const d = new Date(Date.now() - daysBack * 86400000);
+    const i = 29 - daysBack;
+    const x = P.l + i * xStep;
+    return `<text class="tick" x="${x}" y="${H - 6}" text-anchor="middle">${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</text>`;
+  }).join('');
+
+  return `
+    <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(217,176,112,0.32)"/>
+          <stop offset="100%" stop-color="rgba(217,176,112,0)"/>
+        </linearGradient>
+      </defs>
+      ${ticks}
+      <path class="area" d="${areaPath}"/>
+      <path class="line" d="${path}"/>
+      ${xLabels}
+    </svg>
+  `;
+};
+
+const topProductsByRevenue = (n = 5) => {
+  const orders = Store.orders().filter((o) => o.status !== 'refunded');
+  const map = new Map();
+  for (const o of orders) {
+    for (const it of o.items) {
+      const cur = map.get(it.product_id) || { id: it.product_id, title: it.title, image: it.image, units: 0, revenue: 0 };
+      cur.units += it.quantity;
+      cur.revenue += it.price_cents * it.quantity;
+      map.set(it.product_id, cur);
+    }
+  }
+  return Array.from(map.values()).sort((a, b) => b.revenue - a.revenue).slice(0, n);
+};
+
+const renderOverview = () => {
+  $('#topbar').innerHTML = `
+    <h1>Overview <small>${new Date().toLocaleDateString(undefined, { dateStyle: 'long' })}</small></h1>
+    <div class="actions">
+      <button class="btn ghost sm" id="resetData">Reset demo data</button>
+    </div>
+  `;
+  $('#resetData').addEventListener('click', () => {
+    if (confirm('Reset products, customers, orders and cart back to the seed data?')) {
+      Store.reset(); toast('Demo data reset');
+    }
+  });
+
+  const s = computeStats();
+  const recent = Store.orders().slice(0, 6);
+  const top = topProductsByRevenue(5);
+
+  const deltaTag = (n) => {
+    if (!Number.isFinite(n) || n === 0) return `<span style="color:var(--softest)">— vs prior 30d</span>`;
+    if (n > 0) return `<span class="up">▲ ${n}%</span> <span style="color:var(--softest)">vs prior 30d</span>`;
+    return `<span class="down">▼ ${Math.abs(n)}%</span> <span style="color:var(--softest)">vs prior 30d</span>`;
+  };
+
+  $('#content').innerHTML = `
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="label">Revenue (30d)</div>
+        <div class="value">${fmtPrice(s.revenue)}</div>
+        <div class="delta">${deltaTag(s.revDelta)}</div>
+      </div>
+      <div class="stat">
+        <div class="label">Orders (30d)</div>
+        <div class="value">${s.orders}</div>
+        <div class="delta">${deltaTag(s.ordDelta)}</div>
+      </div>
+      <div class="stat">
+        <div class="label">Customers</div>
+        <div class="value">${s.customers}</div>
+        <div class="delta"><span style="color:var(--softest)">All-time</span></div>
+      </div>
+      <div class="stat">
+        <div class="label">Avg. Order Value</div>
+        <div class="value">${fmtPrice(s.aov)}</div>
+        <div class="delta">${deltaTag(s.aovDelta)}</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-head">
+          <h2>Revenue, last 30 days</h2>
+          <div class="tools"><span class="pill">GBP</span></div>
+        </div>
+        <div class="card-body">${renderChart(s.seriesByDay)}</div>
+      </div>
+
+      <div class="card">
+        <div class="card-head"><h2>Top products</h2></div>
+        <div class="card-body flush">
+          ${top.length === 0 ? '<div class="empty">No sales yet.</div>' : top.map((p) => `
+            <div class="list-item" data-pid="${escape(p.id)}">
+              <div class="who" style="display:flex;align-items:center;gap:12px">
+                <div class="thumb"><img src="${escape(p.image)}" alt=""></div>
+                <div>
+                  <div>${escape(p.title)}</div>
+                  <small>${p.units} sold</small>
+                </div>
+              </div>
+              <div class="right">
+                <div class="amt">${fmtPrice(p.revenue)}</div>
+                <div class="when">Revenue</div>
+              </div>
             </div>
-            ${q.message ? `<div class="msg">${escape(q.message)}</div>` : ''}
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
+    <div style="height:16px"></div>
+
+    <div class="card">
+      <div class="card-head">
+        <h2>Recent orders</h2>
+        <div class="tools"><button class="btn ghost sm" id="viewAllOrders">View all</button></div>
+      </div>
+      <div class="card-body flush">
+        ${recent.length === 0 ? '<div class="empty">No orders yet.</div>' : recent.map((o) => `
+          <div class="list-item" data-oid="${escape(o.id)}">
+            <div class="who">${escape(o.customer_name)} <small>${escape(o.customer_email)}</small></div>
+            <div class="right">
+              <div class="amt">${fmtPrice(o.total_cents, o.currency)}</div>
+              <div class="when">${escape(fmtRel(o.created_at))}</div>
+            </div>
+            <div class="what">${escape(o.number)} · ${o.items.reduce((s, i) => s + i.quantity, 0)} item(s) · <span class="pill ${escape(o.status)}">${escape(o.status)}</span></div>
           </div>
         `).join('')}
-    `;
+      </div>
+    </div>
+  `;
 
-    document.addEventListener('click', (e) => {
-      if (e.target && e.target.id === 'reloadInq') {
-        loadInquiries().then(renderPanel);
-      }
-    });
+  $('#viewAllOrders').addEventListener('click', () => { state.view = 'orders'; render(); });
+  $$('[data-oid]').forEach((el) =>
+    el.addEventListener('click', () => { state.selectedOrder = el.dataset.oid; openOrderDrawer(el.dataset.oid); })
+  );
+  $$('[data-pid]').forEach((el) =>
+    el.addEventListener('click', () => { state.view = 'products'; render(); })
+  );
+};
 
-    // ---------- Logout ----------
-    const logout = async () => {
-      await fetch('/api/admin/logout', { method: 'POST' });
-      state.authed = false;
-      renderLogin();
-    };
+// ---------- Products ----------
+const renderProducts = () => {
+  $('#topbar').innerHTML = `
+    <h1>Products <small>${Store.products().length} total</small></h1>
+    <div class="actions">
+      <button class="btn" id="newProduct">+ New product</button>
+    </div>
+  `;
+  $('#newProduct').addEventListener('click', () => openProductDrawer(null));
 
-    // ---------- Boot ----------
-    (async () => {
-      try {
-        const r = await fetch('/api/admin/session');
-        const { authed } = await r.json();
-        if (!authed) return renderLogin();
-        state.authed = true;
-        await Promise.all([loadProducts(), loadInquiries()]);
-        renderApp();
-      } catch {
-        renderLogin('Could not reach the server.');
-      }
-    })();
-  </script>
+  const list = Store.products()
+    .filter((p) => !state.productFilter || p.title.toLowerCase().includes(state.productFilter.toLowerCase()) || p.slug.toLowerCase().includes(state.productFilter.toLowerCase()))
+    .sort((a, b) => new Date(b.created_at) - new Date(a.created_at));
+
+  $('#content').innerHTML = `
+    <div class="toolbar">
+      <div class="left">
+        <input class="input" id="prodSearch" placeholder="Search products…" value="${escape(state.productFilter)}" />
+      </div>
+      <div class="left">
+        <span class="pill">${list.length} shown</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body flush">
+        <table class="t">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Product</th>
+              <th>Stock</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Updated</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${list.length === 0
+              ? '<tr class="no-hover"><td colspan="6"><div class="empty">No products match.</div></td></tr>'
+              : list.map((p) => {
+                const cover = (p.images || [])[0];
+                return `
+                  <tr data-pid="${escape(p.id)}">
+                    <td style="width:60px">
+                      <div class="thumb">${cover ? `<img src="${escape(cover)}" alt="">` : 'IMG'}</div>
+                    </td>
+                    <td>
+                      <div class="cell-product">
+                        <div class="meta">
+                          <div class="t">${escape(p.title)} ${p.featured ? '<span class="pill featured" style="margin-left:6px">Featured</span>' : ''}</div>
+                          <div class="s">${escape(p.subtitle || p.slug)}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td>${p.stock == null ? 'Made to order' : (p.stock === 0 ? '<span style="color:var(--danger)">Out</span>' : p.stock)}</td>
+                    <td>${escape(fmtPrice(p.price_cents, p.currency))}</td>
+                    <td><span class="pill ${p.published ? 'live' : 'draft'}">${p.published ? 'Live' : 'Draft'}</span></td>
+                    <td style="color:var(--softer)">${escape(fmtRel(p.updated_at))}</td>
+                  </tr>
+                `;
+              }).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+  $('#prodSearch').addEventListener('input', (e) => { state.productFilter = e.target.value; render(); $('#prodSearch').focus(); });
+  $$('tr[data-pid]').forEach((tr) =>
+    tr.addEventListener('click', () => openProductDrawer(tr.dataset.pid))
+  );
+};
+
+// ---------- Product drawer (create / edit) ----------
+const openProductDrawer = (productId) => {
+  const isNew = !productId;
+  const p = isNew ? null : Store.productById(productId);
+  state.editing = p ? p.id : 'new';
+  state.draftImages = p ? [...p.images] : [];
+
+  $('#drawerTitle').textContent = isNew ? 'New product' : 'Edit product';
+  $('#drawerFoot').innerHTML = `
+    <div class="feedback" id="prodFeedback"></div>
+    ${isNew ? '' : '<button class="btn danger" id="prodDelete">Delete</button>'}
+    <button class="btn ghost" id="prodCancel">Cancel</button>
+    <button class="btn" id="prodSave">${isNew ? 'Create' : 'Save changes'}</button>
+  `;
+  $('#drawerBody').innerHTML = `
+    <div class="form-row">
+      <div class="lbl">Images <span style="color:var(--softest);text-transform:none;letter-spacing:0;font-size:11px">— first image is the cover</span></div>
+      <div class="dropzone" id="dropzone">
+        <input id="fileInput" type="file" accept="image/*" multiple style="display:none" />
+        <div class="dz-title">Drop images here, or <span style="color:var(--gold-1);text-decoration:underline">choose from your device</span></div>
+        <div class="dz-sub">PNG, JPG, WebP — up to 8 images, auto-resized</div>
+      </div>
+      <div class="img-grid" id="imgGrid"></div>
+    </div>
+
+    <div class="form-row">
+      <label for="f-title">Title</label>
+      <input class="input" id="f-title" value="${escape(p?.title || '')}" autofocus />
+    </div>
+    <div class="form-row">
+      <label for="f-subtitle">Subtitle</label>
+      <input class="input" id="f-subtitle" placeholder="e.g. Brilliant-cut diamond solitaire" value="${escape(p?.subtitle || '')}" />
+    </div>
+    <div class="form-row split-2">
+      <div class="form-row" style="margin:0">
+        <label for="f-slug">URL slug</label>
+        <input class="input" id="f-slug" value="${escape(p?.slug || '')}" />
+        <div class="hint">/shop/<span id="slugPreview">${escape(p?.slug || '…')}</span></div>
+      </div>
+      <div class="form-row" style="margin:0">
+        <label for="f-currency">Currency</label>
+        <input class="input" id="f-currency" value="${escape(p?.currency || 'GBP')}" maxlength="3" />
+      </div>
+    </div>
+    <div class="form-row split-2">
+      <div class="form-row" style="margin:0">
+        <label for="f-price">Price</label>
+        <input class="input" id="f-price" type="number" min="0" step="1" value="${p?.price_cents != null ? (p.price_cents / 100) : ''}" />
+        <div class="hint">In whole units. e.g. 2400 = £2,400.</div>
+      </div>
+      <div class="form-row" style="margin:0">
+        <label for="f-stock">Stock</label>
+        <input class="input" id="f-stock" type="number" min="0" step="1" value="${p?.stock != null ? p.stock : ''}" placeholder="Leave blank for made-to-order" />
+      </div>
+    </div>
+    <div class="form-row split-3">
+      <div class="form-row" style="margin:0">
+        <label for="f-metal">Metal</label>
+        <input class="input" id="f-metal" placeholder="e.g. 18k Yellow Gold" value="${escape(p?.metal || '')}" />
+      </div>
+      <div class="form-row" style="margin:0">
+        <label for="f-stone">Stone</label>
+        <input class="input" id="f-stone" placeholder="e.g. Diamond, 1.10ct" value="${escape(p?.stone || '')}" />
+      </div>
+      <div class="form-row" style="margin:0">
+        <label for="f-size">Hand size</label>
+        <input class="input" id="f-size" placeholder="e.g. UK J – Q" value="${escape(p?.hand_size || '')}" />
+      </div>
+    </div>
+    <div class="form-row">
+      <label for="f-desc">Description</label>
+      <textarea class="textarea" id="f-desc" rows="6">${escape(p?.description || '')}</textarea>
+    </div>
+    <div class="form-row" style="display:flex;gap:24px;flex-direction:row">
+      <label class="checkbox"><input type="checkbox" id="f-pub" ${p == null || p.published ? 'checked' : ''} /><span>Published</span></label>
+      <label class="checkbox"><input type="checkbox" id="f-feat" ${p?.featured ? 'checked' : ''} /><span>Featured</span></label>
+    </div>
+  `;
+
+  // Slug auto-fill
+  let slugTouched = !!p?.slug;
+  const titleEl = $('#f-title');
+  const slugEl = $('#f-slug');
+  const slugPrev = $('#slugPreview');
+  slugEl.addEventListener('input', () => { slugTouched = true; slugPrev.textContent = slugify(slugEl.value) || '…'; });
+  titleEl.addEventListener('input', () => {
+    if (!slugTouched) {
+      slugEl.value = slugify(titleEl.value);
+      slugPrev.textContent = slugEl.value || '…';
+    }
+  });
+
+  // Images
+  renderDraftImages();
+  const dz = $('#dropzone');
+  const fi = $('#fileInput');
+  dz.addEventListener('click', () => fi.click());
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+  dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('over'); handleFiles(e.dataTransfer.files); });
+  fi.addEventListener('change', () => handleFiles(fi.files));
+
+  // Buttons
+  $('#prodCancel').addEventListener('click', closeDrawer);
+  $('#prodSave').addEventListener('click', saveProduct);
+  if (!isNew) $('#prodDelete').addEventListener('click', () => deleteProductFromDrawer(productId));
+
+  $('#backdrop').classList.add('open');
+  $('#drawer').classList.add('open');
+};
+
+const renderDraftImages = () => {
+  const grid = $('#imgGrid');
+  if (!grid) return;
+  grid.innerHTML = state.draftImages.map((src, i) => `
+    <div class="img-tile">
+      <img src="${escape(src)}" alt="">
+      ${i === 0 ? '<div class="cover-tag">Cover</div>' : ''}
+      <button class="rm" data-i="${i}" title="Remove">×</button>
+    </div>
+  `).join('');
+  grid.querySelectorAll('.rm').forEach((b) =>
+    b.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const i = Number(b.dataset.i);
+      state.draftImages.splice(i, 1);
+      renderDraftImages();
+    })
+  );
+};
+
+const handleFiles = async (fileList) => {
+  const files = Array.from(fileList || []);
+  const remaining = 8 - state.draftImages.length;
+  if (remaining <= 0) { toast('Up to 8 images per product', 'err'); return; }
+  for (const f of files.slice(0, remaining)) {
+    try {
+      const dataUrl = await ImageUpload.resizeToJpeg(f);
+      state.draftImages.push(dataUrl);
+      renderDraftImages();
+    } catch (e) {
+      toast(`Couldn't read ${f.name}`, 'err');
+    }
+  }
+};
+
+const collectProductForm = () => {
+  const priceUnits = Number($('#f-price').value);
+  const stockRaw = $('#f-stock').value.trim();
+  return {
+    title: $('#f-title').value.trim(),
+    subtitle: $('#f-subtitle').value.trim(),
+    slug: slugify($('#f-slug').value),
+    currency: ($('#f-currency').value || 'GBP').toUpperCase().slice(0, 3),
+    price_cents: Number.isFinite(priceUnits) ? Math.round(priceUnits * 100) : 0,
+    stock: stockRaw === '' ? null : Math.max(0, Math.floor(Number(stockRaw) || 0)),
+    metal: $('#f-metal').value.trim(),
+    stone: $('#f-stone').value.trim(),
+    hand_size: $('#f-size').value.trim(),
+    description: $('#f-desc').value,
+    images: state.draftImages,
+    published: $('#f-pub').checked,
+    featured: $('#f-feat').checked,
+  };
+};
+
+const saveProduct = () => {
+  const fb = $('#prodFeedback');
+  fb.className = 'feedback';
+  const data = collectProductForm();
+  if (!data.title) { fb.textContent = 'Title is required.'; fb.className = 'feedback error'; return; }
+  if (!data.slug)  { fb.textContent = 'Slug is required.';  fb.className = 'feedback error'; return; }
+
+  try {
+    if (state.editing === 'new') {
+      Store.addProduct(data);
+      toast('Product created');
+    } else {
+      Store.updateProduct(state.editing, data);
+      toast('Product updated');
+    }
+    closeDrawer();
+  } catch (e) {
+    fb.textContent = e.message || 'Save failed.';
+    fb.className = 'feedback error';
+  }
+};
+
+const deleteProductFromDrawer = (id) => {
+  const p = Store.productById(id);
+  if (!p) return;
+  if (!confirm(`Delete "${p.title}"? This can't be undone (until you reset the demo).`)) return;
+  Store.deleteProduct(id);
+  toast('Product deleted');
+  closeDrawer();
+};
+
+// ---------- Orders ----------
+const renderOrders = () => {
+  $('#topbar').innerHTML = `<h1>Orders <small>${Store.orders().length} total</small></h1>`;
+
+  const all = Store.orders();
+  const list = state.orderFilter === 'all' ? all : all.filter((o) => o.status === state.orderFilter);
+
+  const counts = ['all', 'pending', 'paid', 'fulfilled', 'refunded']
+    .reduce((m, k) => { m[k] = (k === 'all' ? all : all.filter((o) => o.status === k)).length; return m; }, {});
+
+  const filterBtn = (key, label) =>
+    `<button class="filterbtn ${state.orderFilter === key ? 'active' : ''}" data-flt="${key}">${label} <span style="color:var(--softest)">${counts[key]}</span></button>`;
+
+  $('#content').innerHTML = `
+    <div class="toolbar">
+      <div class="left">
+        ${filterBtn('all', 'All')}
+        ${filterBtn('pending', 'Pending')}
+        ${filterBtn('paid', 'Paid')}
+        ${filterBtn('fulfilled', 'Fulfilled')}
+        ${filterBtn('refunded', 'Refunded')}
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body flush">
+        <table class="t">
+          <thead>
+            <tr>
+              <th>Order</th>
+              <th>Customer</th>
+              <th>Items</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${list.length === 0
+              ? '<tr class="no-hover"><td colspan="6"><div class="empty">No orders.</div></td></tr>'
+              : list.map((o) => `
+                <tr data-oid="${escape(o.id)}">
+                  <td><strong style="color:#f5ecda">${escape(o.number)}</strong></td>
+                  <td>${escape(o.customer_name)}<br><small style="color:var(--softer)">${escape(o.customer_email)}</small></td>
+                  <td>${o.items.reduce((s, i) => s + i.quantity, 0)}</td>
+                  <td>${escape(fmtPrice(o.total_cents, o.currency))}</td>
+                  <td><span class="pill ${escape(o.status)}">${escape(o.status)}</span></td>
+                  <td style="color:var(--softer)">${escape(fmtDate(o.created_at, { dateStyle: 'medium', timeStyle: 'short' }))}</td>
+                </tr>
+              `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  $$('.filterbtn').forEach((b) =>
+    b.addEventListener('click', () => { state.orderFilter = b.dataset.flt; render(); })
+  );
+  $$('tr[data-oid]').forEach((tr) =>
+    tr.addEventListener('click', () => openOrderDrawer(tr.dataset.oid))
+  );
+};
+
+const openOrderDrawer = (orderId) => {
+  const o = Store.orderById(orderId);
+  if (!o) return;
+  const c = Store.customerById(o.customer_id);
+
+  $('#drawerTitle').textContent = `Order ${o.number}`;
+  $('#drawerFoot').innerHTML = `
+    <div class="feedback" id="ordFeedback">Status:</div>
+    <select class="select" id="ordStatus" style="max-width:200px">
+      ${['pending', 'paid', 'fulfilled', 'refunded']
+        .map((s) => `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}
+    </select>
+    <button class="btn ghost" id="ordClose">Close</button>
+  `;
+
+  $('#drawerBody').innerHTML = `
+    <div class="detail-meta">
+      <div>
+        <div class="label">Total</div>
+        <div class="value lg">${fmtPrice(o.total_cents, o.currency)}</div>
+      </div>
+      <div>
+        <div class="label">Status</div>
+        <div class="value"><span class="pill ${escape(o.status)}">${escape(o.status)}</span></div>
+      </div>
+      <div>
+        <div class="label">Placed</div>
+        <div class="value">${escape(fmtDate(o.created_at, { dateStyle: 'long', timeStyle: 'short' }))}</div>
+      </div>
+      <div>
+        <div class="label">Customer</div>
+        <div class="value">
+          ${escape(o.customer_name)}<br>
+          <small style="color:var(--softer)">${escape(o.customer_email)}</small>
+        </div>
+      </div>
+      <div style="grid-column:1/-1">
+        <div class="label">Shipping</div>
+        <div class="value">
+          ${o.shipping_address?.line1 && o.shipping_address.line1 !== '—' ? escape(o.shipping_address.line1) + '<br>' : ''}
+          ${escape((o.shipping_address?.city || '') + (o.shipping_address?.country ? ', ' + o.shipping_address.country : ''))}
+        </div>
+      </div>
+    </div>
+
+    <div class="lbl" style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--softest);margin-bottom:8px">Items</div>
+    ${o.items.map((it) => `
+      <div class="line-item">
+        <div class="thumb">${it.image ? `<img src="${escape(it.image)}" alt="">` : ''}</div>
+        <div class="info">
+          <div class="t">${escape(it.title)}</div>
+          <div class="s">${escape(fmtPrice(it.price_cents, o.currency))} each</div>
+        </div>
+        <div class="qty">× ${it.quantity}</div>
+        <div class="amt">${escape(fmtPrice(it.price_cents * it.quantity, o.currency))}</div>
+      </div>
+    `).join('')}
+
+    <div class="totals">
+      <div class="row"><span>Subtotal</span><span>${escape(fmtPrice(o.subtotal_cents, o.currency))}</span></div>
+      <div class="row"><span>Shipping</span><span>${o.shipping_cents > 0 ? escape(fmtPrice(o.shipping_cents, o.currency)) : 'White-glove courier'}</span></div>
+      <div class="row total"><span>Total</span><span>${escape(fmtPrice(o.total_cents, o.currency))}</span></div>
+    </div>
+  `;
+
+  $('#ordClose').addEventListener('click', closeDrawer);
+  $('#ordStatus').addEventListener('change', (e) => {
+    Store.updateOrderStatus(orderId, e.target.value);
+    toast('Status updated');
+    openOrderDrawer(orderId); // re-render
+  });
+
+  $('#backdrop').classList.add('open');
+  $('#drawer').classList.add('open');
+};
+
+// ---------- Customers ----------
+const renderCustomers = () => {
+  $('#topbar').innerHTML = `<h1>Customers <small>${Store.customers().length} total</small></h1>`;
+
+  const list = Store.customersWithStats()
+    .filter((c) => !state.customerFilter ||
+      c.name.toLowerCase().includes(state.customerFilter.toLowerCase()) ||
+      c.email.toLowerCase().includes(state.customerFilter.toLowerCase()) ||
+      (c.city && c.city.toLowerCase().includes(state.customerFilter.toLowerCase())))
+    .sort((a, b) => b.total_spent_cents - a.total_spent_cents);
+
+  $('#content').innerHTML = `
+    <div class="toolbar">
+      <div class="left">
+        <input class="input" id="custSearch" placeholder="Search customers…" value="${escape(state.customerFilter)}" />
+      </div>
+      <div class="left">
+        <span class="pill">${list.length} shown</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-body flush">
+        <table class="t">
+          <thead>
+            <tr>
+              <th>Customer</th>
+              <th>Location</th>
+              <th>Orders</th>
+              <th>Spent</th>
+              <th>Last order</th>
+              <th>Joined</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${list.length === 0
+              ? '<tr class="no-hover"><td colspan="6"><div class="empty">No customers.</div></td></tr>'
+              : list.map((c) => `
+                <tr data-cid="${escape(c.id)}">
+                  <td>
+                    <div style="color:#f5ecda;font-weight:500">${escape(c.name)}</div>
+                    <div style="color:var(--softer);font-size:11px">${escape(c.email)}</div>
+                  </td>
+                  <td style="color:var(--softer)">${escape((c.city || '—') + (c.country ? ', ' + c.country : ''))}</td>
+                  <td>${c.orders_count}</td>
+                  <td>${escape(fmtPrice(c.total_spent_cents))}</td>
+                  <td style="color:var(--softer)">${c.last_order_at ? escape(fmtDate(c.last_order_at)) : '—'}</td>
+                  <td style="color:var(--softer)">${escape(fmtDate(c.joined_at))}</td>
+                </tr>
+              `).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  `;
+
+  $('#custSearch').addEventListener('input', (e) => {
+    state.customerFilter = e.target.value;
+    render(); $('#custSearch').focus();
+  });
+  $$('tr[data-cid]').forEach((tr) =>
+    tr.addEventListener('click', () => openCustomerDrawer(tr.dataset.cid))
+  );
+};
+
+const openCustomerDrawer = (customerId) => {
+  const c = Store.customerById(customerId);
+  if (!c) return;
+  const orders = Store.orders().filter((o) => o.customer_id === customerId);
+  const totalSpent = orders.filter((o) => o.status !== 'refunded').reduce((s, o) => s + o.total_cents, 0);
+
+  $('#drawerTitle').textContent = c.name;
+  $('#drawerFoot').innerHTML = `
+    <div class="feedback"></div>
+    <button class="btn ghost" id="custClose">Close</button>
+  `;
+  $('#drawerBody').innerHTML = `
+    <div class="detail-meta">
+      <div>
+        <div class="label">Email</div>
+        <div class="value"><a href="mailto:${escape(c.email)}" style="color:var(--gold-1)">${escape(c.email)}</a></div>
+      </div>
+      <div>
+        <div class="label">Location</div>
+        <div class="value">${escape((c.city || '—') + (c.country ? ', ' + c.country : ''))}</div>
+      </div>
+      <div>
+        <div class="label">Total spent</div>
+        <div class="value lg">${fmtPrice(totalSpent)}</div>
+      </div>
+      <div>
+        <div class="label">Orders</div>
+        <div class="value">${orders.length}</div>
+      </div>
+      <div>
+        <div class="label">Joined</div>
+        <div class="value">${escape(fmtDate(c.joined_at, { dateStyle: 'long' }))}</div>
+      </div>
+    </div>
+
+    <div class="lbl" style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--softest);margin-bottom:8px">Order history</div>
+    ${orders.length === 0
+      ? '<div class="empty">No orders yet.</div>'
+      : orders.map((o) => `
+        <div class="list-item" data-oid="${escape(o.id)}">
+          <div class="who">${escape(o.number)} <small>${o.items.reduce((s, i) => s + i.quantity, 0)} item(s)</small></div>
+          <div class="right">
+            <div class="amt">${escape(fmtPrice(o.total_cents, o.currency))}</div>
+            <div class="when">${escape(fmtDate(o.created_at))}</div>
+          </div>
+          <div class="what"><span class="pill ${escape(o.status)}">${escape(o.status)}</span></div>
+        </div>
+      `).join('')}
+  `;
+
+  $('#custClose').addEventListener('click', closeDrawer);
+  $$('[data-oid]', $('#drawerBody')).forEach((el) =>
+    el.addEventListener('click', () => openOrderDrawer(el.dataset.oid))
+  );
+
+  $('#backdrop').classList.add('open');
+  $('#drawer').classList.add('open');
+};
+
+// ---------- Drawer plumbing ----------
+const closeDrawer = () => {
+  $('#backdrop').classList.remove('open');
+  $('#drawer').classList.remove('open');
+  state.editing = null;
+  state.draftImages = [];
+};
+
+// ---------- Auth bootstrap ----------
+const logout = async () => {
+  try { await fetch('/api/admin/logout', { method: 'POST' }); } catch {}
+  state.authed = false;
+  renderLogin();
+};
+
+(async () => {
+  try {
+    const r = await fetch('/api/admin/session');
+    const { authed } = await r.json();
+    if (!authed) return renderLogin();
+    state.authed = true;
+    renderApp();
+  } catch {
+    renderLogin('Could not reach the server.');
+  }
+})();
+</script>
 </body>
 </html>
