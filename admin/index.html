@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Maliki — Admin</title>
+<meta name="robots" content="noindex, nofollow" />
+<meta name="theme-color" content="#0a0908" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Italiana&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --black: #0a0908;
+    --charcoal: #141311;
+    --graphite: #1d1b18;
+    --line: rgba(217, 176, 112, 0.20);
+    --soft: rgba(245, 236, 218, 0.92);
+    --softer: rgba(245, 236, 218, 0.62);
+    --softest: rgba(245, 236, 218, 0.38);
+    --gold-1: #e8c488;
+    --gold-2: #b68a4e;
+    --gold-highlight: #f8e3b4;
+    --danger: #d99a6c;
+    --ok: #a3c08b;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--black);
+    color: var(--soft);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 14px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100%;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; }
+
+  /* ---------- Login ---------- */
+  .login-wrap {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+  .login-card {
+    width: 100%;
+    max-width: 380px;
+    border: 1px solid var(--line);
+    background: var(--charcoal);
+    padding: 40px 36px;
+    text-align: center;
+  }
+  .login-card .mark {
+    font-family: 'Italiana', serif;
+    font-size: 11px;
+    letter-spacing: 0.5em;
+    text-transform: uppercase;
+    color: var(--softer);
+    margin-bottom: 8px;
+  }
+  .login-card h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 26px;
+    color: #f5ecda;
+    font-weight: 400;
+    margin-bottom: 28px;
+  }
+  .login-card .field {
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 22px;
+    transition: border-color 0.4s ease;
+  }
+  .login-card .field:focus-within { border-color: rgba(217, 176, 112, 0.7); }
+  .login-card input {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    outline: 0;
+    color: #f5ecda;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    letter-spacing: 0.2em;
+    padding: 12px 4px;
+    text-align: center;
+  }
+  .login-card input::placeholder {
+    color: var(--softer);
+    font-style: italic;
+  }
+  .login-card button {
+    background: transparent;
+    border: 1px solid rgba(217, 176, 112, 0.4);
+    color: #f3d89e;
+    font-family: 'Italiana', serif;
+    font-size: 11px;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: color 0.4s ease, border-color 0.4s ease;
+  }
+  .login-card button:hover {
+    color: var(--gold-highlight);
+    border-color: var(--gold-1);
+  }
+  .login-card button:disabled { opacity: 0.5; cursor: not-allowed; }
+  .login-card .err {
+    margin-top: 14px;
+    color: var(--danger);
+    font-size: 12px;
+    letter-spacing: 0.16em;
+    min-height: 14px;
+  }
+
+  /* ---------- App ---------- */
+  .app { display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--line);
+    background: var(--charcoal);
+  }
+  .brand {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .brand .m {
+    font-family: 'Italiana', serif;
+    font-size: 14px;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: #f5ecda;
+  }
+  .brand .sub {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--softer);
+  }
+  .topbar nav { display: flex; gap: 4px; }
+  .tab {
+    background: transparent;
+    border: 0;
+    color: var(--softer);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    cursor: pointer;
+    border-bottom: 1px solid transparent;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  .tab:hover { color: var(--soft); }
+  .tab.active { color: var(--gold-1); border-color: var(--gold-2); }
+  .topbar .right { display: flex; align-items: center; gap: 14px; }
+  .ghost {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--softer);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 8px 14px;
+    cursor: pointer;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  .ghost:hover { color: var(--soft); border-color: rgba(217, 176, 112, 0.5); }
+
+  .main { flex: 1; padding: 28px; max-width: 1280px; width: 100%; margin: 0 auto; }
+  .panel-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+  .panel-head h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    color: #f5ecda;
+    letter-spacing: 0.04em;
+  }
+  .primary {
+    background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
+    border: 0;
+    color: #1a120a;
+    font-weight: 500;
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: filter 0.3s ease, transform 0.3s ease;
+  }
+  .primary:hover { filter: brightness(1.08); }
+  .primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  /* ---------- Tables ---------- */
+  table { width: 100%; border-collapse: collapse; }
+  th, td {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid var(--line);
+    vertical-align: middle;
+  }
+  th {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--softest);
+    font-weight: 500;
+  }
+  td { color: var(--soft); }
+  tr:hover td { background: rgba(255,255,255,0.015); }
+  .thumb {
+    width: 48px;
+    height: 48px;
+    object-fit: cover;
+    background: var(--graphite);
+    border: 1px solid var(--line);
+    display: block;
+  }
+  .thumb.empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--softest);
+    font-size: 9px;
+    letter-spacing: 0.2em;
+  }
+  .pill {
+    display: inline-block;
+    padding: 3px 10px;
+    border: 1px solid var(--line);
+    border-radius: 100px;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--softer);
+  }
+  .pill.on { color: var(--ok); border-color: rgba(163, 192, 139, 0.4); }
+  .pill.off { color: var(--softest); }
+  .actions { display: flex; gap: 8px; justify-content: flex-end; }
+  .row-btn {
+    background: transparent;
+    border: 1px solid var(--line);
+    color: var(--softer);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  .row-btn:hover { color: var(--soft); border-color: rgba(217, 176, 112, 0.5); }
+  .row-btn.danger:hover { color: var(--danger); border-color: rgba(217, 154, 108, 0.5); }
+
+  .empty-row td {
+    text-align: center;
+    color: var(--softest);
+    padding: 60px 20px;
+    font-style: italic;
+  }
+
+  /* ---------- Drawer (form) ---------- */
+  .drawer-backdrop {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 50;
+  }
+  .drawer-backdrop.open { opacity: 1; pointer-events: auto; }
+  .drawer {
+    position: fixed;
+    top: 0; right: 0;
+    height: 100vh;
+    width: min(560px, 100%);
+    background: var(--charcoal);
+    border-left: 1px solid var(--line);
+    transform: translateX(100%);
+    transition: transform 0.4s cubic-bezier(.2,.7,.2,1);
+    z-index: 60;
+    display: flex;
+    flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .drawer header h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: 20px;
+    color: #f5ecda;
+  }
+  .drawer .body {
+    padding: 22px 24px 100px;
+    overflow-y: auto;
+    flex: 1;
+  }
+  .drawer footer {
+    padding: 14px 24px;
+    border-top: 1px solid var(--line);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    background: var(--charcoal);
+  }
+
+  .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
+  .form-row.split { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .form-row label {
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--softest);
+  }
+  .form-row input[type="text"],
+  .form-row input[type="number"],
+  .form-row textarea {
+    background: var(--graphite);
+    border: 1px solid var(--line);
+    color: var(--soft);
+    padding: 10px 12px;
+    font-family: inherit;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s ease;
+  }
+  .form-row input:focus,
+  .form-row textarea:focus { border-color: rgba(217, 176, 112, 0.6); }
+  .form-row textarea { min-height: 96px; resize: vertical; line-height: 1.5; }
+  .form-row .hint {
+    font-size: 11px;
+    color: var(--softest);
+    letter-spacing: 0.04em;
+    margin-top: 2px;
+  }
+  .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .checkbox input { width: 16px; height: 16px; accent-color: #d9b070; }
+  .checkbox span {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--soft);
+  }
+
+  .form-feedback {
+    flex: 1;
+    font-size: 12px;
+    color: var(--softer);
+    letter-spacing: 0.04em;
+  }
+  .form-feedback.error { color: var(--danger); }
+  .form-feedback.ok { color: var(--ok); }
+
+  /* ---------- Inquiries ---------- */
+  .inquiry {
+    border: 1px solid var(--line);
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 4px 16px;
+  }
+  .inquiry .who {
+    color: #f5ecda;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+  .inquiry .who small {
+    color: var(--softer);
+    font-weight: 400;
+    margin-left: 8px;
+  }
+  .inquiry .when {
+    color: var(--softest);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .inquiry .product {
+    grid-column: 1 / -1;
+    color: var(--gold-1);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .inquiry .product a:hover { color: var(--gold-highlight); }
+  .inquiry .msg {
+    grid-column: 1 / -1;
+    margin-top: 6px;
+    color: var(--soft);
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+</style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script>
+    const $ = (s, r = document) => r.querySelector(s);
+
+    const escape = (s) =>
+      String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+        ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+      );
+
+    const fmtPrice = (cents, currency) => {
+      try {
+        return new Intl.NumberFormat(undefined, {
+          style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0,
+        }).format((cents || 0) / 100);
+      } catch { return `${((cents || 0) / 100).toFixed(0)} ${currency || ''}`.trim(); }
+    };
+
+    const fmtDate = (iso) => {
+      try { return new Date(iso).toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'short' }); }
+      catch { return iso; }
+    };
+
+    const slugify = (s) =>
+      String(s || '').toLowerCase().trim()
+        .replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+
+    // ---------- Auth bootstrap ----------
+    const state = {
+      authed: false,
+      tab: 'rings',
+      products: [],
+      inquiries: [],
+      editing: null, // null = new, otherwise product object
+    };
+
+    const renderLogin = (errMsg = '') => {
+      document.getElementById('root').innerHTML = `
+        <div class="login-wrap">
+          <form class="login-card" id="loginForm">
+            <div class="mark">Maliki Atelier</div>
+            <h1>Admin</h1>
+            <div class="field">
+              <input id="pw" type="password" autocomplete="current-password" placeholder="Password" autofocus />
+            </div>
+            <button type="submit" id="loginBtn">Enter</button>
+            <div class="err" id="loginErr">${escape(errMsg)}</div>
+          </form>
+        </div>
+      `;
+      $('#loginForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const password = $('#pw').value;
+        const btn = $('#loginBtn');
+        const err = $('#loginErr');
+        btn.disabled = true; btn.textContent = '…'; err.textContent = '';
+        try {
+          const res = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ password }),
+          });
+          if (!res.ok) {
+            err.textContent = res.status === 401 ? 'Incorrect password.' : 'Sign-in failed.';
+            btn.disabled = false; btn.textContent = 'Enter';
+            return;
+          }
+          state.authed = true;
+          await Promise.all([loadProducts(), loadInquiries()]);
+          renderApp();
+        } catch {
+          err.textContent = 'Sign-in failed.';
+          btn.disabled = false; btn.textContent = 'Enter';
+        }
+      });
+    };
+
+    // ---------- Data ----------
+    const loadProducts = async () => {
+      const r = await fetch('/api/products');
+      if (!r.ok) { state.products = []; return; }
+      const { products } = await r.json();
+      state.products = products || [];
+    };
+    const loadInquiries = async () => {
+      const r = await fetch('/api/inquiries');
+      if (!r.ok) { state.inquiries = []; return; }
+      const { inquiries } = await r.json();
+      state.inquiries = inquiries || [];
+    };
+
+    // ---------- App shell ----------
+    const renderApp = () => {
+      document.getElementById('root').innerHTML = `
+        <div class="app">
+          <header class="topbar">
+            <div class="brand">
+              <span class="m">Maliki</span>
+              <span class="sub">Admin</span>
+            </div>
+            <nav>
+              <button class="tab ${state.tab === 'rings' ? 'active' : ''}" data-tab="rings">Rings</button>
+              <button class="tab ${state.tab === 'inquiries' ? 'active' : ''}" data-tab="inquiries">
+                Inquiries${state.inquiries.length ? ` (${state.inquiries.length})` : ''}
+              </button>
+            </nav>
+            <div class="right">
+              <a class="ghost" href="/shop" target="_blank" rel="noopener">View shop ↗</a>
+              <button class="ghost" id="logoutBtn">Sign out</button>
+            </div>
+          </header>
+          <main class="main" id="panel"></main>
+        </div>
+
+        <div class="drawer-backdrop" id="backdrop"></div>
+        <aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
+          <header>
+            <h3 id="drawerTitle">New ring</h3>
+            <button class="ghost" id="closeDrawer">Close</button>
+          </header>
+          <div class="body" id="drawerBody"></div>
+          <footer>
+            <div class="form-feedback" id="formFeedback"></div>
+            <button class="ghost" id="cancelBtn">Cancel</button>
+            <button class="primary" id="saveBtn">Save</button>
+          </footer>
+        </aside>
+      `;
+      document.querySelectorAll('.tab').forEach((b) =>
+        b.addEventListener('click', () => { state.tab = b.dataset.tab; renderPanel(); renderTabs(); })
+      );
+      $('#logoutBtn').addEventListener('click', logout);
+      $('#closeDrawer').addEventListener('click', closeDrawer);
+      $('#cancelBtn').addEventListener('click', closeDrawer);
+      $('#backdrop').addEventListener('click', closeDrawer);
+      $('#saveBtn').addEventListener('click', saveProduct);
+      renderPanel();
+    };
+
+    const renderTabs = () => {
+      document.querySelectorAll('.tab').forEach((b) => {
+        b.classList.toggle('active', b.dataset.tab === state.tab);
+      });
+    };
+
+    const renderPanel = () => {
+      const panel = $('#panel');
+      if (state.tab === 'rings') panel.innerHTML = renderRings();
+      else panel.innerHTML = renderInquiries();
+      bindRingActions();
+    };
+
+    // ---------- Rings panel ----------
+    const renderRings = () => `
+      <div class="panel-head">
+        <h2>Rings (${state.products.length})</h2>
+        <button class="primary" id="newBtn">+ New ring</button>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Slug</th>
+            <th>Price</th>
+            <th>Stock</th>
+            <th>Status</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          ${state.products.length === 0
+            ? `<tr class="empty-row"><td colspan="7">No rings yet. Add the first one.</td></tr>`
+            : state.products.map((p) => {
+                const cover = (p.images || [])[0];
+                const thumb = cover
+                  ? `<img class="thumb" src="${escape(cover)}" alt="">`
+                  : `<div class="thumb empty">—</div>`;
+                return `
+                  <tr data-id="${escape(p.id)}">
+                    <td>${thumb}</td>
+                    <td>${escape(p.title)}</td>
+                    <td><code style="color:var(--softer);font-size:12px">${escape(p.slug)}</code></td>
+                    <td>${escape(fmtPrice(p.price_cents, p.currency))}</td>
+                    <td>${p.stock == null ? '—' : escape(String(p.stock))}</td>
+                    <td><span class="pill ${p.published ? 'on' : 'off'}">${p.published ? 'Live' : 'Draft'}</span></td>
+                    <td>
+                      <div class="actions">
+                        <button class="row-btn" data-act="edit">Edit</button>
+                        <button class="row-btn danger" data-act="delete">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                `;
+              }).join('')
+          }
+        </tbody>
+      </table>
+    `;
+
+    const bindRingActions = () => {
+      const newBtn = $('#newBtn');
+      if (newBtn) newBtn.addEventListener('click', () => openDrawer(null));
+      document.querySelectorAll('tr[data-id]').forEach((tr) => {
+        const id = tr.dataset.id;
+        tr.querySelectorAll('button[data-act]').forEach((b) => {
+          b.addEventListener('click', () => {
+            const product = state.products.find((p) => p.id === id);
+            if (b.dataset.act === 'edit') openDrawer(product);
+            if (b.dataset.act === 'delete') deleteProduct(product);
+          });
+        });
+      });
+    };
+
+    // ---------- Drawer (create/edit) ----------
+    const openDrawer = (product) => {
+      state.editing = product;
+      $('#drawerTitle').textContent = product ? 'Edit ring' : 'New ring';
+      $('#formFeedback').textContent = '';
+      $('#formFeedback').className = 'form-feedback';
+      const p = product || {};
+      $('#drawerBody').innerHTML = `
+        <div class="form-row">
+          <label for="f-title">Title</label>
+          <input id="f-title" type="text" value="${escape(p.title || '')}" autofocus />
+        </div>
+        <div class="form-row split">
+          <div>
+            <label for="f-slug">Slug</label>
+            <input id="f-slug" type="text" value="${escape(p.slug || '')}" />
+            <div class="hint">Used in the URL: /shop/<span id="slugPreview">${escape(p.slug || '…')}</span></div>
+          </div>
+          <div>
+            <label for="f-currency">Currency</label>
+            <input id="f-currency" type="text" value="${escape(p.currency || 'GBP')}" maxlength="3" />
+          </div>
+        </div>
+        <div class="form-row split">
+          <div>
+            <label for="f-price">Price</label>
+            <input id="f-price" type="number" min="0" step="1" value="${escape(p.price_cents != null ? (p.price_cents / 100).toString() : '')}" />
+            <div class="hint">In whole units (e.g., 2400 = £2,400).</div>
+          </div>
+          <div>
+            <label for="f-stock">Stock</label>
+            <input id="f-stock" type="number" min="0" step="1" value="${escape(p.stock != null ? String(p.stock) : '')}" placeholder="Leave blank for made-to-order" />
+          </div>
+        </div>
+        <div class="form-row">
+          <label for="f-desc">Description</label>
+          <textarea id="f-desc" rows="6">${escape(p.description || '')}</textarea>
+        </div>
+        <div class="form-row">
+          <label for="f-images">Images</label>
+          <textarea id="f-images" rows="4" placeholder="One URL per line">${escape((p.images || []).join('\n'))}</textarea>
+          <div class="hint">First image is the cover. Use Supabase Storage public URLs or any CDN.</div>
+        </div>
+        <div class="form-row">
+          <label class="checkbox">
+            <input id="f-pub" type="checkbox" ${p.published ? 'checked' : ''} />
+            <span>Published — visible on /shop</span>
+          </label>
+        </div>
+      `;
+      // Auto-slug from title until user touches slug
+      const titleEl = $('#f-title');
+      const slugEl = $('#f-slug');
+      const preview = $('#slugPreview');
+      let slugTouched = !!(p.slug);
+      slugEl.addEventListener('input', () => { slugTouched = true; preview.textContent = slugify(slugEl.value) || '…'; });
+      titleEl.addEventListener('input', () => {
+        if (!slugTouched) {
+          slugEl.value = slugify(titleEl.value);
+          preview.textContent = slugEl.value || '…';
+        }
+      });
+      $('#backdrop').classList.add('open');
+      $('#drawer').classList.add('open');
+    };
+
+    const closeDrawer = () => {
+      $('#backdrop').classList.remove('open');
+      $('#drawer').classList.remove('open');
+      state.editing = null;
+    };
+
+    const collectForm = () => {
+      const priceUnits = Number($('#f-price').value);
+      const stockRaw = $('#f-stock').value.trim();
+      return {
+        title: $('#f-title').value.trim(),
+        slug: slugify($('#f-slug').value),
+        currency: ($('#f-currency').value || 'GBP').toUpperCase().slice(0, 3),
+        price_cents: Number.isFinite(priceUnits) ? Math.round(priceUnits * 100) : 0,
+        stock: stockRaw === '' ? null : Math.max(0, Math.floor(Number(stockRaw) || 0)),
+        description: $('#f-desc').value,
+        images: $('#f-images').value.split('\n').map((s) => s.trim()).filter(Boolean),
+        published: $('#f-pub').checked,
+      };
+    };
+
+    const saveProduct = async () => {
+      const fb = $('#formFeedback');
+      const btn = $('#saveBtn');
+      const data = collectForm();
+      if (!data.title) { fb.textContent = 'Title is required.'; fb.className = 'form-feedback error'; return; }
+      if (!data.slug) { fb.textContent = 'Slug is required.'; fb.className = 'form-feedback error'; return; }
+
+      btn.disabled = true; btn.textContent = 'Saving…';
+      fb.textContent = ''; fb.className = 'form-feedback';
+
+      try {
+        const editing = state.editing;
+        const res = await fetch(
+          editing ? `/api/products/${editing.id}` : '/api/products',
+          {
+            method: editing ? 'PATCH' : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+          }
+        );
+        if (!res.ok) {
+          const body = await res.json().catch(() => ({}));
+          fb.textContent = body.error === 'slug_taken'
+            ? 'That slug is already in use.'
+            : `Save failed (${res.status}).`;
+          fb.className = 'form-feedback error';
+          btn.disabled = false; btn.textContent = 'Save';
+          return;
+        }
+        await loadProducts();
+        renderPanel();
+        closeDrawer();
+      } catch {
+        fb.textContent = 'Save failed.';
+        fb.className = 'form-feedback error';
+      } finally {
+        btn.disabled = false; btn.textContent = 'Save';
+      }
+    };
+
+    const deleteProduct = async (p) => {
+      if (!p) return;
+      if (!confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
+      const res = await fetch(`/api/products/${p.id}`, { method: 'DELETE' });
+      if (!res.ok) { alert('Delete failed.'); return; }
+      await loadProducts();
+      renderPanel();
+    };
+
+    // ---------- Inquiries panel ----------
+    const renderInquiries = () => `
+      <div class="panel-head">
+        <h2>Inquiries (${state.inquiries.length})</h2>
+        <button class="ghost" id="reloadInq">Refresh</button>
+      </div>
+      ${state.inquiries.length === 0
+        ? `<div style="text-align:center;color:var(--softest);padding:60px 20px;font-style:italic">No inquiries yet.</div>`
+        : state.inquiries.map((q) => `
+          <div class="inquiry">
+            <div class="who">
+              ${escape(q.name || '—')}
+              <small>&lt;<a href="mailto:${escape(q.email)}" style="color:var(--gold-1)">${escape(q.email)}</a>&gt;</small>
+            </div>
+            <div class="when">${escape(fmtDate(q.created_at))}</div>
+            <div class="product">
+              ${q.product
+                ? `<a href="/shop/${escape(q.product.slug)}" target="_blank" rel="noopener">${escape(q.product.title)}</a>`
+                : 'General inquiry'}
+            </div>
+            ${q.message ? `<div class="msg">${escape(q.message)}</div>` : ''}
+          </div>
+        `).join('')}
+    `;
+
+    document.addEventListener('click', (e) => {
+      if (e.target && e.target.id === 'reloadInq') {
+        loadInquiries().then(renderPanel);
+      }
+    });
+
+    // ---------- Logout ----------
+    const logout = async () => {
+      await fetch('/api/admin/logout', { method: 'POST' });
+      state.authed = false;
+      renderLogin();
+    };
+
+    // ---------- Boot ----------
+    (async () => {
+      try {
+        const r = await fetch('/api/admin/session');
+        const { authed } = await r.json();
+        if (!authed) return renderLogin();
+        state.authed = true;
+        await Promise.all([loadProducts(), loadInquiries()]);
+        renderApp();
+      } catch {
+        renderLogin('Could not reach the server.');
+      }
+    })();
+  </script>
+</body>
+</html>

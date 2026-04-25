@@ -1,4 +1,7 @@
 {
+  "rewrites": [
+    { "source": "/shop/:slug", "destination": "/shop/product.html?slug=:slug" }
+  ],
   "headers": [
     {
       "source": "/(.+\\.mp4)",
@@ -10,6 +13,19 @@
       "source": "/og.jpg",
       "headers": [
         { "key": "Cache-Control", "value": "public, max-age=604800" }
+      ]
+    },
+    {
+      "source": "/admin(/.*)?",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" },
+        { "key": "X-Robots-Tag", "value": "noindex, nofollow" }
+      ]
+    },
+    {
+      "source": "/shop(/.*)?",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
       ]
     }
   ]
