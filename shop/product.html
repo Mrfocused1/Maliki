@@ -219,7 +219,17 @@
     };
     const escape = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-    const slug = new URLSearchParams(location.search).get('slug');
+    // Slug can arrive two ways: via the Vercel rewrite (/shop/<slug>, browser
+    // URL stays the same — query is empty), or via direct ?slug=… access used
+    // by the local static dev server. Prefer the path; fall back to the query.
+    const slug = (() => {
+      const segs = location.pathname.split('/').filter(Boolean);
+      const last = segs[segs.length - 1] || '';
+      if (segs[0] === 'shop' && last && last !== 'shop' && !last.endsWith('.html')) {
+        return decodeURIComponent(last);
+      }
+      return new URLSearchParams(location.search).get('slug') || '';
+    })();
     const root = document.getElementById('root');
     const crumbTitle = document.getElementById('crumb-title');
 
