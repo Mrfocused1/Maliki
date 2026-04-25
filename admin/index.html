@@ -69,6 +69,12 @@
     font-size: 11px; letter-spacing: 0.5em; text-transform: uppercase;
     color: var(--softer); margin-bottom: 8px;
   }
+  .login-card .logo {
+    margin: 0 auto 14px;
+  }
+  .login-card .logo img {
+    height: 64px; width: auto; display: block; margin: 0 auto;
+  }
   .login-card h1 {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic; font-size: 28px; color: #f5ecda; font-weight: 400; margin-bottom: 28px;
@@ -117,9 +123,8 @@
     border-bottom: 1px solid var(--line-2);
     margin-bottom: 18px;
   }
-  .brand .ml {
-    font-family: 'Pinyon Script', serif;
-    font-size: 28px; line-height: 1; color: #d9b070;
+  .brand img {
+    height: 56px; width: auto; display: block;
   }
   .brand .mt {
     font-family: 'Italiana', serif;
@@ -797,7 +802,7 @@ const renderLogin = (errMsg = '') => {
   $('#root').innerHTML = `
     <div class="login-wrap">
       <form class="login-card" id="loginForm">
-        <div class="mark">Maliki Atelier</div>
+        <div class="logo"><img src="/assets/maliki-logo.svg" alt="Maliki Atelier"></div>
         <h1>Admin</h1>
         <div class="field">
           <input id="pw" type="password" autocomplete="current-password" placeholder="Password" autofocus />
@@ -840,7 +845,7 @@ const renderApp = () => {
       <aside class="sidebar">
         <div class="brand">
           <div>
-            <div class="ml">Maliki</div>
+            <img src="/assets/maliki-logo.svg" alt="Maliki Atelier">
             <div class="mt">Admin</div>
           </div>
         </div>

@@ -39,8 +39,14 @@
     border-bottom: 1px solid var(--line);
   }
   .wordmark {
-    font-family: 'Pinyon Script', serif;
-    font-size: clamp(28px, 3.4vw, 38px); color: #d9b070; line-height: 1;
+    display: inline-flex;
+    align-items: center;
+    line-height: 0;
+  }
+  .wordmark img {
+    height: clamp(34px, 3.4vw, 44px);
+    width: auto;
+    display: block;
   }
   .nav {
     display: flex; gap: clamp(20px, 3vw, 36px); align-items: center;
@@ -285,7 +291,7 @@
 </head>
 <body>
   <header class="topbar">
-    <a href="/" class="wordmark" aria-label="Maliki Atelier home">Maliki</a>
+    <a href="/" class="wordmark" aria-label="Maliki Atelier home"><img src="/assets/maliki-logo.svg" alt="Maliki Atelier"></a>
     <nav class="nav">
       <a href="/shop">The Rings</a>
     </nav>
