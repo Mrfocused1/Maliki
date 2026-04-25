@@ -13,23 +13,23 @@
 <style>
   :root {
     --bg:        #0a0908;
-    --surface:   #131210;
-    --surface-2: #1b1916;
-    --surface-3: #232019;
-    --line:      rgba(217, 176, 112, 0.16);
-    --line-2:    rgba(245, 236, 218, 0.08);
-    --soft:      rgba(245, 236, 218, 0.94);
-    --softer:    rgba(245, 236, 218, 0.66);
-    --softest:   rgba(245, 236, 218, 0.40);
+    --surface:   #15130f;
+    --surface-2: #1f1c17;
+    --surface-3: #2a261e;
+    --line:      rgba(217, 176, 112, 0.24);
+    --line-2:    rgba(245, 236, 218, 0.12);
+    --soft:      rgba(245, 236, 218, 0.98);
+    --softer:    rgba(245, 236, 218, 0.86);
+    --softest:   rgba(245, 236, 218, 0.66);
     --gold-1:    #e8c488;
     --gold-2:    #b68a4e;
     --gold-3:    #8a6531;
     --gold-hi:   #f8e3b4;
-    --danger:    #d99a6c;
+    --danger:    #e8a878;
     --danger-2:  #c46d3e;
-    --ok:        #a3c08b;
-    --warn:      #e2c373;
-    --info:      #8db4d4;
+    --ok:        #b5d39c;
+    --warn:      #f0d488;
+    --info:      #a4cae8;
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
@@ -154,8 +154,9 @@
   .navlink.active .badge { background: rgba(217, 176, 112, 0.16); color: var(--gold-1); }
   .nav-divider { height: 1px; background: var(--line-2); margin: 14px 8px; }
   .navgroup {
-    font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase;
-    color: var(--softest); padding: 14px 14px 6px; font-weight: 600;
+    font-size: 11px; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold-1); padding: 16px 14px 8px; font-weight: 600;
+    opacity: 0.85;
   }
   .sidebar .foot { margin-top: auto; padding-top: 14px; border-top: 1px solid var(--line-2); }
   .sidebar .foot .row { display: flex; align-items: center; justify-content: space-between; padding: 8px 4px; gap: 8px; }
@@ -244,8 +245,8 @@
     padding: 18px 20px;
   }
   .stat .label {
-    font-size: 11px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--softest); margin-bottom: 8px;
+    font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--soft); margin-bottom: 10px; font-weight: 500;
   }
   .stat .value {
     font-family: 'Cormorant Garamond', serif;
@@ -306,8 +307,8 @@
     vertical-align: middle;
   }
   table.t th {
-    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase;
-    color: var(--softest); font-weight: 500;
+    font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase;
+    color: var(--soft); font-weight: 600;
     background: var(--surface);
     position: sticky; top: 0;
   }
@@ -337,8 +338,8 @@
     padding: 3px 10px;
     border: 1px solid var(--line);
     border-radius: 100px;
-    font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase;
-    color: var(--softer); white-space: nowrap;
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--softer); white-space: nowrap; font-weight: 500;
   }
   .pill.live { color: var(--ok); border-color: rgba(163, 192, 139, 0.35); }
   .pill.draft { color: var(--softest); }
@@ -428,7 +429,7 @@
   .form-row.split-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
   .form-row.split-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
   .form-row > label, .form-row > .lbl {
-    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--softest);
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); font-weight: 500;
   }
   .form-row .hint { font-size: 11px; color: var(--softest); }
   .checkbox {
@@ -494,8 +495,8 @@
     margin-bottom: 18px;
   }
   .detail-meta .label {
-    font-size: 10px; letter-spacing: 0.22em; text-transform: uppercase; color: var(--softest);
-    margin-bottom: 4px;
+    font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold-1);
+    margin-bottom: 6px; font-weight: 500;
   }
   .detail-meta .value { color: var(--soft); font-size: 14px; }
   .detail-meta .value.lg { font-family: 'Cormorant Garamond', serif; font-size: 22px; color: #f5ecda; font-style: italic; }

@@ -9,18 +9,18 @@
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Italiana&family=Pinyon+Script&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Italiana&family=Pinyon+Script&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
 <style>
   :root {
     --black: #0a0908;
     --charcoal: #141311;
-    --soft: rgba(245, 236, 218, 0.94);
-    --softer: rgba(245, 236, 218, 0.66);
-    --softest: rgba(245, 236, 218, 0.40);
+    --soft: rgba(245, 236, 218, 0.98);
+    --softer: rgba(245, 236, 218, 0.86);
+    --softest: rgba(245, 236, 218, 0.62);
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.20);
+    --line: rgba(217, 176, 112, 0.28);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
@@ -51,8 +51,8 @@
   .nav {
     display: flex; gap: clamp(20px, 3vw, 36px); align-items: center;
     font-family: 'Italiana', serif;
-    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
-    color: var(--softer);
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: #f5ecda;
   }
   .nav a:hover { color: var(--gold-hi); }
   .cart-btn {
@@ -75,8 +75,8 @@
   }
   .eyebrow {
     font-family: 'Italiana', serif;
-    font-size: 11px; letter-spacing: 0.62em; text-indent: 0.62em;
-    text-transform: uppercase; color: var(--softer);
+    font-size: 13px; letter-spacing: 0.4em; text-indent: 0.4em;
+    text-transform: uppercase; color: #d9b070;
     display: inline-block; padding-bottom: 16px;
   }
   .h1 {
@@ -103,14 +103,15 @@
   }
   .filterpill {
     background: transparent; border: 1px solid var(--line);
-    color: var(--softer);
-    font-family: 'Italiana', serif;
-    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
-    padding: 8px 16px; border-radius: 100px;
+    color: #f5ecda;
+    font-family: 'Inter', system-ui, sans-serif;
+    font-size: 12px; font-weight: 500; letter-spacing: 0.18em; text-transform: uppercase;
+    padding: 9px 18px; border-radius: 100px;
     transition: color 0.3s ease, border-color 0.3s ease, background 0.3s ease;
+    cursor: pointer;
   }
-  .filterpill:hover { color: var(--soft); }
-  .filterpill.active { color: var(--gold-1); border-color: rgba(217, 176, 112, 0.5); background: rgba(217, 176, 112, 0.06); }
+  .filterpill:hover { color: var(--gold-hi); border-color: rgba(217, 176, 112, 0.55); }
+  .filterpill.active { color: #1a120a; border-color: var(--gold-1); background: var(--gold-1); }
 
   .grid {
     display: grid;
