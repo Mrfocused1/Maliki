@@ -176,22 +176,27 @@
     overflow-x: hidden;
   }
   .topbar {
-    display: flex; align-items: center; justify-content: space-between;
+    display: flex; align-items: center; gap: 12px;
     padding: 18px 28px;
     border-bottom: 1px solid var(--line);
     background: var(--bg);
     position: sticky; top: 0; z-index: 5;
   }
+  .topbar-inner {
+    display: flex; align-items: center; justify-content: space-between;
+    flex: 1; min-width: 0; gap: 12px;
+  }
   .topbar h1 {
     font-family: 'Cormorant Garamond', serif;
     font-style: italic; font-weight: 400;
     font-size: 24px; color: #f5ecda;
+    min-width: 0;
   }
   .topbar h1 small {
     color: var(--softest); font-size: 13px; margin-left: 12px; font-style: normal;
     letter-spacing: 0.06em;
   }
-  .topbar .actions { display: flex; gap: 10px; align-items: center; }
+  .topbar .actions { display: flex; gap: 10px; align-items: center; flex-shrink: 0; }
 
   .content { padding: 26px 28px 60px; max-width: 1320px; }
 
@@ -701,6 +706,115 @@
   .toast.show { transform: translateY(0); opacity: 1; }
   .toast.ok { border-color: rgba(163, 192, 139, 0.5); }
   .toast.err { border-color: rgba(217, 154, 108, 0.5); }
+
+  /* ---------- Mobile menu toggle ---------- */
+  .menu-toggle {
+    display: none;
+    align-items: center; justify-content: center;
+    background: transparent; border: 1px solid var(--line);
+    color: var(--soft); cursor: pointer;
+    width: 38px; height: 38px;
+    border-radius: 4px; padding: 0;
+    flex-shrink: 0;
+  }
+  .menu-toggle:hover { color: var(--gold-1); border-color: rgba(217, 176, 112, 0.5); }
+  .menu-toggle svg { width: 18px; height: 18px; }
+  .sidebar-backdrop {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.6); opacity: 0; pointer-events: none;
+    transition: opacity 0.25s ease;
+    z-index: 40;
+  }
+  .sidebar-backdrop.open { opacity: 1; pointer-events: auto; }
+
+  /* ---------- Tablet ---------- */
+  @media (max-width: 1024px) {
+    .topbar { padding: 16px 20px; }
+    .content { padding: 22px 20px 60px; }
+    .toolbar .input { width: 220px; }
+  }
+
+  /* ---------- Mobile ---------- */
+  @media (max-width: 768px) {
+    .app { grid-template-columns: 1fr; }
+    .sidebar {
+      position: fixed; top: 0; left: 0;
+      width: 280px; max-width: 86vw; height: 100vh;
+      z-index: 50;
+      transform: translateX(-100%);
+      transition: transform 0.3s cubic-bezier(.2,.7,.2,1);
+      overflow-y: auto;
+    }
+    .sidebar.open { transform: translateX(0); }
+    .sidebar-backdrop { display: block; }
+
+    .menu-toggle { display: inline-flex; }
+
+    .topbar {
+      padding: 14px 16px;
+      gap: 10px;
+    }
+    .topbar-inner { flex-wrap: wrap; gap: 8px 12px; }
+    .topbar h1 {
+      font-size: 20px;
+      min-width: 0;
+      flex: 1 1 auto;
+      overflow: hidden; text-overflow: ellipsis;
+    }
+    .topbar h1 small {
+      display: block;
+      margin-left: 0; margin-top: 2px;
+      font-size: 11px;
+    }
+    .topbar .actions {
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .topbar .actions .btn { padding: 8px 12px; font-size: 11px; letter-spacing: 0.1em; }
+
+    .content { padding: 18px 16px 60px; }
+
+    .stat-grid { grid-template-columns: 1fr; gap: 12px; margin-bottom: 18px; }
+    .stat { padding: 16px; }
+    .stat .value { font-size: 28px; }
+
+    .grid-2 { gap: 12px; }
+    .card-head { padding: 14px 16px; flex-wrap: wrap; gap: 8px; }
+    .card-head h2 { font-size: 17px; }
+    .card-body { padding: 14px 16px; }
+
+    .toolbar { gap: 10px; margin-bottom: 14px; }
+    .toolbar .left { width: 100%; }
+    .toolbar .input { width: 100%; }
+
+    /* Tables: horizontal scroll inside flush card bodies */
+    .card-body.flush { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    table.t th, table.t td { padding: 10px 12px; }
+    .cell-product .meta .t { max-width: 180px; }
+
+    /* Settings / forms stack */
+    .form-row.split-2, .form-row.split-3 { grid-template-columns: 1fr; }
+    .detail-meta { grid-template-columns: 1fr; gap: 12px; }
+
+    /* Donut chart stacks */
+    .donut-wrap { flex-direction: column; align-items: stretch; gap: 18px; }
+    .donut-svg { margin: 0 auto; }
+
+    /* Image grid tighter */
+    .img-grid { grid-template-columns: repeat(3, 1fr); }
+
+    /* Drawer footer wrap on small screens */
+    .drawer header { padding: 14px 16px; }
+    .drawer .body { padding: 18px 16px 100px; }
+    .drawer footer { padding: 12px 16px; flex-wrap: wrap; }
+  }
+
+  @media (max-width: 420px) {
+    .img-grid { grid-template-columns: repeat(2, 1fr); }
+    .topbar h1 { font-size: 18px; }
+  }
 </style>
 </head>
 <body>
@@ -843,7 +957,8 @@ const renderLogin = (errMsg = '') => {
 const renderApp = () => {
   $('#root').innerHTML = `
     <div class="app">
-      <aside class="sidebar">
+      <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+      <aside class="sidebar" id="sidebar">
         <div class="brand">
           <div>
             <img src="/assets/maliki-logo.svg" alt="Maliki Atelier">
@@ -882,7 +997,12 @@ const renderApp = () => {
       </aside>
 
       <main class="main">
-        <header class="topbar" id="topbar"></header>
+        <header class="topbar">
+          <button class="menu-toggle" id="menuToggle" aria-label="Open menu" aria-expanded="false">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+          </button>
+          <div class="topbar-inner" id="topbar"></div>
+        </header>
         <section class="content" id="content"></section>
       </main>
     </div>
@@ -898,12 +1018,27 @@ const renderApp = () => {
     </aside>
   `;
 
+  const closeSidebar = () => {
+    $('#sidebar').classList.remove('open');
+    $('#sidebarBackdrop').classList.remove('open');
+    $('#menuToggle').setAttribute('aria-expanded', 'false');
+  };
+  const toggleSidebar = () => {
+    const open = $('#sidebar').classList.toggle('open');
+    $('#sidebarBackdrop').classList.toggle('open', open);
+    $('#menuToggle').setAttribute('aria-expanded', open ? 'true' : 'false');
+  };
+
   $$('.navlink[data-view]').forEach((b) =>
-    b.addEventListener('click', () => { state.view = b.dataset.view; render(); })
+    b.addEventListener('click', () => { state.view = b.dataset.view; closeSidebar(); render(); })
   );
   $('#logoutBtn').addEventListener('click', logout);
   $('#closeDrawer').addEventListener('click', closeDrawer);
   $('#backdrop').addEventListener('click', closeDrawer);
+  $('#menuToggle').addEventListener('click', toggleSidebar);
+  $('#sidebarBackdrop').addEventListener('click', closeSidebar);
+  // Close sidebar when navigating via "View shop" link as well
+  $$('.sidebar a.navlink').forEach((a) => a.addEventListener('click', closeSidebar));
 
   Store.on(() => render());
   render();
