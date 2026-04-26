@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>About — Maliki Atelier</title>
+<meta name="description" content="The story of Maliki Atelier — hand-finished rings made in London, one piece at a time." />
+<meta name="theme-color" content="#0a0908" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Allura&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0908;
+    --charcoal: #141311;
+    --soft: rgba(245, 236, 218, 0.98);
+    --softer: rgba(245, 236, 218, 0.86);
+    --softest: rgba(245, 236, 218, 0.62);
+    --gold-1: #e8c488;
+    --gold-2: #b68a4e;
+    --gold-hi: #f8e3b4;
+    --line: rgba(217, 176, 112, 0.28);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--bg); color: var(--soft);
+    font-family: 'Lora', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100%;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ---- TOPBAR ---- */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: clamp(16px, 3vh, 28px) clamp(20px, 5vw, 56px);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0;
+    background: rgba(10, 9, 8, 0.96);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  .wordmark {
+    display: inline-flex; align-items: center; line-height: 0;
+  }
+  .wordmark img {
+    height: clamp(52px, 5.5vw, 80px); width: auto; display: block;
+  }
+  .nav {
+    display: flex; gap: clamp(18px, 2.8vw, 36px); align-items: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: #f5ecda;
+  }
+  .nav a:hover { color: var(--gold-hi); }
+  .cart-btn {
+    background: transparent; border: 1px solid var(--line); color: var(--soft);
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    padding: 9px 16px; border-radius: 4px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .cart-btn:hover { color: var(--gold-hi); border-color: rgba(217, 176, 112, 0.5); }
+  .cart-btn .count {
+    display: inline-block; background: var(--gold-1); color: #1a120a;
+    border-radius: 100px; padding: 1px 7px; font-size: 10px; font-weight: 600; letter-spacing: 0;
+  }
+
+  /* ---- PAGE HERO ---- */
+  .hero {
+    text-align: center;
+    padding: clamp(56px, 10vh, 110px) 24px clamp(40px, 7vh, 80px);
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.5em; text-indent: 0.5em;
+    text-transform: uppercase; color: var(--gold-1);
+    display: block; padding-bottom: 16px;
+  }
+  .h1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(36px, 5vw, 64px);
+    color: #f5ecda; font-weight: 400;
+    margin-bottom: 20px;
+  }
+  .lede {
+    font-style: italic;
+    color: var(--softer);
+    font-size: clamp(15px, 1.3vw, 18px);
+    line-height: 1.7;
+    letter-spacing: 0.07em;
+    max-width: 580px;
+    margin: 0 auto;
+  }
+
+  /* ---- MAIN CONTENT ---- */
+  .content {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 56px);
+  }
+
+  /* ---- SECTIONS ---- */
+  .prose-section {
+    padding: clamp(48px, 8vh, 96px) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .section-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.48em; text-indent: 0.48em;
+    text-transform: uppercase; color: var(--gold-1);
+    display: block; margin-bottom: 20px;
+  }
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(26px, 3.2vw, 40px);
+    color: #f5ecda; font-weight: 400;
+    margin-bottom: 28px;
+    line-height: 1.3;
+  }
+  .prose p {
+    color: var(--softer);
+    font-size: clamp(15px, 1.2vw, 17px);
+    line-height: 1.82;
+    letter-spacing: 0.025em;
+    margin-bottom: 20px;
+  }
+  .prose p:last-child { margin-bottom: 0; }
+
+  /* ---- IMAGE BREAK ---- */
+  .img-break {
+    padding: clamp(32px, 5vh, 56px) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .img-break-inner {
+    max-width: 480px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 56px);
+  }
+  .img-frame {
+    aspect-ratio: 4 / 3;
+    background: var(--charcoal);
+    border: 1px solid var(--line);
+    overflow: hidden;
+    position: relative;
+  }
+  .img-frame img {
+    width: 100%; height: 100%; object-fit: cover;
+    filter: saturate(0.88) brightness(0.84);
+  }
+  .img-cap {
+    text-align: center;
+    margin-top: 14px;
+    font-style: italic;
+    color: var(--softest);
+    font-size: 13px; letter-spacing: 0.07em;
+  }
+
+  /* ---- RULE ---- */
+  .rule {
+    display: flex; align-items: center; justify-content: center; gap: 14px;
+    padding: clamp(28px, 4vh, 48px) 0;
+    opacity: 0.55;
+  }
+  .rule .line { width: 48px; height: 1px; background: linear-gradient(90deg, transparent, rgba(217, 176, 112, 0.55), transparent); }
+  .rule .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold-2); }
+
+  /* ---- CTA BAND ---- */
+  .cta-band {
+    text-align: center;
+    padding: clamp(48px, 8vh, 96px) clamp(20px, 5vw, 56px);
+    border-bottom: 1px solid var(--line);
+  }
+  .cta-band h2 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(24px, 3vw, 36px);
+    color: #f5ecda; font-weight: 400;
+    margin-bottom: 12px;
+  }
+  .cta-band p {
+    font-style: italic;
+    color: var(--softer);
+    font-size: clamp(14px, 1.2vw, 17px);
+    margin-bottom: 28px;
+    letter-spacing: 0.05em;
+  }
+  .cta-link {
+    display: inline-block;
+    border: 1px solid rgba(217, 176, 112, 0.45);
+    color: #f3d89e;
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 13px 28px; border-radius: 4px;
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  }
+  .cta-link:hover {
+    background: rgba(217, 176, 112, 0.1);
+    border-color: rgba(217, 176, 112, 0.65);
+    color: var(--gold-hi);
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    border-top: 1px solid var(--line);
+    padding: clamp(18px, 4vh, 32px) clamp(20px, 5vw, 56px);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--softer);
+  }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="/" class="wordmark" aria-label="Maliki Atelier home">
+      <img src="/assets/maliki-logo.svg" alt="Maliki Atelier">
+    </a>
+    <nav class="nav">
+      <a href="/shop">The Rings</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+      <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <span class="eyebrow">About</span>
+    <h1 class="h1">The Atelier</h1>
+    <p class="lede">A quiet practice, a long tradition, and twelve rings made to be worn for a lifetime.</p>
+  </section>
+
+  <main>
+    <!-- OUR STORY -->
+    <div class="prose-section">
+      <div class="content">
+        <span class="section-label">Our Story</span>
+        <h2 class="section-heading">One piece at a time, by hand.</h2>
+        <div class="prose">
+          <p>Maliki Atelier was founded as a considered response to the noise of the modern jewellery industry — a return to the practice of making one piece at a time, by hand, for a person whose name we know. The name is not a heritage brand, a house with a century behind it, or a fashion imprint. It is simply the name of something built slowly, and with care.</p>
+          <p>Each ring is hand-finished in our London workshop, in metals we cast ourselves from recycled gold and platinum, set with stones sourced through long-standing relationships in Antwerp, Bogotá, and Yangon. There are twelve pieces in the collection. Not twelve styles — twelve pieces. When one is sold, another is made. That is the model, and we intend to keep it.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- IMAGE BREAK -->
+    <div class="img-break">
+      <div class="img-break-inner">
+        <div class="img-frame">
+          <img src="/assets/ring-placeholder.jpg" alt="A ring from the Maliki atelier, close detail" loading="lazy">
+        </div>
+        <p class="img-cap">Each piece begins as a wax carving, worked by hand before casting.</p>
+      </div>
+    </div>
+
+    <!-- CRAFTSMANSHIP -->
+    <div class="prose-section">
+      <div class="content">
+        <span class="section-label">Craftsmanship</span>
+        <h2 class="section-heading">38 to 52 hours at the bench.</h2>
+        <div class="prose">
+          <p>Every piece passes through three hands before it leaves: a goldsmith, a setter, and the final polisher. The total time at the bench, for a solitaire, is between 38 and 52 hours. For an eternity band, longer.</p>
+          <p>We source our gold and platinum from refiners who operate under the Responsible Jewellery Council standard. Our diamonds are Kimberley Process certified; our coloured stones are purchased directly from trusted dealers whom we have known, in most cases, for years. We do not buy at auction. We do not source through intermediaries we have not met.</p>
+          <p>We believe the materials are inseparable from the meaning. A ring that passes from one generation to the next carries the quality of its making as a kind of memory.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- RULE -->
+    <div class="rule" aria-hidden="true">
+      <span class="line"></span>
+      <span class="dot"></span>
+      <span class="line"></span>
+    </div>
+
+    <!-- CARE & SERVICE -->
+    <div class="prose-section">
+      <div class="content">
+        <span class="section-label">Care &amp; Service</span>
+        <h2 class="section-heading">A piece for a long time.</h2>
+        <div class="prose">
+          <p>Remove your ring before sleep, exercise, gardening, or contact with chlorinated water. Store it in its presentation case when not being worn. These are small habits that preserve the finish and the integrity of the setting.</p>
+          <p>We offer complimentary inspection and re-polish for the lifetime of any piece that leaves the atelier. Return it by insured post or bring it by appointment to the workshop, and we will have it back to you within ten working days. There is no charge — this is simply part of what we mean by making something well.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta-band">
+      <h2>By appointment.</h2>
+      <p>To commission a piece, or to arrange a private viewing at the atelier.</p>
+      <a href="/contact" class="cta-link">Speak with us</a>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>© Maliki Atelier</span>
+    <span>White-Glove Courier · Insured Worldwide</span>
+  </footer>
+
+  <script src="/assets/ring-svg.js"></script>
+  <script src="/assets/mock-data.js"></script>
+  <script src="/assets/store.js"></script>
+  <script>
+    const updateCartCount = () => {
+      document.getElementById('cartCount').textContent = Store.cartCount();
+    };
+    Store.on(updateCartCount);
+    updateCartCount();
+  </script>
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Contact — Maliki Atelier</title>
+<meta name="description" content="Speak with the Maliki Atelier. By appointment, in person or in writing. 12 Hatton Garden, London." />
+<meta name="theme-color" content="#0a0908" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Allura&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0908;
+    --charcoal: #141311;
+    --soft: rgba(245, 236, 218, 0.98);
+    --softer: rgba(245, 236, 218, 0.86);
+    --softest: rgba(245, 236, 218, 0.62);
+    --gold-1: #e8c488;
+    --gold-2: #b68a4e;
+    --gold-hi: #f8e3b4;
+    --line: rgba(217, 176, 112, 0.28);
+    --ok: #a3c08b;
+    --danger: #d99a6c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--bg); color: var(--soft);
+    font-family: 'Lora', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100%;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ---- TOPBAR ---- */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: clamp(16px, 3vh, 28px) clamp(20px, 5vw, 56px);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0;
+    background: rgba(10, 9, 8, 0.96);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  .wordmark {
+    display: inline-flex; align-items: center; line-height: 0;
+  }
+  .wordmark img {
+    height: clamp(52px, 5.5vw, 80px); width: auto; display: block;
+  }
+  .nav {
+    display: flex; gap: clamp(18px, 2.8vw, 36px); align-items: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: #f5ecda;
+  }
+  .nav a:hover { color: var(--gold-hi); }
+  .cart-btn {
+    background: transparent; border: 1px solid var(--line); color: var(--soft);
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    padding: 9px 16px; border-radius: 4px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .cart-btn:hover { color: var(--gold-hi); border-color: rgba(217, 176, 112, 0.5); }
+  .cart-btn .count {
+    display: inline-block; background: var(--gold-1); color: #1a120a;
+    border-radius: 100px; padding: 1px 7px; font-size: 10px; font-weight: 600; letter-spacing: 0;
+  }
+
+  /* ---- PAGE HERO ---- */
+  .hero {
+    text-align: center;
+    padding: clamp(56px, 10vh, 110px) 24px clamp(40px, 7vh, 80px);
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.5em; text-indent: 0.5em;
+    text-transform: uppercase; color: var(--gold-1);
+    display: block; padding-bottom: 16px;
+  }
+  .h1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(36px, 5vw, 64px);
+    color: #f5ecda; font-weight: 400;
+    margin-bottom: 18px;
+  }
+  .lede {
+    font-style: italic;
+    color: var(--softer);
+    font-size: clamp(15px, 1.3vw, 18px);
+    line-height: 1.7;
+    letter-spacing: 0.07em;
+    max-width: 520px;
+    margin: 0 auto;
+  }
+
+  /* ---- TWO-COLUMN LAYOUT ---- */
+  .layout {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: clamp(32px, 6vw, 96px);
+    padding: clamp(48px, 8vh, 100px) clamp(20px, 5vw, 56px) clamp(64px, 10vh, 120px);
+    max-width: 1200px;
+    margin: 0 auto;
+    align-items: start;
+  }
+  @media (max-width: 840px) {
+    .layout { grid-template-columns: 1fr; }
+  }
+
+  /* ---- FORM SIDE ---- */
+  .form-col h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 2.4vw, 28px);
+    color: #f5ecda; font-weight: 400;
+    letter-spacing: 0.12em;
+    margin-bottom: 28px;
+  }
+  .form { display: flex; flex-direction: column; gap: 18px; }
+  .form-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 600px) { .form-row2 { grid-template-columns: 1fr; } }
+
+  .field-lbl {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--soft); margin-bottom: 8px; display: block;
+  }
+  .field {
+    display: flex; align-items: center;
+    border-bottom: 1px solid var(--line);
+    transition: border-color 0.4s ease;
+  }
+  .field:focus-within { border-color: rgba(217, 176, 112, 0.7); }
+  .field input, .field select, .field textarea {
+    flex: 1;
+    background: transparent; border: 0; outline: 0;
+    color: #f5ecda;
+    font-family: 'Lora', serif;
+    font-size: 15px; letter-spacing: 0.12em;
+    padding: 12px 2px; resize: none;
+    -webkit-appearance: none;
+  }
+  .field select {
+    cursor: pointer;
+  }
+  .field select option { background: var(--charcoal); color: #f5ecda; }
+  .field input::placeholder, .field textarea::placeholder {
+    color: var(--softest); font-style: italic; letter-spacing: 0.14em;
+  }
+  .field.textarea-field { align-items: flex-start; }
+  .submit-btn {
+    margin-top: 6px;
+    background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
+    border: 0; color: #1a120a; font-weight: 600;
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 15px 32px; border-radius: 4px;
+    transition: filter 0.3s ease;
+    width: 100%;
+  }
+  .submit-btn:hover { filter: brightness(1.07); }
+  .submit-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+  .form-feedback {
+    min-height: 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.38em; text-transform: uppercase;
+    text-align: center;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .form-feedback.show { opacity: 1; }
+  .form-feedback.ok { color: var(--ok); }
+  .form-feedback.err { color: var(--danger); }
+
+  /* ---- INFO SIDE ---- */
+  .info-col {
+    display: flex; flex-direction: column; gap: 28px;
+  }
+  .info-card {
+    border: 1px solid var(--line);
+    background: rgba(20, 19, 17, 0.5);
+    padding: 28px 28px 32px;
+    display: flex; flex-direction: column; gap: 20px;
+  }
+  .appt-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    border: 1px solid var(--line);
+    color: var(--gold-1);
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 7px 14px; border-radius: 100px;
+    align-self: flex-start;
+  }
+  .appt-pill::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--gold-2);
+    border-radius: 50%;
+  }
+  .info-block { display: flex; flex-direction: column; gap: 5px; }
+  .info-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.48em; text-transform: uppercase;
+    color: var(--softest);
+  }
+  .info-value {
+    font-style: italic;
+    color: var(--softer);
+    font-size: 15px; line-height: 1.55;
+    letter-spacing: 0.03em;
+  }
+  .info-email {
+    color: var(--gold-2);
+    transition: color 0.3s ease;
+  }
+  .info-email:hover { color: var(--gold-hi); }
+  .info-divider {
+    width: 100%; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(217, 176, 112, 0.2), transparent);
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    border-top: 1px solid var(--line);
+    padding: clamp(18px, 4vh, 32px) clamp(20px, 5vw, 56px);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--softer);
+  }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="/" class="wordmark" aria-label="Maliki Atelier home">
+      <img src="/assets/maliki-logo.svg" alt="Maliki Atelier">
+    </a>
+    <nav class="nav">
+      <a href="/shop">The Rings</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+      <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <span class="eyebrow">Contact</span>
+    <h1 class="h1">Speak with the atelier</h1>
+    <p class="lede">By appointment, in person or in writing.</p>
+  </section>
+
+  <main class="layout">
+    <!-- FORM -->
+    <div class="form-col">
+      <h2>Make an enquiry</h2>
+      <form class="form" id="contactForm" novalidate>
+        <div class="form-row2">
+          <label>
+            <span class="field-lbl">Name</span>
+            <div class="field"><input id="cName" type="text" autocomplete="name" placeholder="Your name" required /></div>
+          </label>
+          <label>
+            <span class="field-lbl">Email</span>
+            <div class="field"><input id="cEmail" type="email" autocomplete="email" placeholder="your@email.com" required /></div>
+          </label>
+        </div>
+        <label>
+          <span class="field-lbl">Subject</span>
+          <div class="field">
+            <select id="cSubject">
+              <option value="">General enquiry</option>
+              <option value="Commission">Commission</option>
+              <option value="Press">Press</option>
+              <option value="Care &amp; repair">Care &amp; repair</option>
+              <option value="General enquiry">General enquiry</option>
+            </select>
+          </div>
+        </label>
+        <label>
+          <span class="field-lbl">Message</span>
+          <div class="field textarea-field">
+            <textarea id="cMessage" rows="6" placeholder="Tell us what you have in mind…" required></textarea>
+          </div>
+        </label>
+        <button class="submit-btn" type="submit" id="contactSubmit">Send message</button>
+        <div class="form-feedback" id="contactFeedback" role="status" aria-live="polite"></div>
+      </form>
+    </div>
+
+    <!-- INFO CARD -->
+    <div class="info-col">
+      <div class="info-card">
+        <span class="appt-pill">By appointment</span>
+
+        <div class="info-block">
+          <span class="info-label">Address</span>
+          <span class="info-value">12 Hatton Garden<br>London EC1N</span>
+        </div>
+
+        <div class="info-divider" aria-hidden="true"></div>
+
+        <div class="info-block">
+          <span class="info-label">Email</span>
+          <span class="info-value">
+            <a href="mailto:atelier@malikiatelier.com" class="info-email">atelier@malikiatelier.com</a>
+          </span>
+        </div>
+
+        <div class="info-divider" aria-hidden="true"></div>
+
+        <div class="info-block">
+          <span class="info-label">Hours</span>
+          <span class="info-value">By appointment only<br>Tuesday to Saturday</span>
+        </div>
+
+        <div class="info-divider" aria-hidden="true"></div>
+
+        <div class="info-block">
+          <span class="info-label">Note</span>
+          <span class="info-value" style="font-size:14px;">We do not hold open walk-in hours. All visits are arranged in advance — write to us and we will respond within one working day.</span>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>© Maliki Atelier</span>
+    <span>White-Glove Courier · Insured Worldwide</span>
+  </footer>
+
+  <script src="/assets/ring-svg.js"></script>
+  <script src="/assets/mock-data.js"></script>
+  <script src="/assets/store.js"></script>
+  <script>
+    // Cart count
+    const updateCartCount = () => {
+      document.getElementById('cartCount').textContent = Store.cartCount();
+    };
+    Store.on(updateCartCount);
+    updateCartCount();
+
+    // Contact form
+    (function () {
+      const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const form = document.getElementById('contactForm');
+      const btn = document.getElementById('contactSubmit');
+      const fb = document.getElementById('contactFeedback');
+
+      const showFb = (msg, type) => {
+        fb.textContent = msg;
+        fb.className = `form-feedback show ${type}`;
+      };
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('cName').value.trim();
+        const email = document.getElementById('cEmail').value.trim();
+        const subject = document.getElementById('cSubject').value.trim() || 'General enquiry';
+        const message = document.getElementById('cMessage').value.trim();
+
+        if (!name) return showFb('Please enter your name.', 'err');
+        if (!EMAIL_RX.test(email)) return showFb('Please enter a valid email address.', 'err');
+        if (!message) return showFb('Please enter a message.', 'err');
+
+        btn.disabled = true;
+        btn.textContent = 'Sending…';
+
+        try {
+          const res = await fetch('/api/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name, email, subject, message, source: 'contact_page' }),
+          });
+          if (!res.ok) throw new Error('send_failed');
+          showFb('Thank you — the atelier will be in touch.', 'ok');
+          form.reset();
+          btn.textContent = 'Sent';
+        } catch {
+          btn.disabled = false;
+          btn.textContent = 'Send message';
+          showFb('Something went wrong. Please try again.', 'err');
+        }
+      });
+    })();
+  </script>
+</body>
+</html>
