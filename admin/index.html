@@ -2593,7 +2593,23 @@ const renderSettings = () => {
 
   if (state.settingsTab === 'general') {
     const g = s.general || {};
+    const siteMode = (typeof localStorage !== 'undefined' && localStorage.getItem('maliki.site_mode')) || 'coming_soon';
     body.innerHTML = `
+      <div class="card"><div class="card-head"><h2>Site mode</h2></div>
+        <div class="card-body">
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;padding:8px 0">
+            <div>
+              <div style="color:var(--soft);font-weight:500;margin-bottom:6px">Show the live homepage at <code style="color:var(--gold-1);font-family:'Inter',monospace">/</code></div>
+              <div style="color:var(--softer);font-size:12px;line-height:1.5;max-width:560px">Off keeps the cinematic <em>coming-soon</em> page at the root URL. On redirects <code style="color:var(--gold-1)">/</code> to the full live homepage at <code style="color:var(--gold-1)">/home/</code>. <strong style="color:var(--soft)">Per-browser only</strong> — public visitors still see whatever is the file default at <code>/</code>. Use this to preview the live site before swapping it permanently.</div>
+            </div>
+            <label class="switch" style="flex-shrink:0">
+              <input type="checkbox" id="siteModeToggle" ${siteMode === 'live' ? 'checked' : ''} />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+      </div>
+
       <div class="card"><div class="card-head"><h2>Store</h2></div>
         <div class="card-body">
           <div class="form-row split-2">
@@ -2615,6 +2631,14 @@ const renderSettings = () => {
         </div>
       </div>
     `;
+    setTimeout(() => {
+      const t = document.getElementById('siteModeToggle');
+      if (t) t.addEventListener('change', () => {
+        const mode = t.checked ? 'live' : 'coming_soon';
+        localStorage.setItem('maliki.site_mode', mode);
+        toast(t.checked ? 'Live homepage enabled at /' : 'Coming-soon page enabled at /');
+      });
+    }, 0);
   } else if (state.settingsTab === 'branding') {
     const b = s.branding || {};
     body.innerHTML = `
