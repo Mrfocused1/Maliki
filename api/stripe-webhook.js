@@ -227,6 +227,14 @@ module.exports = async (req, res) => {
       const intent = event.data.object;
       const orderId = intent.metadata?.order_id;
       if (orderId) {
+        // Idempotency guard — bail out if this event was already processed
+        const existing = await supabaseFetch(
+          `/orders?id=eq.${encodeURIComponent(orderId)}&select=status&limit=1`
+        ).catch(() => []);
+        if (existing?.[0]?.status === 'paid') {
+          return reply(res, 200, { received: true });
+        }
+
         await supabaseFetch(`/orders?id=eq.${encodeURIComponent(orderId)}`, {
           method: 'PATCH',
           headers: { Prefer: 'return=minimal' },

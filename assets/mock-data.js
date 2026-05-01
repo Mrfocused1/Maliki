@@ -295,6 +295,7 @@
       shipping_address: {
         line1: '—',
         city: c.city,
+        postal: '',
         country: c.country,
       },
     };
@@ -439,8 +440,8 @@ If you would like to try again or use a different card, please return to checkou
   CUSTOMERS.forEach((c, i) => {
     pushEmail({
       template_key: 'welcome',
-      to: c.email,
-      to_name: c.name,
+      recipient_email: c.email,
+      recipient_name: c.name,
       subject: 'Welcome to Maliki Atelier',
       status: pickStatus(i),
       sent_at: c.joined_at,
@@ -452,8 +453,8 @@ If you would like to try again or use a different card, please return to checkou
   ORDERS.forEach((o, i) => {
     pushEmail({
       template_key: 'order_confirmation',
-      to: o.customer_email,
-      to_name: o.customer_name,
+      recipient_email: o.customer_email,
+      recipient_name: o.customer_name,
       order_id: o.id,
       subject: `Your order, ${o.number}, has been received`,
       status: pickStatus(i + 3),
@@ -463,8 +464,8 @@ If you would like to try again or use a different card, please return to checkou
     if (o.status === 'fulfilled') {
       pushEmail({
         template_key: 'shipped',
-        to: o.customer_email,
-        to_name: o.customer_name,
+        recipient_email: o.customer_email,
+        recipient_name: o.customer_name,
         order_id: o.id,
         subject: 'Your piece is on its way',
         status: pickStatus(i + 5),
@@ -478,8 +479,8 @@ If you would like to try again or use a different card, please return to checkou
   CUSTOMERS.slice(0, 12).forEach((c, i) => {
     pushEmail({
       template_key: 'newsletter',
-      to: c.email,
-      to_name: c.name,
+      recipient_email: c.email,
+      recipient_name: c.name,
       subject: 'From the atelier — this season',
       status: pickStatus(i + 7),
       sent_at: daysAgo(14),
@@ -694,6 +695,6 @@ Returns are accepted within 14 days for an unworn piece in its original presenta
     discounts: DISCOUNTS,
     pages: PAGES,
     settings: SETTINGS,
-    seed_version: 4,
+    seed_version: 5,
   };
 })();

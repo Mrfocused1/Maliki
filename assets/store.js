@@ -272,12 +272,12 @@
 
   // ---------- Email log ----------
   const emails = () => read(KEYS.email_log, []);
-  const sendEmail = ({ template_key, to, to_name, subject, order_id }) => {
+  const sendEmail = ({ template_key, recipient_email, recipient_name, subject, order_id }) => {
     const list = emails();
     const e = {
       id: uid('em'),
       template_key,
-      to, to_name,
+      recipient_email, recipient_name,
       subject,
       order_id,
       status: 'queued',

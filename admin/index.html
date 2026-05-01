@@ -1606,7 +1606,7 @@ const renderOrders = () => {
   const all = Store.orders();
   const list = state.orderFilter === 'all' ? all : all.filter((o) => o.status === state.orderFilter);
 
-  const counts = ['all', 'pending', 'paid', 'fulfilled', 'refunded']
+  const counts = ['all', 'pending', 'paid', 'fulfilled', 'refunded', 'failed', 'cancelled']
     .reduce((m, k) => { m[k] = (k === 'all' ? all : all.filter((o) => o.status === k)).length; return m; }, {});
 
   const filterBtn = (key, label) =>
@@ -1620,6 +1620,8 @@ const renderOrders = () => {
         ${filterBtn('paid', 'Paid')}
         ${filterBtn('fulfilled', 'Fulfilled')}
         ${filterBtn('refunded', 'Refunded')}
+        ${filterBtn('failed', 'Failed')}
+        ${filterBtn('cancelled', 'Cancelled')}
       </div>
     </div>
 
@@ -2358,7 +2360,7 @@ const renderEmails = () => {
               <thead><tr><th>Recipient</th><th>Template</th><th>Status</th><th>Sent</th></tr></thead>
               <tbody>${log.filter((e) => broadcastTpls.some((t) => t.key === e.template_key)).slice(0, 20).map((e) => `
                 <tr class="no-hover">
-                  <td>${escape(e.to_name || '—')}<br><small style="color:var(--softer)">${escape(e.to)}</small></td>
+                  <td>${escape(e.recipient_name || '—')}<br><small style="color:var(--softer)">${escape(e.recipient_email)}</small></td>
                   <td><span class="pill">${escape((e.template_key || '').replace(/_/g, ' '))}</span></td>
                   <td><span class="pill ${e.status === 'opened' ? 'live' : (e.status === 'bounced' ? 'refunded' : 'paid')}">${escape(e.status)}</span></td>
                   <td style="color:var(--softer)">${escape(fmtDate(e.sent_at))}</td>
@@ -2393,7 +2395,7 @@ const renderEmails = () => {
         $('#cmpSendBtn').style.display = data.count > 0 ? '' : 'none';
       } catch (err) {
         $('#cmpFb').textContent = err.message;
-        $('#cmpFb').className = 'feedback error';
+        $('#cmpFb').className = 'feedback err';
       } finally {
         $('#cmpPreviewBtn').disabled = false;
       }
@@ -2419,7 +2421,7 @@ const renderEmails = () => {
         state.campaignPreview = null;
       } catch (err) {
         $('#cmpFb').textContent = err.message;
-        $('#cmpFb').className = 'feedback error';
+        $('#cmpFb').className = 'feedback err';
         $('#cmpSendBtn').disabled = false;
         $('#cmpSendBtn').textContent = 'Send campaign';
       }
@@ -2450,7 +2452,7 @@ const renderEmails = () => {
                 ? '<tr class="no-hover"><td colspan="5"><div class="empty">No sent emails yet.</div></td></tr>'
                 : filtered.slice(0, 200).map((e) => `
                   <tr class="no-hover">
-                    <td>${escape(e.to_name || '—')}<br><small style="color:var(--softer)">${escape(e.to)}</small></td>
+                    <td>${escape(e.recipient_name || '—')}<br><small style="color:var(--softer)">${escape(e.recipient_email)}</small></td>
                     <td style="color:var(--soft);max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escape(e.subject)}</td>
                     <td><span class="pill">${escape((e.template_key || '').replace(/_/g, ' '))}</span></td>
                     <td><span class="pill ${e.status === 'opened' ? 'live' : (e.status === 'bounced' ? 'refunded' : 'paid')}">${escape(e.status)}</span></td>

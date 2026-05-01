@@ -96,10 +96,15 @@ const thankYouText = () =>
     'By Appointment',
   ].join('\n');
 
+const escHtml = (s) =>
+  String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+  );
+
 const notificationHtml = (email) => `<!DOCTYPE html>
 <html><body style="font-family:Helvetica,Arial,sans-serif;font-size:14px;color:#222;">
   <p>New waitlist signup on malikiatelier.com:</p>
-  <p style="font-size:18px;font-weight:600;">${email}</p>
+  <p style="font-size:18px;font-weight:600;">${escHtml(email)}</p>
   <p style="color:#777;font-size:12px;">Added to Resend audience &laquo;Waiting List&raquo;.</p>
 </body></html>`;
 
