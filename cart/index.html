@@ -511,7 +511,11 @@
             if (dr) dr.style.display = 'none';
             const dt = document.getElementById('discountToggle');
             if (dt) dt.textContent = 'Have a discount code?';
-            if (b.dataset.act === 'inc') Store.setCartQuantity(id, cur.quantity + 1);
+            if (b.dataset.act === 'inc') {
+              const p = Store.productById(id);
+              const maxQty = (p && p.stock != null) ? p.stock : 99;
+              Store.setCartQuantity(id, Math.min(cur.quantity + 1, maxQty));
+            }
             else if (b.dataset.act === 'dec') Store.setCartQuantity(id, cur.quantity - 1);
             else if (b.dataset.act === 'rm') Store.removeFromCart(id);
           });

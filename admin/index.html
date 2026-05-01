@@ -2510,7 +2510,7 @@ const openTemplateDrawer = (key) => {
 
   const enabledInput = $('#tplEnabled');
   enabledInput.addEventListener('change', () => {
-    const label = enabledInput.closest('div').nextElementSibling?.querySelector('div:first-child');
+    const label = enabledInput.closest('label').nextElementSibling?.querySelector('div:first-child');
     if (label) label.textContent = enabledInput.checked ? 'Active' : 'Inactive';
   });
 

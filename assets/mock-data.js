@@ -286,6 +286,8 @@
       items,
       subtotal_cents: subtotal,
       shipping_cents: SHIPPING_FLAT_CENTS,
+      discount_cents: 0,
+      discount_code: '',
       total_cents: subtotal + SHIPPING_FLAT_CENTS,
       currency: 'GBP',
       status: def.status,
@@ -692,6 +694,6 @@ Returns are accepted within 14 days for an unworn piece in its original presenta
     discounts: DISCOUNTS,
     pages: PAGES,
     settings: SETTINGS,
-    seed_version: 3,
+    seed_version: 4,
   };
 })();
