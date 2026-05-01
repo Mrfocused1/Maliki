@@ -313,6 +313,7 @@ Should you wish to commission a piece, the atelier is at your disposal.
 
 — Maliki Atelier
 By Appointment`,
+      enabled: true,
       updated_at: daysAgo(48),
     },
     {
@@ -328,6 +329,7 @@ A member of the team will contact you within forty-eight hours to confirm hand s
 
 With care,
 — Maliki Atelier`,
+      enabled: true,
       updated_at: daysAgo(35),
     },
     {
@@ -342,6 +344,7 @@ Your order {{order_number}} has left the atelier in the hands of our courier and
 You will be contacted on the morning of arrival to confirm a window.
 
 — Maliki Atelier`,
+      enabled: true,
       updated_at: daysAgo(28),
     },
     {
@@ -354,6 +357,7 @@ You will be contacted on the morning of arrival to confirm a window.
 The piece you were considering remains in your cart. Should you wish to take it further, the atelier is on hand to answer any question — on metal, stone, or sizing.
 
 — Maliki Atelier`,
+      enabled: false,
       updated_at: daysAgo(60),
     },
     {
@@ -366,6 +370,7 @@ The piece you were considering remains in your cart. Should you wish to take it 
 The piece you registered interest in — {{product}} — is once again available. Quantities are limited.
 
 — Maliki Atelier`,
+      enabled: false,
       updated_at: daysAgo(52),
     },
     {
@@ -378,7 +383,38 @@ The piece you registered interest in — {{product}} — is once again available
 A short note from the atelier on the season's commissions, the stones we have been sourcing, and a piece that is about to be released to the private list.
 
 — Maliki Atelier`,
+      enabled: true,
       updated_at: daysAgo(14),
+    },
+    {
+      key: 'vip_welcome',
+      name: 'VIP welcome',
+      description: 'Sent automatically when a customer places their first order over £1,000.',
+      subject: 'Welcome to the Maliki private circle',
+      body: `Dear {{name}},
+
+Your first commission marks the beginning of a continued relationship with the atelier. From this moment, you will have access to private previews, early releases, and a dedicated point of contact.
+
+We look forward to creating many pieces for you.
+
+— Maliki Atelier`,
+      enabled: false,
+      updated_at: daysAgo(7),
+    },
+    {
+      key: 'payment_failed',
+      name: 'Payment failed',
+      description: 'Sent automatically when a payment is declined at checkout.',
+      subject: 'There was an issue with your payment — Order {{order_number}}',
+      body: `Dear {{name}},
+
+We were unable to process the payment for your order {{order_number}}. No charge has been made.
+
+If you would like to try again or use a different card, please return to checkout. The atelier team is also on hand if you would prefer to arrange payment directly.
+
+— Maliki Atelier`,
+      enabled: false,
+      updated_at: daysAgo(7),
     },
   ];
 

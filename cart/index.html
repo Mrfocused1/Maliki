@@ -380,9 +380,14 @@
     // Load Stripe publishable key once
     const initStripe = (() => {
       let p = null;
-      return () => p || (p = fetch('/api/config').then(r => r.json()).then(d => {
-        if (d.stripe_publishable_key) stripeInstance = Stripe(d.stripe_publishable_key);
-      }).catch(() => {}));
+      return () => p || (p = (() => {
+        const ac = new AbortController();
+        const timer = setTimeout(() => ac.abort(), 15000);
+        return fetch('/api/config', { signal: ac.signal }).then(r => r.json()).then(d => {
+          clearTimeout(timer);
+          if (d.stripe_publishable_key) stripeInstance = Stripe(d.stripe_publishable_key);
+        }).catch(() => { clearTimeout(timer); });
+      })());
     })();
 
     // Handle return from 3DS redirect
@@ -466,8 +471,11 @@
               <label class="field"><input id="ckLine1" type="text" autocomplete="address-line1" placeholder="Street address" value="${esc(savedDetails.line1 || '')}" required /></label>
               <label class="field"><input id="ckLine2" type="text" autocomplete="address-line2" placeholder="Apartment, suite, etc. (optional)" value="${esc(savedDetails.line2 || '')}" /></label>
               <div class="row2">
-                <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" value="${esc(savedDetails.city || '')}" /></label>
-                <label class="field">
+                <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" value="${esc(savedDetails.city || '')}" required /></label>
+                <label class="field"><input id="ckPostal" type="text" autocomplete="postal-code" placeholder="Postcode / ZIP" value="${esc(savedDetails.postal || '')}" /></label>
+              </div>
+              <div class="row2">
+                <label class="field" style="grid-column:1/-1">
                   <select id="ckCountry">
                     <option value="">Country</option>
                     ${COUNTRIES.map(c => `<option value="${esc(c)}"${savedDetails.country === c ? ' selected' : ''}>${esc(c)}</option>`).join('')}
@@ -498,6 +506,11 @@
           b.addEventListener('click', () => {
             const cur = Store.cart().find(c => c.product_id === id);
             if (!cur) return;
+            appliedDiscount = null;
+            const dr = document.getElementById('discountRow');
+            if (dr) dr.style.display = 'none';
+            const dt = document.getElementById('discountToggle');
+            if (dt) dt.textContent = 'Have a discount code?';
             if (b.dataset.act === 'inc') Store.setCartQuantity(id, cur.quantity + 1);
             else if (b.dataset.act === 'dec') Store.setCartQuantity(id, cur.quantity - 1);
             else if (b.dataset.act === 'rm') Store.removeFromCart(id);
@@ -544,11 +557,15 @@
         msg.textContent = '';
 
         try {
+          const discAbort = new AbortController();
+          const discTimer = setTimeout(() => discAbort.abort(), 12000);
           const r = await fetch('/api/discount', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ code, subtotal_cents: subtotal }),
+            signal: discAbort.signal,
           });
+          clearTimeout(discTimer);
           const data = await r.json();
           if (!r.ok) {
             const errMap = {
@@ -572,8 +589,8 @@
             document.getElementById('discountVal').textContent = `−${fmtPrice(data.discount_cents, currency)}`;
             document.getElementById('totalVal').textContent = fmtPrice(newTotal, currency);
           }
-        } catch {
-          msg.textContent = 'Could not apply code. Try again.';
+        } catch (err) {
+          msg.textContent = err?.name === 'AbortError' ? 'Request timed out. Try again.' : 'Could not apply code. Try again.';
           msg.className = 'discount-msg err';
         } finally {
           applyBtn.disabled = false;
@@ -587,27 +604,33 @@
         const line1 = document.getElementById('ckLine1').value.trim();
         const line2 = document.getElementById('ckLine2').value.trim();
         const city = document.getElementById('ckCity').value.trim();
+        const postal = document.getElementById('ckPostal').value.trim();
         const country = document.getElementById('ckCountry').value;
         if (!name) return showErr('Please add your full name.');
         if (!EMAIL_RX.test(email)) return showErr('Please add a valid email address.');
         if (!line1) return showErr('Please add your street address.');
+        if (!city) return showErr('Please add your city.');
         if (!country) return showErr('Please choose a country.');
 
-        savedDetails = { name, email, line1, line2, city, country };
+        savedDetails = { name, email, line1, line2, city, postal, country };
         btn.disabled = true;
         btn.textContent = 'Preparing…';
 
         try {
           await initStripe();
+          const ckAbort = new AbortController();
+          const ckTimer = setTimeout(() => ckAbort.abort(), 20000);
           const res = await fetch('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-              customer: { name, email, line1, line2, city, country },
+              customer: { name, email, line1, line2, city, postal, country },
               items: Store.cart(),
               discount_code: appliedDiscount?.code || '',
             }),
+            signal: ckAbort.signal,
           });
+          clearTimeout(ckTimer);
           const data = await res.json();
           if (!res.ok) {
             const msg = data.error === 'insufficient_stock'
@@ -617,8 +640,8 @@
           }
           pendingOrder = data.order;
           showPaymentStep(data.clientSecret, data.order);
-        } catch {
-          showErr('Something went wrong. Please try again.');
+        } catch (err) {
+          showErr(err?.name === 'AbortError' ? 'Request timed out. Please try again.' : 'Something went wrong. Please try again.');
         } finally {
           btn.disabled = false;
           btn.textContent = 'Continue to Payment';
@@ -717,6 +740,13 @@
           Store.clearCart();
           if (Store.loadRemoteCatalog) Store.loadRemoteCatalog();
           renderConfirmation(order);
+        } else {
+          sessionStorage.removeItem('maliki.pending_order');
+          sessionStorage.removeItem('maliki.pending_email');
+          fb.textContent = 'Payment is still processing — please check your email for confirmation.';
+          fb.classList.add('show');
+          payBtn.disabled = false;
+          payBtn.textContent = `Pay ${fmtPrice(order.total_cents, currency)}`;
         }
       });
 

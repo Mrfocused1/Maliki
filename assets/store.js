@@ -189,11 +189,13 @@
       items: lineItems,
       subtotal_cents: subtotal,
       shipping_cents: 0,
+      discount_cents: 0,
+      discount_code: '',
       total_cents: subtotal,
       currency: 'GBP',
       status: 'paid',
       created_at: now,
-      shipping_address: shipping_address || { city: customer.city, country: customer.country },
+      shipping_address: shipping_address || { line1: '', city: customer.city, postal: '', country: customer.country },
     };
     write(KEYS.orders, [o, ...list]);
 

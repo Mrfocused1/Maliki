@@ -33,7 +33,7 @@ const esc = (s) =>
 const orderConfirmationHtml = (order) => {
   const items = order.order_items || [];
   const addr = order.shipping_address || {};
-  const addrParts = [addr.line1, addr.line2, addr.city, addr.country].filter(Boolean);
+  const addrParts = [addr.line1, addr.line2, [addr.city, addr.postal].filter(Boolean).join(' '), addr.country].filter(Boolean);
 
   const itemRows = items
     .map(
@@ -168,6 +168,12 @@ const orderConfirmationText = (order) => {
 const sendConfirmation = async (order) => {
   const { RESEND_API_KEY, NOTIFY_FROM } = process.env;
   if (!RESEND_API_KEY || !NOTIFY_FROM) return;
+
+  // Respect the admin toggle — default to sending if template not found
+  const tplRows = await supabaseFetch('/email_templates?key=eq.order_confirmation&limit=1').catch(() => []);
+  const tpl = tplRows?.[0];
+  if (tpl && tpl.enabled === false) return;
+
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
@@ -179,10 +185,25 @@ const sendConfirmation = async (order) => {
       text: orderConfirmationText(order),
     }),
   });
+  const status = r.ok ? 'sent' : 'failed';
   if (!r.ok) {
     const data = await r.json().catch(() => ({}));
     console.error('stripe-webhook: confirmation email failed', r.status, data);
   }
+  supabaseFetch('/email_log', {
+    method: 'POST',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({
+      id: `em_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
+      template_key: 'order_confirmation',
+      recipient_email: order.customer_email,
+      recipient_name: order.customer_name,
+      subject: `Maliki Atelier — Order ${order.number} Confirmed`,
+      order_id: order.id,
+      status,
+      sent_at: new Date().toISOString(),
+    }),
+  }).catch(() => {});
 };
 
 module.exports = async (req, res) => {
@@ -212,26 +233,27 @@ module.exports = async (req, res) => {
           body: JSON.stringify({ status: 'paid' }),
         });
 
-        // Decrement stock
+        // Decrement stock — batch fetch all products in one query
         const items = await supabaseFetch(
           `/order_items?order_id=eq.${encodeURIComponent(orderId)}&select=product_id,quantity`
         );
-        await Promise.all(
-          (items || []).map(async (item) => {
-            if (!item.product_id) return;
-            const products = await supabaseFetch(
-              `/products?id=eq.${encodeURIComponent(item.product_id)}&select=stock`
-            );
-            const stock = products?.[0]?.stock;
-            if (typeof stock === 'number') {
-              await supabaseFetch(`/products?id=eq.${encodeURIComponent(item.product_id)}`, {
+        const stockItems = (items || []).filter((i) => i.product_id);
+        if (stockItems.length) {
+          const ids = stockItems.map((i) => encodeURIComponent(i.product_id)).join(',');
+          const stockRows = await supabaseFetch(`/products?id=in.(${ids})&select=id,stock`).catch(() => []);
+          const stockMap = Object.fromEntries((stockRows || []).map((r) => [r.id, r.stock]));
+          await Promise.all(
+            stockItems.map((item) => {
+              const stock = stockMap[item.product_id];
+              if (typeof stock !== 'number') return;
+              return supabaseFetch(`/products?id=eq.${encodeURIComponent(item.product_id)}`, {
                 method: 'PATCH',
                 headers: { Prefer: 'return=minimal' },
                 body: JSON.stringify({ stock: Math.max(0, stock - item.quantity) }),
               });
-            }
-          })
-        );
+            })
+          );
+        }
 
         // Fetch order for email + discount increment
         const orderRows = await supabaseFetch(

@@ -359,6 +359,7 @@
   .pill.paid { color: var(--info); border-color: rgba(141, 180, 212, 0.35); }
   .pill.fulfilled { color: var(--ok); border-color: rgba(163, 192, 139, 0.35); }
   .pill.refunded { color: var(--danger); border-color: rgba(217, 154, 108, 0.35); }
+  .pill.failed { color: var(--danger); border-color: rgba(217, 154, 108, 0.35); }
   .pill.featured { color: var(--gold-1); border-color: rgba(217, 176, 112, 0.35); }
 
   /* ---------- Toolbar ---------- */
@@ -433,8 +434,8 @@
     background: var(--surface);
   }
   .drawer footer .feedback { flex: 1; font-size: 12px; color: var(--softer); }
-  .drawer footer .feedback.error { color: var(--danger); }
-  .drawer footer .feedback.ok { color: var(--ok); }
+  .feedback.error { color: var(--danger); }
+  .feedback.ok { color: var(--ok); }
 
   /* ---------- Form ---------- */
   .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 18px; }
@@ -912,6 +913,8 @@ const toast = (msg, kind = 'ok') => {
   }, 2600);
 };
 
+window.addEventListener('maliki:sync-error', (e) => toast(e.detail || 'Sync failed — changes may not have saved', 'err'));
+
 // Tiny inline icons (16x16). Stroke uses currentColor.
 const icon = (name) => {
   const paths = {
@@ -942,6 +945,7 @@ const state = {
   customerFilter: '',
   subscriberFilter: '',
   emailTab: 'templates', // templates | campaigns | activity
+  campaignPreview: null,
   emailFilter: 'all',
   settingsTab: 'general',
   reportsRange: '90', // days
@@ -1658,13 +1662,12 @@ const renderOrders = () => {
 const openOrderDrawer = (orderId) => {
   const o = Store.orderById(orderId);
   if (!o) return;
-  const c = Store.customerById(o.customer_id);
 
   $('#drawerTitle').textContent = `Order ${o.number}`;
   $('#drawerFoot').innerHTML = `
     <div class="feedback" id="ordFeedback">Status:</div>
     <select class="select" id="ordStatus" style="max-width:200px">
-      ${['pending', 'paid', 'fulfilled', 'refunded']
+      ${['pending', 'paid', 'fulfilled', 'refunded', 'failed', 'cancelled']
         .map((s) => `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}
     </select>
     <button class="btn ghost" id="ordClose">Close</button>
@@ -1695,7 +1698,8 @@ const openOrderDrawer = (orderId) => {
         <div class="label">Shipping</div>
         <div class="value">
           ${o.shipping_address?.line1 && o.shipping_address.line1 !== '—' ? escape(o.shipping_address.line1) + '<br>' : ''}
-          ${escape((o.shipping_address?.city || '') + (o.shipping_address?.country ? ', ' + o.shipping_address.country : ''))}
+          ${o.shipping_address?.line2 ? escape(o.shipping_address.line2) + '<br>' : ''}
+          ${escape([o.shipping_address?.city, o.shipping_address?.postal].filter(Boolean).join(' ') + (o.shipping_address?.country ? ', ' + o.shipping_address.country : ''))}
         </div>
       </div>
     </div>
@@ -2360,12 +2364,10 @@ const renderEmails = () => {
       </div>
     `;
 
-    let previewData = null;
-
     $('#cmpPreviewBtn').addEventListener('click', async () => {
       const tplKey = $('#cmpTpl').value;
       const seg = $('#cmpSeg').value;
-      if (!tplKey) { toast('Choose a template first', 'error'); return; }
+      if (!tplKey) { toast('Choose a template first', 'err'); return; }
       $('#cmpPreviewBtn').disabled = true;
       $('#cmpFb').textContent = '';
       try {
@@ -2376,8 +2378,8 @@ const renderEmails = () => {
         });
         const data = await r.json();
         if (!r.ok) throw new Error(data.error || 'preview_failed');
-        previewData = { tplKey, seg };
-        const sampleNames = (data.sample || []).map((s) => s.name).join(', ');
+        state.campaignPreview = { tplKey, seg };
+        const sampleNames = (data.sample || []).map((s) => s?.name).filter(Boolean).join(', ');
         $('#cmpPreviewBox').innerHTML = `
           <strong>${data.count} recipient${data.count === 1 ? '' : 's'}</strong>
           ${data.count > 0 && sampleNames ? `<br><span style="color:var(--softest)">e.g. ${escape(sampleNames)}${data.count > 3 ? ' and more…' : ''}</span>` : ''}
@@ -2394,7 +2396,7 @@ const renderEmails = () => {
     });
 
     $('#cmpSendBtn').addEventListener('click', async () => {
-      if (!previewData) return;
+      if (!state.campaignPreview) return;
       if (!confirm(`Send this campaign? This will send real emails to your customers.`)) return;
       $('#cmpSendBtn').disabled = true;
       $('#cmpSendBtn').textContent = 'Sending…';
@@ -2403,14 +2405,14 @@ const renderEmails = () => {
         const r = await fetch('/api/admin/campaign', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ template_key: previewData.tplKey, segment: previewData.seg, dry_run: false }),
+          body: JSON.stringify({ template_key: state.campaignPreview.tplKey, segment: state.campaignPreview.seg, dry_run: false }),
         });
         const data = await r.json();
         if (!r.ok) throw new Error(data.error || 'send_failed');
         toast(`Sent to ${data.sent} customer${data.sent === 1 ? '' : 's'}`);
         $('#cmpPreviewArea').style.display = 'none';
         $('#cmpSendBtn').style.display = 'none';
-        previewData = null;
+        state.campaignPreview = null;
       } catch (err) {
         $('#cmpFb').textContent = err.message;
         $('#cmpFb').className = 'feedback error';
@@ -2536,14 +2538,19 @@ const openTemplateDrawer = (key) => {
   $('#tplSave').addEventListener('click', () => {
     const fb = $('#tplFb');
     fb.textContent = '';
-    Store.updateTemplate(key, {
-      subject: $('#t-subject').value,
-      body: $('#t-body').value,
-      enabled: $('#tplEnabled').checked,
-    });
-    toast('Template saved');
-    closeDrawer();
-    render();
+    try {
+      Store.updateTemplate(key, {
+        subject: $('#t-subject').value,
+        body: $('#t-body').value,
+        enabled: $('#tplEnabled').checked,
+      });
+      toast('Template saved');
+      closeDrawer();
+      render();
+    } catch (err) {
+      fb.textContent = err.message || 'Save failed';
+      fb.className = 'feedback error';
+    }
   });
 
   $('#backdrop').classList.add('open');
@@ -2868,17 +2875,20 @@ const renderSettings = () => {
 
   const body = $('#settingsBody');
 
+  const pendingSaveBars = [];
   const saveBar = (sectionKey, gather) => {
     const id = `save_${sectionKey}`;
-    const html = `<div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn" id="${id}">Save changes</button></div>`;
-    setTimeout(() => {
+    pendingSaveBars.push({ id, sectionKey, gather });
+    return `<div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn" id="${id}">Save changes</button></div>`;
+  };
+  const flushSaveBars = () => {
+    pendingSaveBars.splice(0).forEach(({ id, sectionKey, gather }) => {
       const btn = document.getElementById(id);
       if (btn) btn.addEventListener('click', () => {
         Store.updateSettings(sectionKey, gather());
         toast('Saved');
       });
-    }, 0);
-    return html;
+    });
   };
 
   if (state.settingsTab === 'general') {
@@ -2921,16 +2931,14 @@ const renderSettings = () => {
         </div>
       </div>
     `;
-    setTimeout(() => {
-      const t = document.getElementById('siteModeToggle');
-      if (t) t.addEventListener('change', () => {
-        const mode = t.checked ? 'live' : 'coming_soon';
-        localStorage.setItem('maliki.site_mode', mode);
-        const g = Store.settings().general || {};
-        Store.updateSettings('general', { ...g, site_mode: mode });
-        toast(t.checked ? 'Site is now live for all visitors' : 'Coming-soon page restored for all visitors');
-      });
-    }, 0);
+    flushSaveBars();
+    const t = document.getElementById('siteModeToggle');
+    if (t) t.addEventListener('change', () => {
+      const mode = t.checked ? 'live' : 'coming_soon';
+      const g = Store.settings().general || {};
+      Store.updateSettings('general', { ...g, site_mode: mode });
+      toast(t.checked ? 'Site is now live for all visitors' : 'Coming-soon page restored for all visitors');
+    });
   } else if (state.settingsTab === 'branding') {
     const b = s.branding || {};
     body.innerHTML = `
@@ -2954,6 +2962,7 @@ const renderSettings = () => {
         </div>
       </div>
     `;
+    flushSaveBars();
   } else if (state.settingsTab === 'integrations') {
     const ints = s.integrations || {};
     body.innerHTML = `
@@ -3026,6 +3035,7 @@ const renderSettings = () => {
         </div>
       </div>
     `;
+    flushSaveBars();
   } else if (state.settingsTab === 'legal') {
     const l = s.legal || {};
     body.innerHTML = `
@@ -3042,6 +3052,7 @@ const renderSettings = () => {
         </div>
       </div>
     `;
+    flushSaveBars();
   }
 };
 

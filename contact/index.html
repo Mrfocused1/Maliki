@@ -353,7 +353,10 @@
 
     (async () => {
       try {
-        const res = await fetch('/api/pages');
+        const ac = new AbortController();
+        const timer = setTimeout(() => ac.abort(), 10000);
+        const res = await fetch('/api/pages', { signal: ac.signal });
+        clearTimeout(timer);
         if (!res.ok) return;
         const { pages } = await res.json();
         const body = pages.contact?.body;
@@ -388,19 +391,23 @@
         btn.textContent = 'Sending…';
 
         try {
+          const ac = new AbortController();
+          const timer = setTimeout(() => ac.abort(), 12000);
           const res = await fetch('/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, subject, message, source: 'contact_page' }),
+            signal: ac.signal,
           });
+          clearTimeout(timer);
           if (!res.ok) throw new Error('send_failed');
           showFb('Thank you — the atelier will be in touch.', 'ok');
           form.reset();
           btn.textContent = 'Sent';
-        } catch {
+        } catch (err) {
           btn.disabled = false;
           btn.textContent = 'Send message';
-          showFb('Something went wrong. Please try again.', 'err');
+          showFb(err?.name === 'AbortError' ? 'Request timed out. Please try again.' : 'Something went wrong. Please try again.', 'err');
         }
       });
     })();

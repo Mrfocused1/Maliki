@@ -329,7 +329,10 @@
         el.innerHTML = paras.map(p => `<p>${esc(p)}</p>`).join('');
       };
       try {
-        const res = await fetch('/api/pages');
+        const ac = new AbortController();
+        const timer = setTimeout(() => ac.abort(), 10000);
+        const res = await fetch('/api/pages', { signal: ac.signal });
+        clearTimeout(timer);
         if (!res.ok) return;
         const { pages } = await res.json();
         fill('prose-about', pages.about?.body);
