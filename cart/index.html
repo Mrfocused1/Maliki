@@ -513,7 +513,7 @@
             if (dt) dt.textContent = 'Have a discount code?';
             if (b.dataset.act === 'inc') {
               const p = Store.productById(id);
-              const maxQty = (p && p.stock != null) ? p.stock : 99;
+              const maxQty = (p && p.stock != null) ? p.stock : 5;
               Store.setCartQuantity(id, Math.min(cur.quantity + 1, maxQty));
             }
             else if (b.dataset.act === 'dec') Store.setCartQuantity(id, cur.quantity - 1);

@@ -49,7 +49,7 @@ module.exports = async (req, res) => {
     const label =
       discount.type === 'percent'
         ? `${Number(discount.value)}% off`
-        : `£${(Number(discount.value) / 100).toFixed(0)} off`;
+        : `£${(Number(discount.value) / 100).toFixed(2).replace(/\.00$/, '')} off`;
 
     return json(res, 200, { valid: true, discount_cents, label, code: discount.code });
   } catch (err) {
