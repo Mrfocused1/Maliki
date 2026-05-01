@@ -622,6 +622,7 @@
 
         try {
           await initStripe();
+          if (!stripeInstance) return showErr('Payment is temporarily unavailable. Please refresh and try again.');
           const ckAbort = new AbortController();
           const ckTimer = setTimeout(() => ckAbort.abort(), 20000);
           const res = await fetch('/api/checkout', {
