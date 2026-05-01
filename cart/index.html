@@ -240,6 +240,20 @@
     font-size: 12px; color: var(--softest); letter-spacing: 0.04em; line-height: 1.6; font-style: italic; text-align: center;
   }
 
+  /* ---------- Stripe element host ---------- */
+  #payment-element {
+    margin: 20px 0 10px;
+  }
+  .back-link {
+    display: inline-block; margin-top: 14px;
+    background: none; border: 0; padding: 0;
+    color: var(--softer);
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.38em; text-transform: uppercase;
+    cursor: pointer; transition: color 0.3s;
+  }
+  .back-link:hover { color: var(--gold-hi); }
+
   /* ---------- Confirmation ---------- */
   .confirm {
     grid-column: 1 / -1;
@@ -311,6 +325,7 @@
     <span>White-Glove Courier · Insured Worldwide</span>
   </footer>
 
+  <script src="https://js.stripe.com/v3/"></script>
   <script src="/assets/ring-svg.js"></script>
   <script src="/assets/mock-data.js"></script>
   <script src="/assets/store.js"></script>
@@ -320,52 +335,74 @@
       try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0 }).format((cents || 0) / 100); }
       catch { return `£${((cents || 0) / 100).toFixed(0)}`; }
     };
-    const escape = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+    const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
     const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
     const COUNTRIES = ['United Kingdom','Ireland','France','Italy','Spain','Germany','Switzerland','Austria','Netherlands','Belgium','Sweden','Norway','Denmark','Greece','Portugal','United States','Canada','Australia','New Zealand','Singapore','Japan','South Korea','Hong Kong','UAE','Nigeria','South Africa'];
 
     const root = document.getElementById('root');
+    let stripeInstance = null;
+    let stripeElements = null;
+    let pendingOrder = null;
+    let savedDetails = {};
 
-    const cartLines = () => {
-      return Store.cart()
-        .map((it) => {
-          const p = Store.productById(it.product_id);
-          if (!p) return null;
-          return { product: p, quantity: it.quantity };
-        })
-        .filter(Boolean);
-    };
+    // Load Stripe publishable key once
+    const initStripe = (() => {
+      let p = null;
+      return () => p || (p = fetch('/api/config').then(r => r.json()).then(d => {
+        if (d.stripe_publishable_key) stripeInstance = Stripe(d.stripe_publishable_key);
+      }).catch(() => {}));
+    })();
 
-    const renderEmpty = () => {
+    // Handle return from 3DS redirect
+    const params = new URLSearchParams(location.search);
+    if (params.get('redirect_status') === 'succeeded') {
+      const num = sessionStorage.getItem('maliki.pending_order') || '';
+      const email = sessionStorage.getItem('maliki.pending_email') || '';
+      sessionStorage.removeItem('maliki.pending_order');
+      sessionStorage.removeItem('maliki.pending_email');
+      Store.clearCart();
+      history.replaceState({}, '', '/cart/');
+      renderConfirmation({ number: num, customer_email: email });
+    } else {
+      Store.on(() => { if (!pendingOrder) renderCart(); });
+      renderCart();
+      initStripe();
+    }
+
+    function cartLines() {
+      return Store.cart().map(it => {
+        const p = Store.productById(it.product_id);
+        return p ? { product: p, quantity: it.quantity } : null;
+      }).filter(Boolean);
+    }
+
+    function renderEmpty() {
       root.innerHTML = `
         <div class="confirm" style="grid-column:1/-1">
           <h2>Your cart is empty</h2>
           <p>Begin with the collection.</p>
           <a class="back" href="/shop">View the shop</a>
-        </div>
-      `;
-    };
+        </div>`;
+    }
 
-    const renderCart = () => {
+    function renderCart() {
+      if (pendingOrder) return;
       const lines = cartLines();
-      if (lines.length === 0) return renderEmpty();
+      if (!lines.length) return renderEmpty();
 
       const subtotal = lines.reduce((s, l) => s + l.product.price_cents * l.quantity, 0);
-      const shipping = 0;
-      const total = subtotal + shipping;
       const currency = lines[0].product.currency;
 
       root.innerHTML = `
         <section class="panel">
           <header><h2>Items</h2></header>
           <div class="body" id="lines">
-            ${lines.map((l) => `
-              <div class="line" data-pid="${escape(l.product.id)}">
-                <div class="img"><img src="${escape((l.product.images || [])[0] || '')}" alt=""></div>
+            ${lines.map(l => `
+              <div class="line" data-pid="${esc(l.product.id)}">
+                <div class="img"><img src="${esc((l.product.images || [])[0] || '')}" alt=""></div>
                 <div class="info">
-                  <div class="title">${escape(l.product.title)}</div>
-                  <div class="subtitle">${escape(l.product.subtitle || '')}</div>
+                  <div class="title">${esc(l.product.title)}</div>
+                  <div class="subtitle">${esc(l.product.subtitle || '')}</div>
                   <div class="controls">
                     <div class="qty">
                       <button type="button" data-act="dec" aria-label="Decrease">−</button>
@@ -375,49 +412,44 @@
                     <button class="remove" type="button" data-act="rm">Remove</button>
                   </div>
                 </div>
-                <div class="price">${escape(fmtPrice(l.product.price_cents * l.quantity, l.product.currency))}</div>
-              </div>
-            `).join('')}
+                <div class="price">${esc(fmtPrice(l.product.price_cents * l.quantity, l.product.currency))}</div>
+              </div>`).join('')}
           </div>
         </section>
 
         <aside class="panel summary">
           <header><h2>Summary</h2></header>
           <div class="body">
-            <div class="row"><span class="lbl">Subtotal</span><span>${escape(fmtPrice(subtotal, currency))}</span></div>
+            <div class="row"><span class="lbl">Subtotal</span><span>${esc(fmtPrice(subtotal, currency))}</span></div>
             <div class="row"><span class="lbl">Shipping</span><span>White-glove courier</span></div>
-            <div class="row total"><span class="lbl">Total</span><span class="val">${escape(fmtPrice(total, currency))}</span></div>
+            <div class="row total"><span class="lbl">Total</span><span class="val">${esc(fmtPrice(subtotal, currency))}</span></div>
 
             <form class="form" id="checkoutForm" novalidate>
               <div class="lbl">Your details</div>
               <div class="row2">
-                <label class="field"><input id="ckName" type="text" autocomplete="name" placeholder="Full name" required /></label>
-                <label class="field"><input id="ckEmail" type="email" autocomplete="email" placeholder="Email" required /></label>
+                <label class="field"><input id="ckName" type="text" autocomplete="name" placeholder="Full name" value="${esc(savedDetails.name || '')}" required /></label>
+                <label class="field"><input id="ckEmail" type="email" autocomplete="email" placeholder="Email" value="${esc(savedDetails.email || '')}" required /></label>
               </div>
               <div class="row2">
-                <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" /></label>
+                <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" value="${esc(savedDetails.city || '')}" /></label>
                 <label class="field">
                   <select id="ckCountry">
                     <option value="">Select country</option>
-                    ${COUNTRIES.map((c) => `<option value="${escape(c)}">${escape(c)}</option>`).join('')}
+                    ${COUNTRIES.map(c => `<option value="${esc(c)}"${savedDetails.country === c ? ' selected' : ''}>${esc(c)}</option>`).join('')}
                   </select>
                 </label>
               </div>
-
-              <button class="place" id="placeBtn" type="submit">Place Order</button>
+              <button class="place" id="placeBtn" type="submit">Continue to Payment</button>
               <div class="feedback" id="checkoutFeedback"></div>
-              <div class="legal">This is a demonstration store — no payment is taken. Submitting will record a mock order in the admin dashboard.</div>
             </form>
           </div>
-        </aside>
-      `;
+        </aside>`;
 
-      // Bind line controls
-      document.querySelectorAll('.line').forEach((row) => {
+      document.querySelectorAll('.line').forEach(row => {
         const id = row.dataset.pid;
-        const cur = Store.cart().find((c) => c.product_id === id);
-        row.querySelectorAll('button[data-act]').forEach((b) => {
+        row.querySelectorAll('button[data-act]').forEach(b => {
           b.addEventListener('click', () => {
+            const cur = Store.cart().find(c => c.product_id === id);
             if (!cur) return;
             if (b.dataset.act === 'inc') Store.setCartQuantity(id, cur.quantity + 1);
             else if (b.dataset.act === 'dec') Store.setCartQuantity(id, cur.quantity - 1);
@@ -428,60 +460,156 @@
 
       const form = document.getElementById('checkoutForm');
       const fb = document.getElementById('checkoutFeedback');
-      const placeBtn = document.getElementById('placeBtn');
-      form.addEventListener('submit', async (e) => {
+      const btn = document.getElementById('placeBtn');
+
+      form.addEventListener('submit', async e => {
         e.preventDefault();
         const name = document.getElementById('ckName').value.trim();
         const email = document.getElementById('ckEmail').value.trim();
         const city = document.getElementById('ckCity').value.trim();
         const country = document.getElementById('ckCountry').value;
-        if (!name) return fail('Please add your name.');
-        if (!EMAIL_RX.test(email)) return fail('Please add a valid email.');
-        if (!country) return fail('Please choose a country.');
+        if (!name) return showErr('Please add your name.');
+        if (!EMAIL_RX.test(email)) return showErr('Please add a valid email.');
+        if (!country) return showErr('Please choose a country.');
 
-        placeBtn.disabled = true; placeBtn.textContent = 'Placing…';
+        savedDetails = { name, email, city, country };
+        btn.disabled = true;
+        btn.textContent = 'Preparing…';
+
         try {
-          const items = Store.cart();
-          const order = Store.placeRemoteOrder
-            ? await Store.placeRemoteOrder({
-              customer: { name, email, city, country },
-              items,
-              shipping_address: { city, country },
-            })
-            : Store.placeOrder({
-              customer: Store.upsertCustomer({ name, email, city, country }),
-              items,
-              shipping_address: { city, country },
-            });
-          Store.clearCart();
-          if (Store.loadRemoteCatalog) Store.loadRemoteCatalog();
-          renderConfirmation(order);
-        } catch (err) {
-          fail(err.message === 'insufficient_stock'
-            ? 'One of these pieces is no longer available in that quantity.'
-            : 'Something went wrong. Please try again.');
-          placeBtn.disabled = false; placeBtn.textContent = 'Place Order';
+          await initStripe();
+          const res = await fetch('/api/checkout', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ customer: { name, email, city, country }, items: Store.cart(), shipping_address: { city, country } }),
+          });
+          const data = await res.json();
+          if (!res.ok) {
+            const msg = data.error === 'insufficient_stock'
+              ? 'One of these pieces is no longer available in that quantity.'
+              : 'Something went wrong. Please try again.';
+            return showErr(msg);
+          }
+          pendingOrder = data.order;
+          showPaymentStep(data.clientSecret, data.order);
+        } catch {
+          showErr('Something went wrong. Please try again.');
+        } finally {
+          btn.disabled = false;
+          btn.textContent = 'Continue to Payment';
         }
       });
 
-      function fail(msg) { fb.textContent = msg; fb.classList.add('show'); }
-    };
+      function showErr(msg) { fb.textContent = msg; fb.classList.add('show'); }
+    }
 
-    const renderConfirmation = (order) => {
+    function showPaymentStep(clientSecret, order) {
+      const lines = cartLines();
+      const currency = lines[0]?.product?.currency || 'GBP';
+
+      root.innerHTML = `
+        <section class="panel">
+          <header><h2>Items</h2></header>
+          <div class="body">
+            ${lines.map(l => `
+              <div class="line">
+                <div class="img"><img src="${esc((l.product.images || [])[0] || '')}" alt=""></div>
+                <div class="info">
+                  <div class="title">${esc(l.product.title)}</div>
+                  <div class="subtitle">${esc(l.product.subtitle || '')}</div>
+                </div>
+                <div class="price">${esc(fmtPrice(l.product.price_cents * l.quantity, l.product.currency))}</div>
+              </div>`).join('')}
+          </div>
+        </section>
+
+        <aside class="panel summary">
+          <header><h2>Payment</h2></header>
+          <div class="body">
+            <div class="row total" style="margin-bottom:4px">
+              <span class="lbl">Total</span>
+              <span class="val">${esc(fmtPrice(order.total_cents, currency))}</span>
+            </div>
+            <div id="payment-element"></div>
+            <button class="place" id="payBtn">Pay ${esc(fmtPrice(order.total_cents, currency))}</button>
+            <div class="feedback" id="payFeedback"></div>
+            <button class="back-link" id="backBtn" type="button">← Back to details</button>
+          </div>
+        </aside>`;
+
+      const appearance = {
+        theme: 'night',
+        variables: {
+          colorPrimary: '#d9b070',
+          colorBackground: '#141311',
+          colorText: '#f5ecda',
+          colorTextSecondary: 'rgba(245,236,218,0.62)',
+          colorDanger: '#d99a6c',
+          fontFamily: "'Lora', Georgia, serif",
+          borderRadius: '0px',
+        },
+        rules: {
+          '.Input': { border: 'none', borderBottom: '1px solid rgba(217,176,112,0.28)', borderRadius: '0', backgroundColor: 'transparent', boxShadow: 'none', padding: '12px 2px' },
+          '.Input:focus': { borderBottom: '1px solid rgba(217,176,112,0.7)', boxShadow: 'none' },
+          '.Label': { fontFamily: "'Playfair Display', serif", fontSize: '11px', letterSpacing: '0.42em', textTransform: 'uppercase' },
+        },
+      };
+
+      stripeElements = stripeInstance.elements({ clientSecret, appearance });
+      const paymentEl = stripeElements.create('payment');
+      paymentEl.mount('#payment-element');
+
+      const payBtn = document.getElementById('payBtn');
+      const fb = document.getElementById('payFeedback');
+
+      payBtn.addEventListener('click', async () => {
+        payBtn.disabled = true;
+        payBtn.textContent = 'Processing…';
+        fb.classList.remove('show');
+
+        sessionStorage.setItem('maliki.pending_order', order.number);
+        sessionStorage.setItem('maliki.pending_email', order.customer_email);
+
+        const { error, paymentIntent } = await stripeInstance.confirmPayment({
+          elements: stripeElements,
+          confirmParams: { return_url: `${location.origin}/cart/` },
+          redirect: 'if_required',
+        });
+
+        if (error) {
+          sessionStorage.removeItem('maliki.pending_order');
+          sessionStorage.removeItem('maliki.pending_email');
+          fb.textContent = error.message || 'Payment failed. Please try again.';
+          fb.classList.add('show');
+          payBtn.disabled = false;
+          payBtn.textContent = `Pay ${fmtPrice(order.total_cents, currency)}`;
+        } else if (paymentIntent && paymentIntent.status === 'succeeded') {
+          sessionStorage.removeItem('maliki.pending_order');
+          sessionStorage.removeItem('maliki.pending_email');
+          Store.clearCart();
+          if (Store.loadRemoteCatalog) Store.loadRemoteCatalog();
+          renderConfirmation(order);
+        }
+      });
+
+      document.getElementById('backBtn').addEventListener('click', () => {
+        pendingOrder = null;
+        stripeElements = null;
+        renderCart();
+      });
+    }
+
+    function renderConfirmation(order) {
       root.innerHTML = `
         <div class="confirm">
           <div class="seal">M</div>
           <h2>Thank You</h2>
           <p>Your order has been received. The atelier will be in touch shortly to arrange your white-glove delivery.</p>
-          <div class="order">${escape(order.number)}</div>
-          <p style="font-size:14px;color:var(--softer);margin-top:18px">A confirmation has been recorded against <strong style="color:var(--soft)">${escape(order.customer_email)}</strong>.</p>
+          <div class="order">${esc(order.number)}</div>
+          <p style="font-size:14px;color:var(--softer);margin-top:18px">A confirmation will be sent to <strong style="color:var(--soft)">${esc(order.customer_email)}</strong>.</p>
           <a class="back" href="/shop">Continue browsing</a>
-        </div>
-      `;
-    };
-
-    Store.on(() => renderCart());
-    renderCart();
+        </div>`;
+    }
   </script>
 </body>
 </html>

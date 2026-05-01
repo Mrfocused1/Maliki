@@ -1,5 +1,6 @@
 const { sameOrigin } = require('./_lib/auth');
-const { normalizeOrder, supabaseFetch } = require('./_lib/supabase');
+const { supabaseFetch } = require('./_lib/supabase');
+const { createPaymentIntent } = require('./_lib/stripe');
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -36,7 +37,7 @@ module.exports = async (req, res) => {
 
   try {
     const products = await supabaseFetch('/products?select=*,product_images(url,position)&published=eq.true');
-    const productById = new Map(products.map((product) => [product.id, product]));
+    const productById = new Map(products.map((p) => [p.id, p]));
     const lineItems = [];
 
     for (const item of items) {
@@ -56,8 +57,9 @@ module.exports = async (req, res) => {
       });
     }
 
-    const existingCustomers = await supabaseFetch(`/customers?email=eq.${encodeURIComponent(email)}&limit=1`);
-    let customer = existingCustomers[0];
+    // Upsert customer
+    const existing = await supabaseFetch(`/customers?email=eq.${encodeURIComponent(email)}&limit=1`);
+    let customer = existing[0];
     if (customer) {
       const updated = await supabaseFetch(`/customers?id=eq.${encodeURIComponent(customer.id)}`, {
         method: 'PATCH',
@@ -73,21 +75,32 @@ module.exports = async (req, res) => {
     }
 
     const subtotal = lineItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+    const orderId = uid('ord');
+    const orderNum = orderNumber();
+
+    // Create Stripe Payment Intent
+    const intent = await createPaymentIntent({
+      amount: subtotal,
+      currency: 'GBP',
+      metadata: { order_id: orderId, order_number: orderNum },
+    });
+
+    // Create pending order
     const createdOrders = await supabaseFetch('/orders', {
       method: 'POST',
       body: JSON.stringify({
-        id: uid('ord'),
-        number: orderNumber(),
+        id: orderId,
+        number: orderNum,
         customer_id: customer.id,
         customer_email: email,
         customer_name: name,
         subtotal_cents: subtotal,
         shipping_cents: 0,
-        discount_cents: 0,
         total_cents: subtotal,
         currency: 'GBP',
         status: 'pending',
         shipping_address: { city, country },
+        stripe_payment_intent_id: intent.id,
       }),
     });
     const order = createdOrders[0];
@@ -97,18 +110,15 @@ module.exports = async (req, res) => {
       body: JSON.stringify(lineItems.map((item) => ({ order_id: order.id, ...item }))),
     });
 
-    await Promise.all(lineItems.map(async (item) => {
-      const product = productById.get(item.product_id);
-      if (typeof product.stock !== 'number') return;
-      await supabaseFetch(`/products?id=eq.${encodeURIComponent(item.product_id)}`, {
-        method: 'PATCH',
-        body: JSON.stringify({ stock: Math.max(0, product.stock - item.quantity) }),
-      });
-    }));
-
     return json(res, 200, {
-      order: normalizeOrder({ ...order, order_items: lineItems }),
-      customer,
+      clientSecret: intent.client_secret,
+      order: {
+        id: order.id,
+        number: order.number,
+        customer_email: email,
+        total_cents: subtotal,
+        currency: 'GBP',
+      },
     });
   } catch (error) {
     console.error('checkout:', error.status || error.message, error.data || '');

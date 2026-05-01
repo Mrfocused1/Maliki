@@ -37,8 +37,10 @@ const api = {
   '/api/admin/session': require('./api/admin/session'),
   '/api/admin/settings': require('./api/admin/settings'),
   '/api/catalog': require('./api/catalog'),
+  '/api/config': require('./api/config'),
   '/api/pages': require('./api/pages'),
   '/api/site-mode': require('./api/site-mode'),
+  '/api/stripe-webhook': require('./api/stripe-webhook'),
   '/api/checkout': require('./api/checkout'),
   '/api/contact': require('./api/contact'),
   '/api/notify': require('./api/notify'),
@@ -77,14 +79,25 @@ const readBody = (req) =>
   });
 
 const runApi = async (handler, req, res) => {
-  req.body = await readBody(req);
-  res.status = (code) => {
-    res.statusCode = code;
-    return res;
-  };
-  res.send = (body) => {
-    if (!res.writableEnded) res.end(body);
-  };
+  const chunks = [];
+  await new Promise((resolve, reject) => {
+    req.on('data', (c) => chunks.push(c));
+    req.on('end', resolve);
+    req.on('error', reject);
+  });
+  const rawBody = Buffer.concat(chunks).toString('utf8');
+  req.rawBody = rawBody;
+  if (rawBody) {
+    if ((req.headers['content-type'] || '').includes('application/json')) {
+      try { req.body = JSON.parse(rawBody); } catch { req.body = {}; }
+    } else {
+      req.body = rawBody;
+    }
+  } else {
+    req.body = {};
+  }
+  res.status = (code) => { res.statusCode = code; return res; };
+  res.send = (body) => { if (!res.writableEnded) res.end(body); };
   await handler(req, res);
 };
 
