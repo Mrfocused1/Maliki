@@ -603,27 +603,57 @@
   .swatch { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 10px; vertical-align: middle; }
 
   /* ---------- Email template card grid ---------- */
-  .tpl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+  .tpl-section { margin-bottom: 28px; }
+  .tpl-section-label {
+    font-size: 10px; letter-spacing: 0.38em; text-transform: uppercase;
+    color: var(--softest); margin-bottom: 12px; padding-bottom: 10px;
+    border-bottom: 1px solid var(--line);
+  }
+  .tpl-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
   @media (max-width: 900px) { .tpl-grid { grid-template-columns: 1fr; } }
   .tpl-card {
     border: 1px solid var(--line);
     background: var(--surface);
-    padding: 18px 20px;
+    padding: 16px 18px;
     border-radius: 6px;
     cursor: pointer;
-    transition: border-color 0.2s ease, transform 0.2s ease;
+    transition: border-color 0.2s ease, transform 0.15s ease;
+    position: relative;
   }
-  .tpl-card:hover { border-color: rgba(217, 176, 112, 0.45); transform: translateY(-2px); }
-  .tpl-card .key {
-    font-size: 10px; letter-spacing: 0.32em; text-transform: uppercase;
-    color: var(--gold-1); margin-bottom: 8px;
+  .tpl-card:hover { border-color: rgba(217, 176, 112, 0.45); transform: translateY(-1px); }
+  .tpl-card.disabled { opacity: 0.55; }
+  .tpl-card-head {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 10px;
   }
+  .tpl-badge {
+    font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase;
+    padding: 3px 7px; border-radius: 3px;
+  }
+  .tpl-badge.auto { background: rgba(217,176,112,0.14); color: var(--gold-1); }
+  .tpl-badge.broadcast { background: rgba(163,192,139,0.13); color: #a3c08b; }
   .tpl-card h3 {
     font-family: 'Cormorant Garamond', serif; font-style: italic; font-weight: 400;
-    font-size: 22px; color: #f5ecda; margin-bottom: 8px;
+    font-size: 20px; color: #f5ecda; margin-bottom: 6px;
   }
-  .tpl-card .desc { color: var(--softer); font-size: 13px; line-height: 1.5; margin-bottom: 14px; }
-  .tpl-card .stats { display: flex; gap: 14px; font-size: 11px; color: var(--softest); letter-spacing: 0.06em; }
+  .tpl-card .desc { color: var(--softer); font-size: 12px; line-height: 1.5; margin-bottom: 12px; }
+  .tpl-card .stats { display: flex; gap: 12px; font-size: 11px; color: var(--softest); letter-spacing: 0.04em; }
+
+  /* Campaign form */
+  .campaign-box {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 6px; padding: 24px 26px; max-width: 520px;
+  }
+  .campaign-box h3 {
+    font-family: 'Cormorant Garamond', serif; font-style: italic;
+    font-size: 20px; color: #f5ecda; margin-bottom: 18px; font-weight: 400;
+  }
+  .campaign-preview {
+    background: var(--surface-2); border: 1px solid var(--line);
+    border-radius: 4px; padding: 12px 16px; margin: 12px 0;
+    font-size: 13px; color: var(--softer); line-height: 1.6;
+  }
+  .campaign-preview strong { color: var(--soft); }
 
   /* Email preview panel inside drawer */
   .email-preview {
@@ -911,7 +941,7 @@ const state = {
   orderFilter: 'all',
   customerFilter: '',
   subscriberFilter: '',
-  emailTab: 'templates', // templates | activity
+  emailTab: 'templates', // templates | campaigns | activity
   emailFilter: 'all',
   settingsTab: 'general',
   reportsRange: '90', // days
@@ -1774,8 +1804,9 @@ const openCustomerDrawer = (customerId) => {
 
   $('#drawerTitle').textContent = c.name;
   $('#drawerFoot').innerHTML = `
-    <div class="feedback"></div>
+    <div class="feedback" id="custFb"></div>
     <button class="btn ghost" id="custClose">Close</button>
+    <button class="btn ghost" id="custEmail">Email customer</button>
   `;
   $('#drawerBody').innerHTML = `
     <div class="detail-meta">
@@ -1820,6 +1851,53 @@ const openCustomerDrawer = (customerId) => {
   $$('[data-oid]', $('#drawerBody')).forEach((el) =>
     el.addEventListener('click', () => openOrderDrawer(el.dataset.oid))
   );
+
+  $('#custEmail').addEventListener('click', () => {
+    const templates = Store.emailTemplates();
+    const existing = $('#custEmailSection');
+    if (existing) { existing.remove(); return; }
+    const section = document.createElement('div');
+    section.id = 'custEmailSection';
+    section.style.cssText = 'margin-top:20px;padding-top:18px;border-top:1px solid var(--line)';
+    section.innerHTML = `
+      <div class="lbl" style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--softest);margin-bottom:10px">Send email to ${escape(c.name)}</div>
+      <div class="form-row" style="margin-bottom:10px">
+        <select class="input" id="custEmailTpl">
+          <option value="">Choose template…</option>
+          ${templates.map((t) => `<option value="${escape(t.key)}">${escape(t.name || t.key)}</option>`).join('')}
+        </select>
+      </div>
+      <button class="btn sm" id="custEmailSend">Send</button>
+      <div class="feedback" id="custEmailFb" style="margin-top:8px"></div>
+    `;
+    $('#drawerBody').appendChild(section);
+
+    $('#custEmailSend').addEventListener('click', async () => {
+      const tplKey = $('#custEmailTpl').value;
+      const fb = $('#custEmailFb');
+      if (!tplKey) { fb.textContent = 'Choose a template.'; fb.className = 'feedback error'; return; }
+      $('#custEmailSend').disabled = true;
+      $('#custEmailSend').textContent = 'Sending…';
+      fb.textContent = '';
+      try {
+        const r = await fetch('/api/admin/campaign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ template_key: tplKey, segment: `customer:${c.id}`, dry_run: false }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || 'send_failed');
+        fb.textContent = `Sent to ${c.email}`;
+        fb.className = 'feedback ok';
+        $('#custEmailSend').textContent = 'Sent ✓';
+      } catch (err) {
+        fb.textContent = err.message;
+        fb.className = 'feedback error';
+        $('#custEmailSend').disabled = false;
+        $('#custEmailSend').textContent = 'Send';
+      }
+    });
+  });
 
   $('#backdrop').classList.add('open');
   $('#drawer').classList.add('open');
@@ -2129,49 +2207,218 @@ const openDiscountDrawer = (id) => {
 };
 
 // ====================================================================
-// Emails — templates + activity log
+// Emails — templates + campaigns + activity log
 // ====================================================================
+
+const TEMPLATE_META = {
+  welcome:            { trigger: 'auto',      triggerDesc: 'Fires when a new customer signs up or joins the private list.' },
+  order_confirmation: { trigger: 'auto',      triggerDesc: 'Fires automatically when a Stripe payment is confirmed.' },
+  shipped:            { trigger: 'auto',      triggerDesc: 'Fires when you mark an order as Fulfilled.' },
+  payment_failed:     { trigger: 'auto',      triggerDesc: 'Fires when a customer\'s Stripe payment is declined.' },
+  vip_welcome:        { trigger: 'auto',      triggerDesc: 'Fires when a customer\'s first paid order exceeds £1,000.' },
+  win_back:           { trigger: 'broadcast', triggerDesc: 'Send manually to customers with no order in 12+ months.' },
+  review_request:     { trigger: 'broadcast', triggerDesc: 'Send manually to customers 2+ weeks after fulfilment.' },
+  new_collection:     { trigger: 'broadcast', triggerDesc: 'Send manually to announce new arrivals to all customers.' },
+  care_reminder:      { trigger: 'broadcast', triggerDesc: 'Send manually to customers 30+ days after delivery.' },
+};
+
+const SAMPLE_VARS = { name: 'Eleanor Whitfield', order_number: 'MA-1042', product: 'The Celestine' };
+
 const renderEmails = () => {
-  $('#topbar').innerHTML = `<h1>Emails <small>${Store.emails().length} sent · ${Store.emailTemplates().length} templates</small></h1>`;
+  const templates = Store.emailTemplates();
+  const log = Store.emails();
+  const enabledCount = templates.filter((t) => t.enabled).length;
+
+  $('#topbar').innerHTML = `<h1>Emails <small>${log.length} sent · ${enabledCount} active</small></h1>`;
 
   const subtabs = `
     <div class="subtabs">
       <button class="subtab ${state.emailTab === 'templates' ? 'active' : ''}" data-tab="templates">Templates</button>
+      <button class="subtab ${state.emailTab === 'campaigns' ? 'active' : ''}" data-tab="campaigns">Campaigns</button>
       <button class="subtab ${state.emailTab === 'activity' ? 'active' : ''}" data-tab="activity">Activity</button>
     </div>
   `;
 
   if (state.emailTab === 'templates') {
-    const templates = Store.emailTemplates();
-    const log = Store.emails();
     const counts = templates.reduce((m, t) => {
       m[t.key] = log.filter((e) => e.template_key === t.key).length;
       return m;
     }, {});
 
+    const autoTpls = templates.filter((t) => (TEMPLATE_META[t.key]?.trigger || 'auto') === 'auto');
+    const broadcastTpls = templates.filter((t) => TEMPLATE_META[t.key]?.trigger === 'broadcast');
+
+    const renderCard = (t) => {
+      const meta = TEMPLATE_META[t.key] || {};
+      const trigger = meta.trigger || 'auto';
+      return `
+        <div class="tpl-card ${t.enabled ? '' : 'disabled'}" data-tk="${escape(t.key)}">
+          <div class="tpl-card-head">
+            <span class="tpl-badge ${trigger}">${trigger === 'auto' ? 'Auto' : 'Broadcast'}</span>
+            <label class="switch" data-toggle>
+              <input type="checkbox" ${t.enabled ? 'checked' : ''} data-tkey="${escape(t.key)}" />
+              <span class="slider"></span>
+            </label>
+          </div>
+          <h3>${escape(t.name || t.key)}</h3>
+          <div class="desc">${escape(t.description || meta.triggerDesc || '')}</div>
+          <div class="stats">
+            <span>Subject: <em style="color:var(--soft)">${escape((t.subject || '').replace(/\{\{(\w+)\}\}/g, '⟨$1⟩').slice(0, 60))}</em></span>
+          </div>
+          <div class="stats" style="margin-top:6px">
+            <span>${counts[t.key] || 0} sent</span>
+            <span>·</span>
+            <span>${t.enabled ? '<span style="color:var(--ok)">Active</span>' : 'Inactive'}</span>
+          </div>
+        </div>`;
+    };
+
     $('#content').innerHTML = `
       ${subtabs}
-      <div class="tpl-grid">
-        ${templates.map((t) => `
-          <div class="tpl-card" data-tk="${escape(t.key)}">
-            <div class="key">${escape(t.key.replace(/_/g, ' '))}</div>
-            <h3>${escape(t.name)}</h3>
-            <div class="desc">${escape(t.description)}</div>
-            <div class="stats">
-              <span>Subject: <strong style="color:var(--soft)">${escape(t.subject.replace(/\{\{(\w+)\}\}/g, '⟨$1⟩'))}</strong></span>
-            </div>
-            <div class="stats" style="margin-top:8px">
-              <span>${counts[t.key] || 0} sent</span>
-              <span>·</span>
-              <span>Updated ${escape(fmtRel(t.updated_at))}</span>
-            </div>
-          </div>
-        `).join('')}
+      <div class="tpl-section">
+        <div class="tpl-section-label">Automations — fire automatically based on customer actions</div>
+        <div class="tpl-grid">${autoTpls.map(renderCard).join('')}</div>
+      </div>
+      <div class="tpl-section">
+        <div class="tpl-section-label">Broadcasts — you send these manually to a chosen audience</div>
+        <div class="tpl-grid">${broadcastTpls.map(renderCard).join('')}</div>
       </div>
     `;
-    $$('.tpl-card').forEach((c) =>
-      c.addEventListener('click', () => openTemplateDrawer(c.dataset.tk))
-    );
+
+    // Card click → open drawer (but not if clicking the toggle)
+    $$('.tpl-card').forEach((c) => {
+      c.addEventListener('click', (e) => {
+        if (e.target.closest('[data-toggle]')) return;
+        openTemplateDrawer(c.dataset.tk);
+      });
+    });
+
+    // Toggle → update enabled state
+    $$('input[data-tkey]').forEach((cb) => {
+      cb.addEventListener('change', () => {
+        const key = cb.dataset.tkey;
+        Store.updateTemplate(key, { enabled: cb.checked });
+        cb.closest('.tpl-card').classList.toggle('disabled', !cb.checked);
+        cb.closest('.tpl-card').querySelector('.stats span:last-child').innerHTML =
+          cb.checked ? '<span style="color:var(--ok)">Active</span>' : 'Inactive';
+        toast(cb.checked ? 'Automation activated' : 'Automation paused');
+      });
+    });
+
+  } else if (state.emailTab === 'campaigns') {
+    const broadcastTpls = templates.filter((t) => TEMPLATE_META[t.key]?.trigger === 'broadcast');
+    const countries = [...new Set(
+      (Store.customers() || []).map((c) => c.country).filter(Boolean).sort()
+    )];
+
+    $('#content').innerHTML = `
+      ${subtabs}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start">
+        <div class="campaign-box">
+          <h3>Send a campaign</h3>
+          <div class="form-row">
+            <label for="cmpTpl">Template</label>
+            <select class="input" id="cmpTpl">
+              <option value="">Choose broadcast template…</option>
+              ${broadcastTpls.map((t) => `<option value="${escape(t.key)}">${escape(t.name || t.key)}</option>`).join('')}
+            </select>
+          </div>
+          <div class="form-row">
+            <label for="cmpSeg">Recipients</label>
+            <select class="input" id="cmpSeg">
+              <option value="all">All customers</option>
+              <option value="vip">VIP — total spend ≥ £1,000</option>
+              <option value="lapsed">Lapsed — no order in 12 months</option>
+              <option value="new">New — first order in last 30 days</option>
+              ${countries.map((c) => `<option value="country:${escape(c)}">Country: ${escape(c)}</option>`).join('')}
+            </select>
+          </div>
+          <div id="cmpPreviewArea" style="display:none">
+            <div class="campaign-preview" id="cmpPreviewBox"></div>
+          </div>
+          <div style="display:flex;gap:10px;margin-top:14px">
+            <button class="btn ghost" id="cmpPreviewBtn">Preview recipients</button>
+            <button class="btn" id="cmpSendBtn" style="display:none">Send campaign</button>
+          </div>
+          <div class="feedback" id="cmpFb" style="margin-top:10px"></div>
+        </div>
+        <div>
+          <div class="tpl-section-label" style="margin-bottom:14px">Recent campaigns</div>
+          ${log.filter((e) => broadcastTpls.some((t) => t.key === e.template_key)).slice(0, 8).length === 0
+            ? '<div class="empty" style="padding:20px 0">No campaigns sent yet.</div>'
+            : `<div class="card"><div class="card-body flush"><table class="t">
+              <thead><tr><th>Recipient</th><th>Template</th><th>Status</th><th>Sent</th></tr></thead>
+              <tbody>${log.filter((e) => broadcastTpls.some((t) => t.key === e.template_key)).slice(0, 20).map((e) => `
+                <tr class="no-hover">
+                  <td>${escape(e.to_name || '—')}<br><small style="color:var(--softer)">${escape(e.to)}</small></td>
+                  <td><span class="pill">${escape((e.template_key || '').replace(/_/g, ' '))}</span></td>
+                  <td><span class="pill ${e.status === 'opened' ? 'live' : (e.status === 'bounced' ? 'refunded' : 'paid')}">${escape(e.status)}</span></td>
+                  <td style="color:var(--softer)">${escape(fmtDate(e.sent_at))}</td>
+                </tr>`).join('')}</tbody>
+            </table></div></div>`}
+        </div>
+      </div>
+    `;
+
+    let previewData = null;
+
+    $('#cmpPreviewBtn').addEventListener('click', async () => {
+      const tplKey = $('#cmpTpl').value;
+      const seg = $('#cmpSeg').value;
+      if (!tplKey) { toast('Choose a template first', 'error'); return; }
+      $('#cmpPreviewBtn').disabled = true;
+      $('#cmpFb').textContent = '';
+      try {
+        const r = await fetch('/api/admin/campaign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ template_key: tplKey, segment: seg, dry_run: true }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || 'preview_failed');
+        previewData = { tplKey, seg };
+        const sampleNames = (data.sample || []).map((s) => s.name).join(', ');
+        $('#cmpPreviewBox').innerHTML = `
+          <strong>${data.count} recipient${data.count === 1 ? '' : 's'}</strong>
+          ${data.count > 0 && sampleNames ? `<br><span style="color:var(--softest)">e.g. ${escape(sampleNames)}${data.count > 3 ? ' and more…' : ''}</span>` : ''}
+          ${data.count === 0 ? '<br><span style="color:var(--softest)">No customers match this segment.</span>' : ''}
+        `;
+        $('#cmpPreviewArea').style.display = '';
+        $('#cmpSendBtn').style.display = data.count > 0 ? '' : 'none';
+      } catch (err) {
+        $('#cmpFb').textContent = err.message;
+        $('#cmpFb').className = 'feedback error';
+      } finally {
+        $('#cmpPreviewBtn').disabled = false;
+      }
+    });
+
+    $('#cmpSendBtn').addEventListener('click', async () => {
+      if (!previewData) return;
+      if (!confirm(`Send this campaign? This will send real emails to your customers.`)) return;
+      $('#cmpSendBtn').disabled = true;
+      $('#cmpSendBtn').textContent = 'Sending…';
+      $('#cmpFb').textContent = '';
+      try {
+        const r = await fetch('/api/admin/campaign', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ template_key: previewData.tplKey, segment: previewData.seg, dry_run: false }),
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data.error || 'send_failed');
+        toast(`Sent to ${data.sent} customer${data.sent === 1 ? '' : 's'}`);
+        $('#cmpPreviewArea').style.display = 'none';
+        $('#cmpSendBtn').style.display = 'none';
+        previewData = null;
+      } catch (err) {
+        $('#cmpFb').textContent = err.message;
+        $('#cmpFb').className = 'feedback error';
+        $('#cmpSendBtn').disabled = false;
+        $('#cmpSendBtn').textContent = 'Send campaign';
+      }
+    });
+
   } else {
     // Activity log
     const all = Store.emails();
@@ -2191,18 +2438,17 @@ const renderEmails = () => {
       <div class="card">
         <div class="card-body flush">
           <table class="t">
-            <thead><tr><th>Recipient</th><th>Subject</th><th>Template</th><th>Status</th><th>Sent</th><th></th></tr></thead>
+            <thead><tr><th>Recipient</th><th>Subject</th><th>Template</th><th>Status</th><th>Sent</th></tr></thead>
             <tbody>
               ${filtered.length === 0
-                ? '<tr class="no-hover"><td colspan="6"><div class="empty">No sent emails.</div></td></tr>'
+                ? '<tr class="no-hover"><td colspan="5"><div class="empty">No sent emails yet.</div></td></tr>'
                 : filtered.slice(0, 200).map((e) => `
-                  <tr class="no-hover" data-eid="${escape(e.id)}">
+                  <tr class="no-hover">
                     <td>${escape(e.to_name || '—')}<br><small style="color:var(--softer)">${escape(e.to)}</small></td>
-                    <td style="color:var(--soft);max-width:280px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escape(e.subject)}</td>
-                    <td><span class="pill">${escape(e.template_key.replace(/_/g, ' '))}</span></td>
+                    <td style="color:var(--soft);max-width:260px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escape(e.subject)}</td>
+                    <td><span class="pill">${escape((e.template_key || '').replace(/_/g, ' '))}</span></td>
                     <td><span class="pill ${e.status === 'opened' ? 'live' : (e.status === 'bounced' ? 'refunded' : 'paid')}">${escape(e.status)}</span></td>
                     <td style="color:var(--softer)">${escape(fmtDate(e.sent_at, { dateStyle: 'medium', timeStyle: 'short' }))}</td>
-                    <td><button class="btn ghost sm" data-act="resend">Resend</button></td>
                   </tr>
                 `).join('')}
             </tbody>
@@ -2213,11 +2459,6 @@ const renderEmails = () => {
     $$('.filterbtn').forEach((b) =>
       b.addEventListener('click', () => { state.emailFilter = b.dataset.flt; render(); })
     );
-    $$('tr[data-eid]').forEach((tr) => {
-      tr.querySelectorAll('button[data-act="resend"]').forEach((b) =>
-        b.addEventListener('click', () => { Store.resendEmail(tr.dataset.eid); toast('Resent'); })
-      );
-    });
   }
 
   $$('.subtab').forEach((b) =>
@@ -2228,36 +2469,54 @@ const renderEmails = () => {
 const openTemplateDrawer = (key) => {
   const t = Store.templateByKey(key);
   if (!t) return;
+  const meta = TEMPLATE_META[key] || {};
+  const isBroadcast = meta.trigger === 'broadcast';
   state.editing = key;
 
-  $('#drawerTitle').textContent = `Template · ${t.name}`;
+  $('#drawerTitle').textContent = t.name || key;
   $('#drawerFoot').innerHTML = `
     <div class="feedback" id="tplFb"></div>
     <button class="btn ghost" id="tplCancel">Close</button>
-    <button class="btn" id="tplSave">Save changes</button>
+    ${isBroadcast ? `<button class="btn ghost" id="tplCampaign">Send Campaign</button>` : ''}
+    <button class="btn" id="tplSave">Save</button>
   `;
   $('#drawerBody').innerHTML = `
+    <div style="display:flex;align-items:center;gap:14px;padding:14px 0 18px;border-bottom:1px solid var(--line);margin-bottom:18px;">
+      <label class="switch" style="flex-shrink:0">
+        <input type="checkbox" id="tplEnabled" ${t.enabled ? 'checked' : ''} />
+        <span class="slider"></span>
+      </label>
+      <div>
+        <div style="font-size:13px;color:var(--soft);font-weight:500">${t.enabled ? 'Active' : 'Inactive'}</div>
+        <div style="font-size:12px;color:var(--softer);margin-top:2px">${escape(meta.triggerDesc || t.description || '')}</div>
+      </div>
+    </div>
     <div class="form-row">
       <label for="t-subject">Subject line</label>
       <input class="input" id="t-subject" value="${escape(t.subject)}" />
-      <div class="hint">Available placeholders: <code style="color:var(--gold-1)">{{name}}</code>, <code style="color:var(--gold-1)">{{order_number}}</code>, <code style="color:var(--gold-1)">{{product}}</code></div>
+      <div class="hint">Placeholders: <code style="color:var(--gold-1)">{{name}}</code> <code style="color:var(--gold-1)">{{order_number}}</code> <code style="color:var(--gold-1)">{{product}}</code></div>
     </div>
     <div class="form-row">
       <label for="t-body">Body</label>
-      <textarea class="textarea" id="t-body" rows="14" style="font-family:Georgia,serif">${escape(t.body)}</textarea>
+      <textarea class="textarea" id="t-body" rows="14" style="font-family:Georgia,serif;line-height:1.7">${escape(t.body)}</textarea>
     </div>
     <div class="form-row">
-      <div class="lbl">Live preview</div>
+      <div class="lbl">Preview</div>
       <div class="email-preview" id="tplPreview"></div>
     </div>
   `;
 
-  const sample = { name: 'Eleanor Whitfield', order_number: 'MA-1042', product: 'The Celestine' };
+  const enabledInput = $('#tplEnabled');
+  enabledInput.addEventListener('change', () => {
+    const label = enabledInput.closest('div').nextElementSibling?.querySelector('div:first-child');
+    if (label) label.textContent = enabledInput.checked ? 'Active' : 'Inactive';
+  });
+
   const renderPreview = () => {
-    const subj = $('#t-subject').value.replace(/\{\{(\w+)\}\}/g, (_, k) => sample[k] || `{{${k}}}`);
-    const body = $('#t-body').value.replace(/\{\{(\w+)\}\}/g, (_, k) => sample[k] || `{{${k}}}`);
+    const subj = $('#t-subject').value.replace(/\{\{(\w+)\}\}/g, (_, k) => SAMPLE_VARS[k] || `{{${k}}}`);
+    const body = $('#t-body').value.replace(/\{\{(\w+)\}\}/g, (_, k) => SAMPLE_VARS[k] || `{{${k}}}`);
     $('#tplPreview').innerHTML = `
-      <div class="ep-from">From: Maliki Atelier &lt;atelier@malikiatelier.com&gt;<br/>To: ${escape(sample.name)}</div>
+      <div class="ep-from">From: Maliki Atelier<br/>To: ${escape(SAMPLE_VARS.name)}</div>
       <div class="ep-subject">${escape(subj)}</div>
       ${escape(body)}
     `;
@@ -2267,10 +2526,24 @@ const openTemplateDrawer = (key) => {
   renderPreview();
 
   $('#tplCancel').addEventListener('click', closeDrawer);
+  if (isBroadcast) {
+    $('#tplCampaign').addEventListener('click', () => {
+      closeDrawer();
+      state.emailTab = 'campaigns';
+      render();
+    });
+  }
   $('#tplSave').addEventListener('click', () => {
-    Store.updateTemplate(key, { subject: $('#t-subject').value, body: $('#t-body').value });
+    const fb = $('#tplFb');
+    fb.textContent = '';
+    Store.updateTemplate(key, {
+      subject: $('#t-subject').value,
+      body: $('#t-body').value,
+      enabled: $('#tplEnabled').checked,
+    });
     toast('Template saved');
     closeDrawer();
+    render();
   });
 
   $('#backdrop').classList.add('open');

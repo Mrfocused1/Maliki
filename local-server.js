@@ -30,7 +30,9 @@ const port = Number(process.env.PORT || 8000);
 
 const api = {
   '/api/admin/login': require('./api/admin/login'),
+  '/api/admin/campaign': require('./api/admin/campaign'),
   '/api/admin/data': require('./api/admin/data'),
+  '/api/admin/emails': require('./api/admin/emails'),
   '/api/admin/logout': require('./api/admin/logout'),
   '/api/admin/orders': require('./api/admin/orders'),
   '/api/admin/products': require('./api/admin/products'),

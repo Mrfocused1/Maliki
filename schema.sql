@@ -114,8 +114,11 @@ create table if not exists settings (
 -- Email templates
 create table if not exists email_templates (
   key text primary key,
+  name text not null default '',
+  description text,
   subject text not null default '',
   body text not null default '',
+  enabled boolean not null default false,
   updated_at timestamptz not null default now()
 );
 

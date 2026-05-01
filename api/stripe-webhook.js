@@ -1,5 +1,6 @@
 const { verifyWebhook } = require('./_lib/stripe');
 const { supabaseFetch } = require('./_lib/supabase');
+const { sendTemplatedEmail } = require('./_lib/mailer');
 
 module.exports.config = { api: { bodyParser: false } };
 
@@ -257,6 +258,30 @@ module.exports = async (req, res) => {
         } catch (emailErr) {
           console.error('stripe-webhook: confirmation email error:', emailErr.message);
         }
+
+        // VIP welcome — first paid order over £1,000
+        if (order?.total_cents >= 100000 && order?.customer_id) {
+          (async () => {
+            try {
+              const [tplRows, prevOrders] = await Promise.all([
+                supabaseFetch('/email_templates?key=eq.vip_welcome&limit=1'),
+                supabaseFetch(`/orders?customer_id=eq.${encodeURIComponent(order.customer_id)}&status=eq.paid&select=id`),
+              ]);
+              const tpl = tplRows?.[0];
+              if (tpl?.enabled && (prevOrders?.length || 0) === 1) {
+                await sendTemplatedEmail({
+                  template_key: 'vip_welcome',
+                  subject: tpl.subject,
+                  body: tpl.body,
+                  vars: { name: order.customer_name },
+                  to: order.customer_email,
+                  to_name: order.customer_name,
+                  order_id: orderId,
+                });
+              }
+            } catch (e) { console.error('stripe-webhook: vip_welcome:', e.message); }
+          })();
+        }
       }
     }
 
@@ -269,6 +294,29 @@ module.exports = async (req, res) => {
           headers: { Prefer: 'return=minimal' },
           body: JSON.stringify({ status: 'failed' }),
         });
+
+        // Payment failed email
+        (async () => {
+          try {
+            const [tplRows, orderRows] = await Promise.all([
+              supabaseFetch('/email_templates?key=eq.payment_failed&limit=1'),
+              supabaseFetch(`/orders?id=eq.${encodeURIComponent(orderId)}&select=customer_name,customer_email,number&limit=1`),
+            ]);
+            const tpl = tplRows?.[0];
+            const failedOrder = orderRows?.[0];
+            if (tpl?.enabled && failedOrder) {
+              await sendTemplatedEmail({
+                template_key: 'payment_failed',
+                subject: tpl.subject,
+                body: tpl.body,
+                vars: { name: failedOrder.customer_name, order_number: failedOrder.number },
+                to: failedOrder.customer_email,
+                to_name: failedOrder.customer_name,
+                order_id: orderId,
+              });
+            }
+          } catch (e) { console.error('stripe-webhook: payment_failed email:', e.message); }
+        })();
       }
     }
 

@@ -112,6 +112,17 @@
     return result;
   };
 
+  const baseUpdateTemplate = window.Store.updateTemplate;
+  window.Store.updateTemplate = (key, patch) => {
+    const result = baseUpdateTemplate(key, patch);
+    fetch('/api/admin/emails', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ key, ...patch }),
+    }).catch(() => {});
+    return result;
+  };
+
   window.Store.loadRemoteCatalog = loadCatalog;
   window.Store.loadRemoteAdminData = loadAdminData;
   loadCatalog();
