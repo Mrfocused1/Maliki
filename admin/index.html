@@ -1177,16 +1177,16 @@ const renderOverview = () => {
   $('#topbar').innerHTML = `
     <h1>Overview <small>${new Date().toLocaleDateString(undefined, { dateStyle: 'long' })}</small></h1>
     <div class="actions">
-      <button class="btn ghost sm" id="resetData">Reload Supabase data</button>
+      <button class="btn ghost sm" id="resetData" style="display:none">Refresh</button>
     </div>
   `;
   $('#resetData').addEventListener('click', async () => {
     try {
       if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData();
-      toast('Supabase data reloaded');
+      toast('Data refreshed');
       render();
     } catch {
-      toast('Could not reload Supabase data', 'err');
+      toast('Could not refresh data', 'err');
     }
   });
 
@@ -1546,7 +1546,7 @@ const saveProduct = async () => {
     closeDrawer();
   } catch (e) {
     fb.textContent = e.message === 'product_sync_failed'
-      ? 'Saved locally, but Supabase sync failed. Check environment variables and sign in again.'
+      ? 'Could not save. Please try again.'
       : (e.message || 'Save failed.');
     fb.className = 'feedback error';
   }
@@ -1555,7 +1555,7 @@ const saveProduct = async () => {
 const deleteProductFromDrawer = (id) => {
   const p = Store.productById(id);
   if (!p) return;
-  if (!confirm(`Delete "${p.title}"? This will remove it from Supabase.`)) return;
+  if (!confirm(`Delete "${p.title}"? This cannot be undone.`)) return;
   Store.deleteProduct(id);
   toast('Product deleted');
   closeDrawer();
@@ -2616,8 +2616,8 @@ const renderSettings = () => {
         <div class="card-body">
           <div style="display:flex;align-items:center;justify-content:space-between;gap:18px;padding:8px 0">
             <div>
-              <div style="color:var(--soft);font-weight:500;margin-bottom:6px">Show the live homepage at <code style="color:var(--gold-1);font-family:'Inter',monospace">/</code></div>
-              <div style="color:var(--softer);font-size:12px;line-height:1.5;max-width:560px">Off keeps the cinematic <em>coming-soon</em> page at the root URL. On redirects <code style="color:var(--gold-1)">/</code> to the full live homepage at <code style="color:var(--gold-1)">/home/</code>. <strong style="color:var(--soft)">Per-browser only</strong> — public visitors still see whatever is the file default at <code>/</code>. Use this to preview the live site before swapping it permanently.</div>
+              <div style="color:var(--soft);font-weight:500;margin-bottom:6px">Show the live site</div>
+              <div style="color:var(--softer);font-size:12px;line-height:1.5;max-width:560px">When off, visitors see the coming-soon page. Turn on to show the full shop.</div>
             </div>
             <label class="switch" style="flex-shrink:0">
               <input type="checkbox" id="siteModeToggle" ${siteMode === 'live' ? 'checked' : ''} />
