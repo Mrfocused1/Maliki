@@ -43,7 +43,9 @@ const api = {
   '/api/stripe-webhook': require('./api/stripe-webhook'),
   '/api/checkout': require('./api/checkout'),
   '/api/contact': require('./api/contact'),
+  '/api/discount': require('./api/discount'),
   '/api/notify': require('./api/notify'),
+  '/api/track': require('./api/track'),
 };
 
 const types = {

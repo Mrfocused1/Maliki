@@ -51,6 +51,9 @@ create table if not exists orders (
   currency text not null default 'GBP',
   status text not null default 'paid',
   shipping_address jsonb,
+  discount_cents integer not null default 0,
+  discount_code text not null default '',
+  stripe_payment_intent_id text,
   created_at timestamptz not null default now()
 );
 
@@ -114,6 +117,14 @@ create table if not exists email_templates (
   subject text not null default '',
   body text not null default '',
   updated_at timestamptz not null default now()
+);
+
+-- Page views (analytics)
+create table if not exists page_views (
+  id bigserial primary key,
+  path text not null,
+  referrer text default '',
+  created_at timestamptz not null default now()
 );
 
 -- Email log

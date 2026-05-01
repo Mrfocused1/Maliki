@@ -26,12 +26,16 @@ module.exports = async (req, res) => {
   const customerInput = body.customer || {};
   const name = String(customerInput.name || '').trim().slice(0, 200);
   const email = String(customerInput.email || '').trim().toLowerCase();
+  const line1 = String(customerInput.line1 || '').trim().slice(0, 300);
+  const line2 = String(customerInput.line2 || '').trim().slice(0, 300);
   const city = String(customerInput.city || '').trim().slice(0, 120);
   const country = String(customerInput.country || '').trim().slice(0, 120);
+  const discount_code_input = String(body.discount_code || '').trim().toUpperCase();
   const items = Array.isArray(body.items) ? body.items : [];
 
   if (!name) return json(res, 400, { error: 'name_required' });
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
+  if (!line1) return json(res, 400, { error: 'address_required' });
   if (!country) return json(res, 400, { error: 'country_required' });
   if (!items.length) return json(res, 400, { error: 'cart_empty' });
 
@@ -75,12 +79,39 @@ module.exports = async (req, res) => {
     }
 
     const subtotal = lineItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
+
+    // Validate discount code
+    let discount_cents = 0;
+    let validatedCode = '';
+    if (discount_code_input) {
+      const now = new Date().toISOString();
+      const dRows = await supabaseFetch(
+        `/discounts?code=eq.${encodeURIComponent(discount_code_input)}&status=eq.active&limit=1`
+      ).catch(() => []);
+      const discount = dRows?.[0];
+      if (discount) {
+        const started = !discount.starts_at || discount.starts_at <= now;
+        const notEnded = !discount.ends_at || discount.ends_at >= now;
+        const underLimit = !discount.usage_limit || discount.usage_count < discount.usage_limit;
+        const meetsMin = subtotal >= discount.minimum_cents;
+        if (started && notEnded && underLimit && meetsMin) {
+          validatedCode = discount.code;
+          if (discount.type === 'percent') {
+            discount_cents = Math.round(subtotal * Number(discount.value) / 100);
+          } else {
+            discount_cents = Math.min(Number(discount.value), subtotal);
+          }
+        }
+      }
+    }
+
+    const total = subtotal - discount_cents;
     const orderId = uid('ord');
     const orderNum = orderNumber();
 
     // Create Stripe Payment Intent
     const intent = await createPaymentIntent({
-      amount: subtotal,
+      amount: total,
       currency: 'GBP',
       metadata: { order_id: orderId, order_number: orderNum },
     });
@@ -96,10 +127,12 @@ module.exports = async (req, res) => {
         customer_name: name,
         subtotal_cents: subtotal,
         shipping_cents: 0,
-        total_cents: subtotal,
+        discount_cents,
+        discount_code: validatedCode,
+        total_cents: total,
         currency: 'GBP',
         status: 'pending',
-        shipping_address: { city, country },
+        shipping_address: { line1, line2, city, country },
         stripe_payment_intent_id: intent.id,
       }),
     });
@@ -116,7 +149,9 @@ module.exports = async (req, res) => {
         id: order.id,
         number: order.number,
         customer_email: email,
-        total_cents: subtotal,
+        subtotal_cents: subtotal,
+        discount_cents,
+        total_cents: total,
         currency: 'GBP',
       },
     });

@@ -215,6 +215,37 @@
   }
   .form .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
 
+  .discount-toggle {
+    background: none; border: 0; padding: 0;
+    color: var(--softer);
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.38em; text-transform: uppercase;
+    cursor: pointer; transition: color 0.3s;
+    margin-top: 4px;
+  }
+  .discount-toggle:hover { color: var(--gold-hi); }
+  .discount-box { margin-top: 10px; display: none; }
+  .discount-box.open { display: block; }
+  .discount-row { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: end; }
+  .apply-btn {
+    background: transparent;
+    border: 1px solid rgba(217,176,112,0.4);
+    color: var(--gold-1);
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.38em; text-transform: uppercase;
+    padding: 11px 14px; cursor: pointer; white-space: nowrap;
+    transition: border-color 0.3s, color 0.3s;
+  }
+  .apply-btn:hover { border-color: rgba(217,176,112,0.8); color: var(--gold-hi); }
+  .apply-btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .discount-msg {
+    min-height: 14px; margin-top: 6px;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.38em; text-transform: uppercase;
+  }
+  .discount-msg.ok { color: var(--ok); }
+  .discount-msg.err { color: var(--danger); }
+
   .place {
     margin-top: 10px;
     background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
@@ -344,6 +375,7 @@
     let stripeElements = null;
     let pendingOrder = null;
     let savedDetails = {};
+    let appliedDiscount = null; // { code, discount_cents, label }
 
     // Load Stripe publishable key once
     const initStripe = (() => {
@@ -420,9 +452,10 @@
         <aside class="panel summary">
           <header><h2>Summary</h2></header>
           <div class="body">
-            <div class="row"><span class="lbl">Subtotal</span><span>${esc(fmtPrice(subtotal, currency))}</span></div>
+            <div class="row"><span class="lbl">Subtotal</span><span id="subtotalVal">${esc(fmtPrice(subtotal, currency))}</span></div>
+            <div class="row" id="discountRow" style="display:none"><span class="lbl">Discount</span><span id="discountVal" style="color:var(--ok)"></span></div>
             <div class="row"><span class="lbl">Shipping</span><span>White-glove courier</span></div>
-            <div class="row total"><span class="lbl">Total</span><span class="val">${esc(fmtPrice(subtotal, currency))}</span></div>
+            <div class="row total"><span class="lbl">Total</span><span class="val" id="totalVal">${esc(fmtPrice(subtotal, currency))}</span></div>
 
             <form class="form" id="checkoutForm" novalidate>
               <div class="lbl">Your details</div>
@@ -430,15 +463,29 @@
                 <label class="field"><input id="ckName" type="text" autocomplete="name" placeholder="Full name" value="${esc(savedDetails.name || '')}" required /></label>
                 <label class="field"><input id="ckEmail" type="email" autocomplete="email" placeholder="Email" value="${esc(savedDetails.email || '')}" required /></label>
               </div>
+              <label class="field"><input id="ckLine1" type="text" autocomplete="address-line1" placeholder="Street address" value="${esc(savedDetails.line1 || '')}" required /></label>
+              <label class="field"><input id="ckLine2" type="text" autocomplete="address-line2" placeholder="Apartment, suite, etc. (optional)" value="${esc(savedDetails.line2 || '')}" /></label>
               <div class="row2">
                 <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" value="${esc(savedDetails.city || '')}" /></label>
                 <label class="field">
                   <select id="ckCountry">
-                    <option value="">Select country</option>
+                    <option value="">Country</option>
                     ${COUNTRIES.map(c => `<option value="${esc(c)}"${savedDetails.country === c ? ' selected' : ''}>${esc(c)}</option>`).join('')}
                   </select>
                 </label>
               </div>
+
+              <button type="button" class="discount-toggle" id="discountToggle">
+                ${appliedDiscount ? `Discount: ${esc(appliedDiscount.label)} ✓` : 'Have a discount code?'}
+              </button>
+              <div class="discount-box${appliedDiscount ? ' open' : ''}" id="discountBox">
+                <div class="discount-row">
+                  <label class="field"><input id="ckCode" type="text" placeholder="Discount code" autocomplete="off" value="${esc(appliedDiscount?.code || '')}" style="text-transform:uppercase;letter-spacing:0.22em;" /></label>
+                  <button type="button" class="apply-btn" id="applyBtn">Apply</button>
+                </div>
+                <div class="discount-msg" id="discountMsg">${appliedDiscount ? appliedDiscount.label : ''}</div>
+              </div>
+
               <button class="place" id="placeBtn" type="submit">Continue to Payment</button>
               <div class="feedback" id="checkoutFeedback"></div>
             </form>
@@ -458,21 +505,95 @@
         });
       });
 
+      // Restore discount display if already applied
+      if (appliedDiscount) {
+        const discRow = document.getElementById('discountRow');
+        const discVal = document.getElementById('discountVal');
+        const totalEl = document.getElementById('totalVal');
+        if (discRow && discVal && totalEl) {
+          const discounted = subtotal - appliedDiscount.discount_cents;
+          discRow.style.display = '';
+          discVal.textContent = `−${fmtPrice(appliedDiscount.discount_cents, currency)}`;
+          totalEl.textContent = fmtPrice(discounted, currency);
+        }
+      }
+
       const form = document.getElementById('checkoutForm');
       const fb = document.getElementById('checkoutFeedback');
       const btn = document.getElementById('placeBtn');
+
+      // Discount code toggle
+      document.getElementById('discountToggle').addEventListener('click', () => {
+        const box = document.getElementById('discountBox');
+        box.classList.toggle('open');
+      });
+
+      // Apply discount
+      document.getElementById('applyBtn').addEventListener('click', async () => {
+        const applyBtn = document.getElementById('applyBtn');
+        const msg = document.getElementById('discountMsg');
+        const code = document.getElementById('ckCode').value.trim().toUpperCase();
+        if (!code) return;
+
+        const lines = cartLines();
+        const subtotal = lines.reduce((s, l) => s + l.product.price_cents * l.quantity, 0);
+        const currency = lines[0]?.product?.currency || 'GBP';
+
+        applyBtn.disabled = true;
+        msg.className = 'discount-msg';
+        msg.textContent = '';
+
+        try {
+          const r = await fetch('/api/discount', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ code, subtotal_cents: subtotal }),
+          });
+          const data = await r.json();
+          if (!r.ok) {
+            const errMap = {
+              invalid_code: 'Code not recognised.',
+              code_inactive: 'This code is no longer active.',
+              code_expired: 'This code has expired.',
+              code_exhausted: 'This code has reached its usage limit.',
+              minimum_not_met: `Minimum order of ${fmtPrice(data.minimum_cents, currency)} required.`,
+            };
+            msg.textContent = errMap[data.error] || 'Invalid code.';
+            msg.className = 'discount-msg err';
+            appliedDiscount = null;
+          } else {
+            appliedDiscount = { code: data.code, discount_cents: data.discount_cents, label: data.label };
+            msg.textContent = `${data.label} applied`;
+            msg.className = 'discount-msg ok';
+            document.getElementById('discountToggle').textContent = `Discount: ${data.label} ✓`;
+            // Update summary totals
+            const newTotal = subtotal - data.discount_cents;
+            document.getElementById('discountRow').style.display = '';
+            document.getElementById('discountVal').textContent = `−${fmtPrice(data.discount_cents, currency)}`;
+            document.getElementById('totalVal').textContent = fmtPrice(newTotal, currency);
+          }
+        } catch {
+          msg.textContent = 'Could not apply code. Try again.';
+          msg.className = 'discount-msg err';
+        } finally {
+          applyBtn.disabled = false;
+        }
+      });
 
       form.addEventListener('submit', async e => {
         e.preventDefault();
         const name = document.getElementById('ckName').value.trim();
         const email = document.getElementById('ckEmail').value.trim();
+        const line1 = document.getElementById('ckLine1').value.trim();
+        const line2 = document.getElementById('ckLine2').value.trim();
         const city = document.getElementById('ckCity').value.trim();
         const country = document.getElementById('ckCountry').value;
-        if (!name) return showErr('Please add your name.');
-        if (!EMAIL_RX.test(email)) return showErr('Please add a valid email.');
+        if (!name) return showErr('Please add your full name.');
+        if (!EMAIL_RX.test(email)) return showErr('Please add a valid email address.');
+        if (!line1) return showErr('Please add your street address.');
         if (!country) return showErr('Please choose a country.');
 
-        savedDetails = { name, email, city, country };
+        savedDetails = { name, email, line1, line2, city, country };
         btn.disabled = true;
         btn.textContent = 'Preparing…';
 
@@ -481,7 +602,11 @@
           const res = await fetch('/api/checkout', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ customer: { name, email, city, country }, items: Store.cart(), shipping_address: { city, country } }),
+            body: JSON.stringify({
+              customer: { name, email, line1, line2, city, country },
+              items: Store.cart(),
+              discount_code: appliedDiscount?.code || '',
+            }),
           });
           const data = await res.json();
           if (!res.ok) {
@@ -526,6 +651,9 @@
         <aside class="panel summary">
           <header><h2>Payment</h2></header>
           <div class="body">
+            ${order.discount_cents > 0 ? `
+            <div class="row"><span class="lbl">Subtotal</span><span>${esc(fmtPrice(order.subtotal_cents, currency))}</span></div>
+            <div class="row"><span class="lbl">Discount</span><span style="color:var(--ok)">−${esc(fmtPrice(order.discount_cents, currency))}</span></div>` : ''}
             <div class="row total" style="margin-bottom:4px">
               <span class="lbl">Total</span>
               <span class="val">${esc(fmtPrice(order.total_cents, currency))}</span>
@@ -611,5 +739,6 @@
         </div>`;
     }
   </script>
+  <script>(function(){try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:location.pathname,referrer:document.referrer})});}catch(e){}})();</script>
 </body>
 </html>
