@@ -101,6 +101,17 @@
     return data.order;
   };
 
+  const baseUpdateSettings = window.Store.updateSettings;
+  window.Store.updateSettings = (section, value) => {
+    const result = baseUpdateSettings(section, value);
+    fetch('/api/admin/settings', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ section, value }),
+    }).catch(() => {});
+    return result;
+  };
+
   window.Store.loadRemoteCatalog = loadCatalog;
   window.Store.loadRemoteAdminData = loadAdminData;
   loadCatalog();

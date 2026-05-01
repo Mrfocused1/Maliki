@@ -8,14 +8,34 @@
 <meta name="theme-color" content="#0a0908" />
 
 <script>
-  // Admin preview: when localStorage flag is set in /admin Settings,
-  // jump straight to the live homepage at /home/. Per-browser only —
-  // public visitors still see the coming-soon page below.
-  try {
-    if (localStorage.getItem('maliki.site_mode') === 'live') {
-      location.replace('/home/');
-    }
-  } catch (e) { /* localStorage unavailable, ignore */ }
+  (function () {
+    // Fast path: this browser already knows the mode
+    try {
+      if (localStorage.getItem('maliki.site_mode') === 'live') {
+        location.replace('/home/');
+        return;
+      }
+    } catch (e) {}
+    // Hide until we know — prevents flash of coming-soon if site is live
+    document.documentElement.style.visibility = 'hidden';
+    var t = setTimeout(function () { document.documentElement.style.visibility = ''; }, 2000);
+    fetch('/api/site-mode')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        clearTimeout(t);
+        if (d.mode === 'live') {
+          try { localStorage.setItem('maliki.site_mode', 'live'); } catch (e) {}
+          location.replace('/home/');
+        } else {
+          try { localStorage.setItem('maliki.site_mode', 'coming_soon'); } catch (e) {}
+          document.documentElement.style.visibility = '';
+        }
+      })
+      .catch(function () {
+        clearTimeout(t);
+        document.documentElement.style.visibility = '';
+      });
+  })();
 </script>
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />

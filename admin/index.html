@@ -2653,7 +2653,9 @@ const renderSettings = () => {
       if (t) t.addEventListener('change', () => {
         const mode = t.checked ? 'live' : 'coming_soon';
         localStorage.setItem('maliki.site_mode', mode);
-        toast(t.checked ? 'Live homepage enabled at /' : 'Coming-soon page enabled at /');
+        const g = Store.settings().general || {};
+        Store.updateSettings('general', { ...g, site_mode: mode });
+        toast(t.checked ? 'Site is now live for all visitors' : 'Coming-soon page restored for all visitors');
       });
     }, 0);
   } else if (state.settingsTab === 'branding') {
