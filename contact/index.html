@@ -329,7 +329,7 @@
 
         <div class="info-block">
           <span class="info-label">Note</span>
-          <span class="info-value" style="font-size:14px;">We do not hold open walk-in hours. All visits are arranged in advance — write to us and we will respond within one working day.</span>
+          <span class="info-value" id="contact-cms-note" style="font-size:14px;">We do not hold open walk-in hours. All visits are arranged in advance — write to us and we will respond within one working day.</span>
         </div>
       </div>
     </div>
@@ -345,12 +345,21 @@
   <script src="/assets/store.js"></script>
   <script src="/assets/supabase-sync.js"></script>
   <script>
-    // Cart count
     const updateCartCount = () => {
       document.getElementById('cartCount').textContent = Store.cartCount();
     };
     Store.on(updateCartCount);
     updateCartCount();
+
+    (async () => {
+      try {
+        const res = await fetch('/api/pages');
+        if (!res.ok) return;
+        const { pages } = await res.json();
+        const body = pages.contact?.body;
+        if (body) document.getElementById('contact-cms-note').textContent = body;
+      } catch {}
+    })();
 
     // Contact form
     (function () {

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title id="pageTitle">Maliki Atelier</title>
+<meta name="theme-color" content="#0a0908" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0908;
+    --charcoal: #141311;
+    --soft: rgba(245, 236, 218, 0.98);
+    --softer: rgba(245, 236, 218, 0.86);
+    --softest: rgba(245, 236, 218, 0.62);
+    --gold-1: #e8c488;
+    --gold-2: #b68a4e;
+    --gold-hi: #f8e3b4;
+    --line: rgba(217, 176, 112, 0.28);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--bg); color: var(--soft);
+    font-family: 'Lora', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100%;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: clamp(16px, 3vh, 28px) clamp(20px, 5vw, 56px);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0;
+    background: rgba(10, 9, 8, 0.96);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  .wordmark { display: inline-flex; align-items: center; line-height: 0; }
+  .wordmark img { height: clamp(52px, 5.5vw, 80px); width: auto; display: block; }
+  .nav {
+    display: flex; gap: clamp(18px, 2.8vw, 36px); align-items: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: #f5ecda;
+  }
+  .nav a:hover { color: var(--gold-hi); }
+  .cart-btn {
+    background: transparent; border: 1px solid var(--line); color: var(--soft);
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    padding: 9px 16px; border-radius: 4px;
+    transition: color 0.3s ease, border-color 0.3s ease;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .cart-btn:hover { color: var(--gold-hi); border-color: rgba(217, 176, 112, 0.5); }
+  .cart-btn .count {
+    display: inline-block; background: var(--gold-1); color: #1a120a;
+    border-radius: 100px; padding: 1px 7px; font-size: 10px; font-weight: 600; letter-spacing: 0;
+  }
+
+  .hero {
+    text-align: center;
+    padding: clamp(56px, 10vh, 110px) 24px clamp(40px, 7vh, 80px);
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.5em; text-indent: 0.5em;
+    text-transform: uppercase; color: var(--gold-1);
+    display: block; padding-bottom: 16px;
+  }
+  .h1 {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(36px, 5vw, 64px);
+    color: #f5ecda; font-weight: 400;
+  }
+
+  .prose-section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: clamp(48px, 8vh, 96px) clamp(20px, 5vw, 56px);
+  }
+  .prose p {
+    color: var(--softer);
+    font-size: clamp(15px, 1.2vw, 17px);
+    line-height: 1.82;
+    letter-spacing: 0.025em;
+    margin-bottom: 20px;
+  }
+  .prose p:last-child { margin-bottom: 0; }
+
+  .state {
+    text-align: center;
+    padding: clamp(64px, 12vh, 120px) 24px;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: var(--softest);
+    font-size: 18px;
+    letter-spacing: 0.05em;
+  }
+
+  .footer {
+    border-top: 1px solid var(--line);
+    padding: clamp(18px, 4vh, 32px) clamp(20px, 5vw, 56px);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 14px;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--softer);
+  }
+</style>
+</head>
+<body>
+
+  <header class="topbar">
+    <a href="/" class="wordmark" aria-label="Maliki Atelier home">
+      <img src="/assets/maliki-logo.svg" alt="Maliki Atelier">
+    </a>
+    <nav class="nav">
+      <a href="/shop">Shop</a>
+      <a href="/about">About</a>
+      <a href="/contact">Contact</a>
+      <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
+    </nav>
+  </header>
+
+  <section class="hero" id="pageHero" style="display:none">
+    <span class="eyebrow" id="heroEyebrow"></span>
+    <h1 class="h1" id="heroTitle"></h1>
+  </section>
+
+  <main>
+    <div id="loadingState" class="state">Loading…</div>
+    <div id="notFoundState" class="state" style="display:none">Page not found.</div>
+    <div id="proseSection" class="prose-section" style="display:none">
+      <div class="prose" id="proseBody"></div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <span>© Maliki Atelier</span>
+    <span>White-Glove Courier · Insured Worldwide</span>
+  </footer>
+
+  <script src="/assets/ring-svg.js"></script>
+  <script src="/assets/mock-data.js"></script>
+  <script src="/assets/store.js"></script>
+  <script src="/assets/supabase-sync.js"></script>
+  <script>
+    const updateCartCount = () => {
+      document.getElementById('cartCount').textContent = Store.cartCount();
+    };
+    Store.on(updateCartCount);
+    updateCartCount();
+
+    (async () => {
+      const slug = new URLSearchParams(location.search).get('slug') || '';
+      const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+
+      const show = (id) => document.getElementById(id).style.display = '';
+      const hide = (id) => document.getElementById(id).style.display = 'none';
+
+      try {
+        const res = await fetch('/api/pages');
+        if (!res.ok) throw new Error('api_error');
+        const { pages } = await res.json();
+        const page = pages[slug];
+
+        hide('loadingState');
+
+        if (!page) {
+          show('notFoundState');
+          return;
+        }
+
+        document.getElementById('pageTitle').textContent = `${page.title} — Maliki Atelier`;
+        document.getElementById('heroEyebrow').textContent = page.title;
+        document.getElementById('heroTitle').textContent = page.title;
+        show('pageHero');
+
+        const paras = page.body.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+        document.getElementById('proseBody').innerHTML = paras.map(p => `<p>${esc(p)}</p>`).join('');
+        show('proseSection');
+      } catch {
+        hide('loadingState');
+        show('notFoundState');
+      }
+    })();
+  </script>
+</body>
+</html>

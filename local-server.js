@@ -36,6 +36,7 @@ const api = {
   '/api/admin/products': require('./api/admin/products'),
   '/api/admin/session': require('./api/admin/session'),
   '/api/catalog': require('./api/catalog'),
+  '/api/pages': require('./api/pages'),
   '/api/checkout': require('./api/checkout'),
   '/api/contact': require('./api/contact'),
   '/api/notify': require('./api/notify'),

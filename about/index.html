@@ -246,7 +246,7 @@
       <div class="content">
         <span class="section-label">Our Story</span>
         <h2 class="section-heading">One piece at a time, by hand.</h2>
-        <div class="prose">
+        <div class="prose" id="prose-about">
           <p>Maliki Atelier was founded as a considered response to the noise of the modern jewellery industry — a return to the practice of making one piece at a time, by hand, for a person whose name we know. The name is not a heritage brand, a house with a century behind it, or a fashion imprint. It is simply the name of something built slowly, and with care.</p>
           <p>Each ring is hand-finished in our London workshop, in metals we cast ourselves from recycled gold and platinum, set with stones sourced through long-standing relationships in Antwerp, Bogotá, and Yangon. There are twelve pieces in the collection. Not twelve styles — twelve pieces. When one is sold, another is made. That is the model, and we intend to keep it.</p>
         </div>
@@ -268,7 +268,7 @@
       <div class="content">
         <span class="section-label">Craftsmanship</span>
         <h2 class="section-heading">38 to 52 hours at the bench.</h2>
-        <div class="prose">
+        <div class="prose" id="prose-craftsmanship">
           <p>Every piece passes through three hands before it leaves: a goldsmith, a setter, and the final polisher. The total time at the bench, for a solitaire, is between 38 and 52 hours. For an eternity band, longer.</p>
           <p>We source our gold and platinum from refiners who operate under the Responsible Jewellery Council standard. Our diamonds are Kimberley Process certified; our coloured stones are purchased directly from trusted dealers whom we have known, in most cases, for years. We do not buy at auction. We do not source through intermediaries we have not met.</p>
           <p>We believe the materials are inseparable from the meaning. A ring that passes from one generation to the next carries the quality of its making as a kind of memory.</p>
@@ -288,7 +288,7 @@
       <div class="content">
         <span class="section-label">Care &amp; Service</span>
         <h2 class="section-heading">A piece for a long time.</h2>
-        <div class="prose">
+        <div class="prose" id="prose-care">
           <p>Remove your ring before sleep, exercise, gardening, or contact with chlorinated water. Store it in its presentation case when not being worn. These are small habits that preserve the finish and the integrity of the setting.</p>
           <p>We offer complimentary inspection and re-polish for the lifetime of any piece that leaves the atelier. Return it by insured post or bring it by appointment to the workshop, and we will have it back to you within ten working days. There is no charge — this is simply part of what we mean by making something well.</p>
         </div>
@@ -318,6 +318,25 @@
     };
     Store.on(updateCartCount);
     updateCartCount();
+
+    (async () => {
+      const esc = s => s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      const fill = (id, body) => {
+        if (!body) return;
+        const el = document.getElementById(id);
+        if (!el) return;
+        const paras = body.split(/\n{2,}/).map(p => p.trim()).filter(Boolean);
+        el.innerHTML = paras.map(p => `<p>${esc(p)}</p>`).join('');
+      };
+      try {
+        const res = await fetch('/api/pages');
+        if (!res.ok) return;
+        const { pages } = await res.json();
+        fill('prose-about', pages.about?.body);
+        fill('prose-craftsmanship', pages.craftsmanship?.body);
+        fill('prose-care', pages.care?.body);
+      } catch {}
+    })();
   </script>
 </body>
 </html>

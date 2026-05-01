@@ -1,6 +1,8 @@
 {
   "rewrites": [
-    { "source": "/shop/:slug", "destination": "/shop/product.html?slug=:slug" }
+    { "source": "/shop/:slug", "destination": "/shop/product.html?slug=:slug" },
+    { "source": "/shipping", "destination": "/page/?slug=shipping-and-returns" },
+    { "source": "/care", "destination": "/page/?slug=care" }
   ],
   "headers": [
     {
@@ -48,6 +50,12 @@
     },
     {
       "source": "/home(/.*)?",
+      "headers": [
+        { "key": "Cache-Control", "value": "no-store" }
+      ]
+    },
+    {
+      "source": "/page(/.*)?",
       "headers": [
         { "key": "Cache-Control", "value": "no-store" }
       ]
