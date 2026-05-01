@@ -314,6 +314,7 @@
   <script src="/assets/ring-svg.js"></script>
   <script src="/assets/mock-data.js"></script>
   <script src="/assets/store.js"></script>
+  <script src="/assets/supabase-sync.js"></script>
   <script>
     const fmtPrice = (cents, currency) => {
       try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0 }).format((cents || 0) / 100); }
@@ -428,7 +429,7 @@
       const form = document.getElementById('checkoutForm');
       const fb = document.getElementById('checkoutFeedback');
       const placeBtn = document.getElementById('placeBtn');
-      form.addEventListener('submit', (e) => {
+      form.addEventListener('submit', async (e) => {
         e.preventDefault();
         const name = document.getElementById('ckName').value.trim();
         const email = document.getElementById('ckEmail').value.trim();
@@ -440,17 +441,25 @@
 
         placeBtn.disabled = true; placeBtn.textContent = 'Placing…';
         try {
-          const customer = Store.upsertCustomer({ name, email, city, country });
           const items = Store.cart();
-          const order = Store.placeOrder({
-            customer,
-            items,
-            shipping_address: { city, country },
-          });
+          const order = Store.placeRemoteOrder
+            ? await Store.placeRemoteOrder({
+              customer: { name, email, city, country },
+              items,
+              shipping_address: { city, country },
+            })
+            : Store.placeOrder({
+              customer: Store.upsertCustomer({ name, email, city, country }),
+              items,
+              shipping_address: { city, country },
+            });
           Store.clearCart();
+          if (Store.loadRemoteCatalog) Store.loadRemoteCatalog();
           renderConfirmation(order);
         } catch (err) {
-          fail('Something went wrong. Please try again.');
+          fail(err.message === 'insufficient_stock'
+            ? 'One of these pieces is no longer available in that quantity.'
+            : 'Something went wrong. Please try again.');
           placeBtn.disabled = false; placeBtn.textContent = 'Place Order';
         }
       });

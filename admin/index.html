@@ -828,8 +828,8 @@
 <div id="root"></div>
 
 <script src="/assets/ring-svg.js"></script>
-<script src="/assets/mock-data.js"></script>
 <script src="/assets/store.js"></script>
+<script src="/assets/supabase-sync.js"></script>
 <script src="/assets/image-upload.js"></script>
 
 <script>
@@ -931,7 +931,7 @@ const renderLogin = (errMsg = '') => {
         </div>
         <button type="submit" id="loginBtn">Enter</button>
         <div class="err" id="loginErr">${escape(errMsg)}</div>
-        <div class="hint">Demo password is <strong style="color:var(--gold-1)">12345</strong>.<br/>All data lives in this browser only.</div>
+        <div class="hint">Use the administrator password configured for this deployment.</div>
       </form>
     </div>
   `;
@@ -952,6 +952,7 @@ const renderLogin = (errMsg = '') => {
         btn.disabled = false; btn.textContent = 'Enter'; return;
       }
       state.authed = true;
+      if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData();
       renderApp();
     } catch {
       err.textContent = 'Sign-in failed.';
@@ -1176,12 +1177,16 @@ const renderOverview = () => {
   $('#topbar').innerHTML = `
     <h1>Overview <small>${new Date().toLocaleDateString(undefined, { dateStyle: 'long' })}</small></h1>
     <div class="actions">
-      <button class="btn ghost sm" id="resetData">Reset demo data</button>
+      <button class="btn ghost sm" id="resetData">Reload Supabase data</button>
     </div>
   `;
-  $('#resetData').addEventListener('click', () => {
-    if (confirm('Reset products, customers, orders and cart back to the seed data?')) {
-      Store.reset(); toast('Demo data reset');
+  $('#resetData').addEventListener('click', async () => {
+    try {
+      if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData();
+      toast('Supabase data reloaded');
+      render();
+    } catch {
+      toast('Could not reload Supabase data', 'err');
     }
   });
 
@@ -1520,7 +1525,7 @@ const collectProductForm = () => {
   };
 };
 
-const saveProduct = () => {
+const saveProduct = async () => {
   const fb = $('#prodFeedback');
   fb.className = 'feedback';
   const data = collectProductForm();
@@ -1528,16 +1533,21 @@ const saveProduct = () => {
   if (!data.slug)  { fb.textContent = 'Slug is required.';  fb.className = 'feedback error'; return; }
 
   try {
+    let product;
     if (state.editing === 'new') {
-      Store.addProduct(data);
+      product = Store.addProduct(data);
+      if (product.remoteSync) await product.remoteSync;
       toast('Product created');
     } else {
-      Store.updateProduct(state.editing, data);
+      product = Store.updateProduct(state.editing, data);
+      if (product?.remoteSync) await product.remoteSync;
       toast('Product updated');
     }
     closeDrawer();
   } catch (e) {
-    fb.textContent = e.message || 'Save failed.';
+    fb.textContent = e.message === 'product_sync_failed'
+      ? 'Saved locally, but Supabase sync failed. Check environment variables and sign in again.'
+      : (e.message || 'Save failed.');
     fb.className = 'feedback error';
   }
 };
@@ -1545,7 +1555,7 @@ const saveProduct = () => {
 const deleteProductFromDrawer = (id) => {
   const p = Store.productById(id);
   if (!p) return;
-  if (!confirm(`Delete "${p.title}"? This can't be undone (until you reset the demo).`)) return;
+  if (!confirm(`Delete "${p.title}"? This will remove it from Supabase.`)) return;
   Store.deleteProduct(id);
   toast('Product deleted');
   closeDrawer();
@@ -2781,6 +2791,7 @@ const logout = async () => {
     const { authed } = await r.json();
     if (!authed) return renderLogin();
     state.authed = true;
+    if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData();
     renderApp();
   } catch {
     renderLogin('Could not reach the server.');
