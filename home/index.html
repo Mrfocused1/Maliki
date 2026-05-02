@@ -202,36 +202,11 @@
 
   .hero-content {
     position: relative; z-index: 3;
-    display: flex; flex-direction: row;
-    align-items: center; justify-content: center;
-    gap: clamp(40px, 7vw, 100px);
-    padding: clamp(48px, 8vw, 100px) clamp(24px, 5vw, 80px);
-    max-width: 1200px;
-    width: 100%;
-  }
-  .hero-text {
     display: flex; flex-direction: column;
-    align-items: flex-start; gap: clamp(18px, 2.8vh, 32px);
-    text-align: left;
-    flex: 1;
-    min-width: 0;
-    max-width: 520px;
-  }
-  .hero-image {
-    flex: 0 0 auto;
-    width: clamp(240px, 38vw, 500px);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .hero-image img {
-    width: 100%; height: auto; display: block;
-    filter:
-      drop-shadow(0 12px 48px rgba(200, 155, 70, 0.28))
-      drop-shadow(0 2px 16px rgba(0,0,0,0.55));
-  }
-  @media (max-width: 820px) {
-    .hero-content { flex-direction: column; align-items: center; gap: clamp(24px, 5vw, 48px); }
-    .hero-text { align-items: center; text-align: center; max-width: 600px; }
-    .hero-image { width: clamp(200px, 65vw, 360px); }
+    align-items: center; gap: clamp(18px, 2.8vh, 32px);
+    text-align: center;
+    padding: clamp(24px, 5vw, 80px);
+    max-width: 900px;
   }
   .hero-eyebrow {
     font-family: 'Playfair Display', serif;
@@ -243,10 +218,11 @@
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-weight: 300;
-    font-size: clamp(32px, 4.5vw, 64px);
+    font-size: clamp(36px, 5.5vw, 72px);
     line-height: 1.18;
     color: #f5ecda;
     text-shadow: 0 2px 14px rgba(0,0,0,0.65), 0 1px 3px rgba(0,0,0,0.8);
+    max-width: 780px;
   }
   .hero-sub {
     font-family: 'Lora', serif;
@@ -671,27 +647,22 @@
 
   <!-- ===================== HERO ===================== -->
   <section class="hero" id="main" aria-label="Hero">
-    <video id="bg1" class="bg-video active" src="bg-1.mp4" poster="/og.jpg" muted playsinline preload="auto" autoplay aria-hidden="true"></video>
-    <video id="bg2" class="bg-video"        src="bg-2.mp4" poster="/og.jpg" muted playsinline preload="metadata" aria-hidden="true"></video>
+    <video id="bg1" class="bg-video active" src="bg-1.mp4" muted playsinline preload="auto" autoplay aria-hidden="true"></video>
+    <video id="bg2" class="bg-video"        src="bg-2.mp4" muted playsinline preload="metadata" aria-hidden="true"></video>
     <div class="hero-tint"    aria-hidden="true"></div>
     <div class="hero-vignette" aria-hidden="true"></div>
     <div class="hero-weave"   aria-hidden="true"></div>
 
     <div class="hero-content">
-      <div class="hero-text">
-        <p class="hero-eyebrow reveal r1">Atelier</p>
-        <h1 class="hero-headline reveal r2">Made by hand, for a person whose name we know.</h1>
-        <div class="hero-rule reveal r3" aria-hidden="true">
-          <span class="line"></span>
-          <span class="dot"></span>
-          <span class="line"></span>
-        </div>
-        <p class="hero-sub reveal r4">London, by appointment.</p>
-        <a href="/shop" class="hero-cta reveal r5">Discover the rings</a>
+      <p class="hero-eyebrow reveal r1">Atelier</p>
+      <h1 class="hero-headline reveal r2">Made by hand, for a person whose name we know.</h1>
+      <div class="hero-rule reveal r3" aria-hidden="true">
+        <span class="line"></span>
+        <span class="dot"></span>
+        <span class="line"></span>
       </div>
-      <div class="hero-image reveal r2" aria-hidden="true">
-        <img src="/assets/hero-ring.png" alt="Maliki Atelier gold chain-link ring" />
-      </div>
+      <p class="hero-sub reveal r4">London, by appointment.</p>
+      <a href="/shop" class="hero-cta reveal r5">Discover the rings</a>
     </div>
   </section>
 
