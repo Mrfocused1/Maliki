@@ -77,15 +77,17 @@ module.exports = async (req, res) => {
   const siteUrl = process.env.SITE_URL || 'https://www.malikiatelier.com';
   const redirectTo = `${siteUrl}/admin/setup`;
 
+  const authHeaders = {
+    apikey: SUPABASE_SERVICE_ROLE_KEY,
+    Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
+    'Content-Type': 'application/json',
+  };
+
   try {
-    // Generate invite link via Supabase Admin API (does not auto-send email)
+    // Try invite link first (creates new user + link in one call)
     const linkRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/generate_link`, {
       method: 'POST',
-      headers: {
-        apikey: SUPABASE_SERVICE_ROLE_KEY,
-        Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-        'Content-Type': 'application/json',
-      },
+      headers: authHeaders,
       body: JSON.stringify({
         type: 'invite',
         email,
@@ -97,26 +99,25 @@ module.exports = async (req, res) => {
     let linkData = await linkRes.json();
     let actionLink = linkData.action_link || linkData.properties?.action_link;
 
-    // If user already exists, fall back to a password recovery link
+    // User already exists — ensure they're confirmed, then generate recovery link
     if (!linkRes.ok || !actionLink) {
+      // Confirm the existing user so recovery links work (idempotent if already confirmed)
+      await fetch(`${SUPABASE_URL}/auth/v1/admin/users`, {
+        method: 'POST',
+        headers: authHeaders,
+        body: JSON.stringify({ email, email_confirm: true }),
+      }).catch(() => {});
+
       const recoveryRes = await fetch(`${SUPABASE_URL}/auth/v1/admin/generate_link`, {
         method: 'POST',
-        headers: {
-          apikey: SUPABASE_SERVICE_ROLE_KEY,
-          Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          type: 'recovery',
-          email,
-          redirect_to: redirectTo,
-        }),
+        headers: authHeaders,
+        body: JSON.stringify({ type: 'recovery', email, redirect_to: redirectTo }),
       });
       const recoveryData = await recoveryRes.json();
       actionLink = recoveryData.action_link || recoveryData.properties?.action_link;
 
       if (!recoveryRes.ok || !actionLink) {
-        console.error('invite: generate_link failed', linkData, recoveryData);
+        console.error('invite: generate_link failed', JSON.stringify(linkData), JSON.stringify(recoveryData));
         return json(res, 502, { error: 'invite_failed', detail: linkData.message || recoveryData.message });
       }
     }

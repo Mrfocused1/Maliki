@@ -163,7 +163,13 @@ module.exports = async (req, res) => {
       supabaseFetch('/subscribers', {
         method: 'POST',
         headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
-        body: JSON.stringify({ email, subscribed_at: new Date().toISOString(), source: 'checkout' }),
+        body: JSON.stringify({
+          id: uid('sub'),
+          email,
+          subscribed_at: new Date().toISOString(),
+          source: 'checkout',
+          status: 'subscribed',
+        }),
       }).catch(() => {});
     }
 
