@@ -1,5 +1,5 @@
 const { setSessionCookie, sameOrigin } = require('../_lib/auth');
-const { rateLimit } = require('../_lib/rate-limit');
+const { persistentRateLimit } = require('../_lib/persistent-rate-limit');
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
@@ -11,7 +11,7 @@ module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
   if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
-  if (rateLimit(req, { key: 'admin_login', max: 5, windowMs: 15 * 60 * 1000 })) {
+  if (await persistentRateLimit(req, { key: 'admin_login', max: 5, windowMs: 15 * 60 * 1000 })) {
     return json(res, 429, { error: 'too_many_requests' });
   }
 

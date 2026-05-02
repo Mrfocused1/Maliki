@@ -167,55 +167,6 @@
     return list[i];
   };
 
-  const placeOrder = ({ customer, items, shipping_address }) => {
-    const list = orders();
-    const now = new Date().toISOString();
-    const lineItems = items.map((it) => {
-      const p = productById(it.product_id);
-      return {
-        product_id: it.product_id,
-        title: p ? p.title : 'Unknown',
-        image: p ? p.images[0] : '',
-        quantity: it.quantity,
-        price_cents: p ? p.price_cents : 0,
-      };
-    });
-    const subtotal = lineItems.reduce((s, it) => s + it.price_cents * it.quantity, 0);
-    const numericNum = 1042 + list.length + 25;
-    const o = {
-      id: uid('ord'),
-      number: `MA-${String(numericNum).padStart(4, '0')}`,
-      customer_id: customer.id,
-      customer_email: customer.email,
-      customer_name: customer.name,
-      items: lineItems,
-      subtotal_cents: subtotal,
-      shipping_cents: 0,
-      discount_cents: 0,
-      discount_code: '',
-      total_cents: subtotal,
-      currency: 'GBP',
-      status: 'paid',
-      created_at: now,
-      shipping_address: shipping_address || { line1: '', city: customer.city, postal: '', country: customer.country },
-    };
-    write(KEYS.orders, [o, ...list]);
-
-    // Decrement stock where tracked.
-    const ps = products();
-    for (const it of items) {
-      const i = ps.findIndex((p) => p.id === it.product_id);
-      if (i >= 0 && typeof ps[i].stock === 'number') {
-        ps[i] = { ...ps[i], stock: Math.max(0, ps[i].stock - it.quantity) };
-      }
-    }
-    write(KEYS.products, ps);
-
-    notify('orders');
-    notify('products');
-    return o;
-  };
-
   // ---------- Cart ----------
   const cart = () => read(KEYS.cart, []);
   const cartCount = () => cart().reduce((n, it) => n + it.quantity, 0);
@@ -454,7 +405,7 @@
     addProduct, updateProduct, deleteProduct,
     customers, customersWithStats, customerById, upsertCustomer,
     customerProfiles, profileByEmail,
-    orders, orderById, updateOrderStatus, placeOrder,
+    orders, orderById, updateOrderStatus,
     cart, cartCount, addToCart, setCartQuantity, removeFromCart, clearCart,
     emailTemplates, templateByKey, updateTemplate,
     emails, sendEmail, resendEmail,

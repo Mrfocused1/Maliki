@@ -1,4 +1,4 @@
-const { rateLimit } = require('../_lib/rate-limit');
+const { persistentRateLimit } = require('../_lib/persistent-rate-limit');
 
 const RESEND_BASE = 'https://api.resend.com';
 
@@ -51,7 +51,7 @@ const buildResetEmail = (resetUrl) => `<!DOCTYPE html>
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
 
-  if (rateLimit(req, { key: 'admin_forgot', max: 3, windowMs: 15 * 60 * 1000 })) {
+  if (await persistentRateLimit(req, { key: 'admin_forgot', max: 3, windowMs: 15 * 60 * 1000 })) {
     return json(res, 429, { error: 'too_many_requests' });
   }
 

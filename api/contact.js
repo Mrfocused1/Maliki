@@ -243,50 +243,43 @@ module.exports = async (req, res) => {
   const payload = { name, email, subject, message, source };
   const adminSubject = `New enquiry — ${subject || 'General'} — ${name}`;
 
-  // Notify admin
-  const adminResult = await resend('/emails', {
-    from: NOTIFY_FROM,
-    to: NOTIFY_TO,
-    reply_to: email.replace(/[\r\n]/g, ''),
-    subject: adminSubject,
-    html: notificationHtml(payload),
-    text: notificationText(payload),
-  });
+  // Fire both emails without blocking — message is received regardless of Resend uptime
+  Promise.all([
+    resend('/emails', {
+      from: NOTIFY_FROM,
+      to: NOTIFY_TO,
+      reply_to: email.replace(/[\r\n]/g, ''),
+      subject: adminSubject,
+      html: notificationHtml(payload),
+      text: notificationText(payload),
+    }).then((r) => {
+      if (!r.ok) console.error('contact: admin notify failed', r.status, r.data);
+      logEmail({
+        template_key: 'contact_notification',
+        recipient_email: NOTIFY_TO,
+        recipient_name: 'Admin',
+        subject: adminSubject,
+        status: r.ok ? 'sent' : 'failed',
+      });
+    }).catch((e) => console.error('contact: admin notify error', e.message)),
 
-  if (!adminResult.ok) {
-    console.error('contact: admin notify failed', adminResult.status, adminResult.data);
-    return json(res, 502, { error: 'send_failed' });
-  }
-
-  logEmail({
-    template_key: 'contact_notification',
-    recipient_email: NOTIFY_TO,
-    recipient_name: 'Admin',
-    subject: adminSubject,
-    status: 'sent',
-  });
-
-  // Confirm receipt to the enquirer
-  const userSubject = 'Maliki Atelier — Your enquiry has been received';
-  const confirmResult = await resend('/emails', {
-    from: NOTIFY_FROM,
-    to: email,
-    subject: userSubject,
-    html: confirmationHtml(name, subject),
-    text: confirmationText(name, subject),
-  });
-
-  if (!confirmResult.ok) {
-    console.error('contact: confirmation send failed', confirmResult.status, confirmResult.data);
-  }
-
-  logEmail({
-    template_key: 'contact_confirmation',
-    recipient_email: email,
-    recipient_name: name,
-    subject: userSubject,
-    status: confirmResult.ok ? 'sent' : 'failed',
-  });
+    resend('/emails', {
+      from: NOTIFY_FROM,
+      to: email,
+      subject: 'Maliki Atelier — Your enquiry has been received',
+      html: confirmationHtml(name, subject),
+      text: confirmationText(name, subject),
+    }).then((r) => {
+      if (!r.ok) console.error('contact: confirmation send failed', r.status, r.data);
+      logEmail({
+        template_key: 'contact_confirmation',
+        recipient_email: email,
+        recipient_name: name,
+        subject: 'Maliki Atelier — Your enquiry has been received',
+        status: r.ok ? 'sent' : 'failed',
+      });
+    }).catch((e) => console.error('contact: confirmation error', e.message)),
+  ]);
 
   return json(res, 200, { ok: true });
 };

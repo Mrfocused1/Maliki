@@ -75,7 +75,6 @@
     updateProduct: window.Store.updateProduct,
     deleteProduct: window.Store.deleteProduct,
     updateOrderStatus: window.Store.updateOrderStatus,
-    placeOrder: window.Store.placeOrder,
   };
 
   window.Store.addProduct = (data) => {
