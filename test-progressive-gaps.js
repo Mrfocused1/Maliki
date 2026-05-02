@@ -196,14 +196,16 @@ function nodeRequest(urlStr, opts = {}) {
     await page.goto(`${SITE_URL}/contact`, { waitUntil: 'networkidle2', timeout: 20000 });
     await page.waitForSelector('#contactSubmit', { timeout: 10000 });
 
-    // Fill form
+    // Replace fetch with a never-resolving stub — button stays disabled, no real request sent
+    await page.evaluate(() => { window.fetch = () => new Promise(() => {}); });
+
     await page.type('#cName', 'Test User');
     await page.type('#cEmail', 'test@example.com');
     const msgField = await page.$('#cMessage');
-    if (msgField) await msgField.type('Test message for gap audit.');
+    if (msgField) await msgField.type('x');
 
-    // Click and immediately check disabled
     await page.click('#contactSubmit');
+    await wait(100);
     const isDisabled = await page.$eval('#contactSubmit', el => el.disabled);
     if (isDisabled) {
       ok('Contact submit button disabled immediately on click');
