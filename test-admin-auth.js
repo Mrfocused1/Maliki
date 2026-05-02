@@ -9,7 +9,7 @@ const http  = require('http');
 
 const SITE_URL      = (process.env.SITE_URL || 'https://www.malikiatelier.com').replace(/\/$/, '');
 const INVITE_SECRET = process.env.INVITE_SECRET || '';
-const TEST_EMAIL    = 'derryalswaby@gmail.com';
+const TEST_EMAIL    = 'derryalswaby@malikiatelier.com';
 
 let passed = 0;
 let failed = 0;
