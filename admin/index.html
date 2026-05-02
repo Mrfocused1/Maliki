@@ -1019,7 +1019,7 @@ const renderLogin = (errMsg = '') => {
         body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        const msg = res.status === 429 ? 'Too many attempts. Try again later.'
+        const msg = res.status === 429 ? 'Too many attempts. Please wait 15 minutes before trying again.'
           : res.status === 403 ? 'Account does not have admin access.'
           : 'Incorrect email or password.';
         err.textContent = msg;
@@ -3720,7 +3720,12 @@ window.logout = logout;
   try {
     const r = await fetch('/api/admin/session');
     const { authed } = await r.json();
-    if (!authed) return renderLogin();
+    if (!authed) {
+      const wasAuthed = sessionStorage.getItem('maliki.admin_was_authed');
+      sessionStorage.removeItem('maliki.admin_was_authed');
+      return renderLogin(wasAuthed ? 'Your session has expired. Please sign in again.' : '');
+    }
+    sessionStorage.setItem('maliki.admin_was_authed', '1');
     state.authed = true;
     if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData().catch(() => {});
     renderApp();

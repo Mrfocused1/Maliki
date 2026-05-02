@@ -224,7 +224,7 @@
         const d = await r.json();
         err.textContent = d.msg || d.message || 'Failed to set password.';
         btn.disabled = false;
-        btn.textContent = 'Create Account';
+        btn.textContent = 'Set Password';
         return;
       }
 
