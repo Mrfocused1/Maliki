@@ -1346,7 +1346,7 @@ const renderOverview = () => {
           ${top.length === 0 ? '<div class="empty">No sales yet.</div>' : top.map((p) => `
             <div class="list-item" data-pid="${escape(p.id)}">
               <div class="who" style="display:flex;align-items:center;gap:12px">
-                <div class="thumb"><img src="${escape(p.image)}" alt=""></div>
+                <div class="thumb"><img src="${escape(p.image)}" alt="" onerror="this.onerror=null;this.style.opacity='0'"></div>
                 <div>
                   <div>${escape(p.title)}</div>
                   <small>${p.units} sold</small>
@@ -1438,7 +1438,7 @@ const renderProducts = () => {
                 return `
                   <tr data-pid="${escape(p.id)}">
                     <td style="width:60px">
-                      <div class="thumb">${cover ? `<img src="${escape(cover)}" alt="">` : 'IMG'}</div>
+                      <div class="thumb">${cover ? `<img src="${escape(cover)}" alt="" onerror="this.onerror=null;this.style.opacity='0'">` : 'IMG'}</div>
                     </td>
                     <td>
                       <div class="cell-product">
@@ -1600,7 +1600,7 @@ const renderDraftImages = () => {
   if (!grid) return;
   grid.innerHTML = state.draftImages.map((src, i) => `
     <div class="img-tile">
-      <img src="${escape(src)}" alt="">
+      <img src="${escape(src)}" alt="" onerror="this.onerror=null;this.style.opacity='0'">
       ${i === 0 ? '<div class="cover-tag">Cover</div>' : ''}
       <button class="rm" data-i="${i}" title="Remove">×</button>
     </div>

@@ -1,5 +1,6 @@
 const { rateLimit } = require('./_lib/rate-limit');
 const { supabaseFetch } = require('./_lib/supabase');
+const { url: unsubUrl } = require('./_lib/unsub-token');
 
 const RESEND_BASE = 'https://api.resend.com';
 const EMAIL_RX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
@@ -10,7 +11,9 @@ const json = (res, status, body) => {
   res.send(JSON.stringify(body));
 };
 
-const welcomeHtml = `<!DOCTYPE html>
+const welcomeHtml = (email) => {
+  const unsub = unsubUrl(email);
+  return `<!DOCTYPE html>
 <html lang="en">
 <head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>Welcome to Maliki Atelier</title></head>
@@ -39,11 +42,16 @@ const welcomeHtml = `<!DOCTYPE html>
 
         <tr><td align="center" style="padding-top:36px;border-top:1px solid rgba(217,176,112,0.15);font-family:'Italiana',Georgia,serif;font-size:11px;letter-spacing:0.42em;text-transform:uppercase;color:rgba(245,236,218,0.6);">Maliki&nbsp;Atelier &middot; London</td></tr>
 
+        <tr><td align="center" style="padding-top:20px;">
+          <a href="${unsub}" style="font-size:11px;color:rgba(245,236,218,0.35);text-decoration:underline;font-family:'Cormorant Garamond',Georgia,serif;letter-spacing:0.06em;">Unsubscribe</a>
+        </td></tr>
+
       </table>
     </td></tr>
   </table>
 </body>
 </html>`;
+};
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
@@ -79,7 +87,11 @@ module.exports = async (req, res) => {
           from: NOTIFY_FROM,
           to: [email],
           subject: 'Welcome to Maliki Atelier',
-          html: welcomeHtml,
+          html: welcomeHtml(email),
+          headers: {
+            'List-Unsubscribe': `<${unsubUrl(email)}>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
         }),
       }).catch((e) => console.error('newsletter: welcome email failed', e.message));
     }

@@ -644,7 +644,7 @@
       renderConfirmation({ number: num, customer_email: email });
     } else {
       Store.on(() => { if (!pendingOrder) renderCart(); });
-      loadAccountProfile().then(() => renderCart());
+      loadAccountProfile().then(() => renderCart()).catch(() => renderCart());
       initStripe();
     }
 
@@ -787,7 +787,7 @@
               </div>
 
               <button class="place" id="placeBtn" type="submit">Continue to Payment</button>
-              <div class="feedback" id="checkoutFeedback"></div>
+              <div class="feedback" id="checkoutFeedback" role="status" aria-live="polite"></div>
             </form>
           </div>
         </aside>`;
@@ -829,7 +829,9 @@
       // Discount code toggle
       document.getElementById('discountToggle').addEventListener('click', () => {
         const box = document.getElementById('discountBox');
+        const isOpening = !box.classList.contains('open');
         box.classList.toggle('open');
+        if (isOpening) setTimeout(() => document.getElementById('ckCode')?.focus(), 50);
       });
 
       // Apply discount
@@ -844,6 +846,7 @@
         const currency = lines[0]?.product?.currency || 'GBP';
 
         applyBtn.disabled = true;
+        applyBtn.textContent = 'Applying…';
         msg.className = 'discount-msg';
         msg.textContent = '';
 
@@ -888,6 +891,7 @@
           msg.className = 'discount-msg err';
         } finally {
           applyBtn.disabled = false;
+          applyBtn.textContent = 'Apply';
         }
       });
 
@@ -906,7 +910,10 @@
       // Gift message character counter
       document.getElementById('ckGiftMessage').addEventListener('input', function () {
         giftMessage = this.value;
-        document.getElementById('giftMessageCount').textContent = `${this.value.length} / 200`;
+        const len = this.value.length;
+        const counter = document.getElementById('giftMessageCount');
+        counter.textContent = `${len} / 200`;
+        counter.style.color = len >= 180 ? '#c0392b' : len >= 150 ? '#b8860b' : '';
       });
 
       // ── Newsletter toggle ──────────────────────────────────────────────────
@@ -1011,7 +1018,7 @@
             </div>
             <div id="payment-element"></div>
             <button class="place" id="payBtn">Pay ${esc(fmtPrice(order.total_cents, currency))}</button>
-            <div class="feedback" id="payFeedback"></div>
+            <div class="feedback" id="payFeedback" role="alert" aria-live="assertive"></div>
             <button class="back-link" id="backBtn" type="button">← Back to details</button>
           </div>
         </aside>`;

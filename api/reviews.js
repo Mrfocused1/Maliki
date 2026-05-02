@@ -62,6 +62,13 @@ module.exports = async (req, res) => {
     const id = `rev_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 
     try {
+      const existing = await supabaseFetch(
+        `/product_reviews?product_id=eq.${encodeURIComponent(product_id)}&email=eq.${encodeURIComponent(email)}&select=id&limit=1`
+      ).catch(() => []);
+      if (existing?.length > 0) {
+        return json(res, 409, { error: 'already_reviewed' });
+      }
+
       await supabaseFetch('/product_reviews', {
         method: 'POST',
         headers: { Prefer: 'return=minimal' },

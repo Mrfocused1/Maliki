@@ -1,5 +1,6 @@
 const { rateLimit } = require('./_lib/rate-limit');
 const { supabaseFetch } = require('./_lib/supabase');
+const { url: unsubUrl } = require('./_lib/unsub-token');
 
 const RESEND_BASE = 'https://api.resend.com';
 
@@ -42,7 +43,9 @@ const logEmail = ({ template_key, recipient_email, recipient_name, subject, stat
   }).catch((e) => console.error('notify: log failed', e.message));
 };
 
-const thankYouHtml = () => `<!DOCTYPE html>
+const thankYouHtml = (email) => {
+  const unsub = unsubUrl(email);
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
@@ -97,12 +100,18 @@ const thankYouHtml = () => `<!DOCTYPE html>
               Maliki&nbsp;Atelier &middot; By&nbsp;Appointment
             </td>
           </tr>
+          <tr>
+            <td align="center" style="padding-top:20px;">
+              <a href="${unsub}" style="font-size:11px;color:rgba(245,236,218,0.35);text-decoration:underline;font-family:'Cormorant Garamond',Georgia,serif;letter-spacing:0.06em;">Unsubscribe</a>
+            </td>
+          </tr>
         </table>
       </td>
     </tr>
   </table>
 </body>
 </html>`;
+};
 
 const thankYouText = () =>
   [
@@ -188,8 +197,12 @@ module.exports = async (req, res) => {
     from: NOTIFY_FROM,
     to: email,
     subject: thankYouSubject,
-    html: thankYouHtml(),
+    html: thankYouHtml(email),
     text: thankYouText(),
+    headers: {
+      'List-Unsubscribe': `<${unsubUrl(email)}>`,
+      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+    },
   });
   if (!thankYou.ok) {
     console.error('notify: thank-you send failed', thankYou.status, thankYou.data);

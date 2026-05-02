@@ -469,7 +469,7 @@
         const cover = (p.images || [])[0];
         const ribbon = p.featured ? '<div class="ribbon">Featured</div>' : (p.stock === 1 ? '<div class="ribbon">One left</div>' : '');
         const frame = cover
-          ? `<div class="frame">${ribbon}<img src="${escape(cover)}" alt="${escape(p.title)}" width="600" height="600" loading="lazy"></div>`
+          ? `<div class="frame">${ribbon}<img src="${escape(cover)}" alt="${escape(p.title)}" width="600" height="600" loading="lazy" onerror="this.onerror=null;this.style.opacity='0'"></div>`
           : `<div class="frame empty">No Image</div>`;
         return `
           <a class="card" href="/shop/${escape(p.slug)}">
@@ -517,7 +517,7 @@
       row.innerHTML = products.map((p) => {
         const cover = (p.images || [])[0];
         const frame = cover
-          ? `<div class="rv-frame"><img src="${escape(cover)}" alt="${escape(p.title)}" width="200" height="200" loading="lazy"></div>`
+          ? `<div class="rv-frame"><img src="${escape(cover)}" alt="${escape(p.title)}" width="200" height="200" loading="lazy" onerror="this.onerror=null;this.style.opacity='0'"></div>`
           : `<div class="rv-frame empty">No Image</div>`;
         return `
           <a class="rv-card" href="/shop/${escape(p.slug)}">

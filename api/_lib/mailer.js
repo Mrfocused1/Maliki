@@ -1,4 +1,5 @@
 const { supabaseFetch } = require('./supabase');
+const { url: unsubUrl } = require('./unsub-token');
 
 const RESEND_BASE = 'https://api.resend.com';
 
@@ -14,7 +15,7 @@ const escHtml = (s) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
   );
 
-const buildHtml = (subject, bodyText) => {
+const buildHtml = (subject, bodyText, recipientEmail) => {
   const paragraphs = bodyText
     .split(/\n\n+/)
     .map(
@@ -40,6 +41,7 @@ const buildHtml = (subject, bodyText) => {
         <tr><td align="center" style="padding-bottom:32px;"><div style="width:96px;height:1px;background:linear-gradient(90deg,transparent,rgba(217,176,112,0.55),transparent);margin:0 auto;font-size:0;">&nbsp;</div></td></tr>
         <tr><td style="padding:0 0 40px;">${paragraphs}</td></tr>
         <tr><td align="center" style="padding-top:36px;border-top:1px solid rgba(217,176,112,0.15);font-family:'Italiana',Georgia,serif;font-size:11px;letter-spacing:0.42em;text-transform:uppercase;color:rgba(245,236,218,0.6);">Maliki&nbsp;Atelier &middot; By&nbsp;Appointment</td></tr>
+        ${recipientEmail ? `<tr><td align="center" style="padding-top:20px;"><a href="${unsubUrl(recipientEmail)}" style="font-size:11px;color:rgba(245,236,218,0.35);text-decoration:underline;font-family:'Cormorant Garamond',Georgia,serif;letter-spacing:0.06em;">Unsubscribe</a></td></tr>` : ''}
       </table>
     </td></tr>
   </table>
@@ -75,8 +77,12 @@ const sendTemplatedEmail = async ({
       from: NOTIFY_FROM,
       to: Array.isArray(to) ? to : [to],
       subject: renderedSubject,
-      html: buildHtml(renderedSubject, renderedBody),
+      html: buildHtml(renderedSubject, renderedBody, Array.isArray(to) ? to[0] : to),
       text: renderedBody,
+      headers: {
+        'List-Unsubscribe': `<${unsubUrl(Array.isArray(to) ? to[0] : to)}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
     }),
   });
   const data = await r.json().catch(() => ({}));

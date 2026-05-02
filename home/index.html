@@ -1027,7 +1027,8 @@
     var success = document.getElementById('nlSuccess');
     var closeBtn= document.getElementById('nlClose');
 
-    function show() { overlay.classList.add('visible'); }
+    var shown = false;
+    function show() { if (shown) return; shown = true; overlay.classList.add('visible'); }
     function hide() {
       overlay.classList.remove('visible');
       localStorage.setItem(SEEN_KEY, '1');
@@ -1036,13 +1037,10 @@
     // Show after 5 seconds
     var t = setTimeout(show, 5000);
 
-    // Or on scroll past 40% of page
-    var scrollFired = false;
+    // Or on scroll past 40% of page (whichever comes first — guard prevents double-fire)
     window.addEventListener('scroll', function onScroll() {
-      if (scrollFired) return;
       var pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
       if (pct > 0.4) {
-        scrollFired = true;
         clearTimeout(t);
         show();
         window.removeEventListener('scroll', onScroll);
