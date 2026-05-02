@@ -32,6 +32,10 @@
 <style>
   :root {
     --black: #0a0908;
+    --bg-warm: #0f0d0a;
+    --bg-rich: #161210;
+    --bg-loft: #1d1813;
+    --bg-deep: #07060a;
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
@@ -39,13 +43,13 @@
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.28);
+    --line: rgba(217, 176, 112, 0.36);
   }
   .skip-link { position:absolute; top:-40px; left:8px; background:#d9b070; color:#0a0908; padding:8px 14px; border-radius:0; z-index:100; font-family:'Playfair Display',serif; letter-spacing:0.18em; text-transform:uppercase; font-size:11px; transition:top .15s ease; }
   .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: var(--black); color: var(--soft);
+    background: var(--bg-warm); color: var(--soft);
     font-family: 'Lora', serif;
     -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     min-height: 100%;
@@ -57,7 +61,7 @@
     display: flex; justify-content: space-between; align-items: center;
     padding: clamp(20px, 3.6vh, 36px) clamp(20px, 5vw, 56px);
     border-bottom: 1px solid var(--line);
-    position: sticky; top: 0; background: var(--black); z-index: 5;
+    position: sticky; top: 0; background: rgba(10, 9, 8, 0.96); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 5;
   }
   .wordmark {
     display: inline-flex;
@@ -116,6 +120,10 @@
   .hero {
     text-align: center;
     padding: clamp(48px, 9vh, 100px) 24px clamp(32px, 6vh, 56px);
+    background:
+      radial-gradient(ellipse 70% 120% at 50% -10%, rgba(190, 140, 65, 0.07) 0%, transparent 65%),
+      var(--black);
+    border-bottom: 1px solid var(--line);
   }
   .eyebrow {
     font-family: 'Playfair Display', serif;
@@ -206,7 +214,7 @@
     position: relative;
     aspect-ratio: 1 / 1;
     overflow: hidden;
-    background: var(--charcoal);
+    background: var(--bg-loft);
     border: 1px solid var(--line);
   }
   .frame img {

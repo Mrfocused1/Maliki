@@ -39,6 +39,11 @@
 <style>
   :root {
     --bg: #0a0908;
+    --bg-deep: #07060a;
+    --bg-warm: #0f0d0a;
+    --bg-rich: #161210;
+    --bg-loft: #1d1813;
+    --bg-peak: #261e15;
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
@@ -46,7 +51,7 @@
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.28);
+    --line: rgba(217, 176, 112, 0.36);
     --ok: #a3c08b;
     --danger: #d99a6c;
   }
@@ -54,7 +59,7 @@
   .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: var(--bg); color: var(--soft);
+    background: var(--bg-warm); color: var(--soft);
     font-family: 'Lora', serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -129,6 +134,9 @@
     text-align: center;
     padding: clamp(56px, 10vh, 110px) 24px clamp(40px, 7vh, 80px);
     border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse 80% 130% at 50% -5%, rgba(190, 140, 65, 0.07) 0%, transparent 60%),
+      var(--bg);
   }
   .eyebrow {
     font-family: 'Playfair Display', serif;
@@ -236,7 +244,7 @@
   }
   .info-card {
     border: 1px solid var(--line);
-    background: rgba(20, 19, 17, 0.5);
+    background: rgba(30, 24, 18, 0.75);
     padding: 28px 28px 32px;
     display: flex; flex-direction: column; gap: 20px;
   }
@@ -289,6 +297,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
     color: var(--softer);
+    background: var(--bg-deep);
   }
 
   :focus { outline: none; }

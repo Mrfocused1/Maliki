@@ -59,6 +59,11 @@
 <style>
   :root {
     --bg: #0a0908;
+    --bg-deep: #07060a;
+    --bg-warm: #0f0d0a;
+    --bg-rich: #161210;
+    --bg-loft: #1d1813;
+    --bg-peak: #261e15;
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
@@ -66,7 +71,7 @@
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.28);
+    --line: rgba(217, 176, 112, 0.36);
     --ok: #a3c08b;
     --danger: #d99a6c;
   }
@@ -292,6 +297,9 @@
   .collection {
     padding: clamp(64px, 10vh, 120px) 0 clamp(48px, 8vh, 96px);
     border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(190, 140, 65, 0.055) 0%, transparent 65%),
+      var(--bg-warm);
   }
   .collection-header {
     text-align: center;
@@ -314,7 +322,7 @@
     position: relative;
     aspect-ratio: 1 / 1;
     overflow: hidden;
-    background: var(--charcoal);
+    background: var(--bg-loft);
     border: 1px solid var(--line);
   }
   .frame img {
@@ -365,6 +373,7 @@
   .story {
     padding: clamp(64px, 10vh, 120px) 0;
     border-bottom: 1px solid var(--line);
+    background: var(--bg-deep);
   }
   .story-grid {
     display: grid;
@@ -378,7 +387,7 @@
   }
   .story-visual {
     aspect-ratio: 3 / 4;
-    background: var(--charcoal);
+    background: var(--bg-loft);
     border: 1px solid var(--line);
     overflow: hidden;
     position: relative;
@@ -414,9 +423,11 @@
 
   /* ===================== PROMISE BAND ===================== */
   .promise {
-    background: var(--charcoal);
-    border-top: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse 90% 130% at 50% -5%, rgba(210, 155, 70, 0.09) 0%, transparent 60%),
+      var(--bg-peak);
+    border-top: 1px solid rgba(217, 176, 112, 0.48);
+    border-bottom: 1px solid rgba(217, 176, 112, 0.48);
     padding: clamp(40px, 7vh, 72px) 0;
   }
   .promise-grid {
@@ -453,6 +464,7 @@
   .contact-section {
     padding: clamp(64px, 10vh, 120px) 0;
     border-bottom: 1px solid var(--line);
+    background: var(--bg-rich);
   }
   .contact-header { text-align: center; margin-bottom: clamp(32px, 5vh, 52px); }
   .contact-tagline {
@@ -521,6 +533,7 @@
   .testimonials {
     padding: clamp(64px, 10vh, 120px) 0;
     border-bottom: 1px solid var(--line);
+    background: var(--bg-warm);
   }
   .testimonials-header {
     text-align: center;
@@ -547,7 +560,7 @@
     gap: 16px;
     padding: clamp(28px, 4vw, 40px) clamp(24px, 3.5vw, 36px);
     border: 1px solid var(--line);
-    background: rgba(20, 19, 17, 0.55);
+    background: rgba(30, 24, 18, 0.72);
     position: relative;
   }
   .testimonial-quote-mark {
@@ -586,6 +599,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
     color: var(--softer);
+    background: var(--bg-deep);
   }
   .footer-links {
     display: flex; gap: clamp(16px, 2.5vw, 28px); align-items: center; flex-wrap: wrap;

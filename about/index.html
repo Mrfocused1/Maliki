@@ -21,6 +21,11 @@
 <style>
   :root {
     --bg: #0a0908;
+    --bg-deep: #07060a;
+    --bg-warm: #0f0d0a;
+    --bg-rich: #161210;
+    --bg-loft: #1d1813;
+    --bg-peak: #261e15;
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
@@ -28,11 +33,11 @@
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.28);
+    --line: rgba(217, 176, 112, 0.36);
   }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: var(--bg); color: var(--soft);
+    background: var(--bg-warm); color: var(--soft);
     font-family: 'Lora', serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -107,6 +112,9 @@
     text-align: center;
     padding: clamp(56px, 10vh, 110px) 24px clamp(40px, 7vh, 80px);
     border-bottom: 1px solid var(--line);
+    background:
+      radial-gradient(ellipse 80% 120% at 50% -5%, rgba(190, 140, 65, 0.07) 0%, transparent 60%),
+      var(--bg);
   }
   .eyebrow {
     font-family: 'Playfair Display', serif;
@@ -170,6 +178,7 @@
   .img-break {
     padding: clamp(32px, 5vh, 56px) 0;
     border-bottom: 1px solid var(--line);
+    background: var(--bg-rich);
   }
   .img-break-inner {
     max-width: 480px;
@@ -178,7 +187,7 @@
   }
   .img-frame {
     aspect-ratio: 4 / 3;
-    background: var(--charcoal);
+    background: var(--bg-loft);
     border: 1px solid var(--line);
     overflow: hidden;
     position: relative;
@@ -208,7 +217,10 @@
   .cta-band {
     text-align: center;
     padding: clamp(48px, 8vh, 96px) clamp(20px, 5vw, 56px);
-    border-bottom: 1px solid var(--line);
+    border-bottom: 1px solid rgba(217, 176, 112, 0.42);
+    background:
+      radial-gradient(ellipse 80% 120% at 50% -5%, rgba(210, 155, 70, 0.09) 0%, transparent 60%),
+      var(--bg-peak);
   }
   .cta-band h2 {
     font-family: 'Playfair Display', serif;
@@ -248,6 +260,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
     color: var(--softer);
+    background: var(--bg-deep);
   }
 
   .skip-link { position:absolute; top:-40px; left:8px; background:#d9b070; color:#0a0908; padding:8px 14px; border-radius:0; z-index:100; font-family:'Playfair Display',serif; letter-spacing:0.18em; text-transform:uppercase; font-size:11px; transition:top .15s ease; }

@@ -21,6 +21,10 @@
 <style>
   :root {
     --black: #0a0908;
+    --bg-warm: #0f0d0a;
+    --bg-rich: #161210;
+    --bg-loft: #1d1813;
+    --bg-deep: #07060a;
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
@@ -28,7 +32,7 @@
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.28);
+    --line: rgba(217, 176, 112, 0.36);
     --ok: #a3c08b;
     --danger: #d99a6c;
   }
@@ -36,7 +40,7 @@
   .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: var(--black); color: var(--soft);
+    background: var(--bg-warm); color: var(--soft);
     font-family: 'Lora', serif;
     -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     min-height: 100%;
@@ -92,6 +96,10 @@
   .hero {
     text-align: center;
     padding: clamp(40px, 7vh, 80px) 24px clamp(28px, 5vh, 48px);
+    background:
+      radial-gradient(ellipse 70% 120% at 50% -10%, rgba(190, 140, 65, 0.06) 0%, transparent 60%),
+      var(--black);
+    border-bottom: 1px solid var(--line);
   }
   .eyebrow {
     font-family: 'Playfair Display', serif;
@@ -124,7 +132,7 @@
 
   .panel {
     border: 1px solid var(--line);
-    background: rgba(20, 19, 17, 0.5);
+    background: rgba(30, 24, 18, 0.72);
   }
   .panel header {
     padding: 18px 22px;
@@ -148,7 +156,7 @@
   .line:last-child { border-bottom: 0; }
   .line .img {
     aspect-ratio: 1 / 1;
-    background: var(--charcoal);
+    background: var(--bg-loft);
     border: 1px solid var(--line);
     overflow: hidden;
   }

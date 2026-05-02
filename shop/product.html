@@ -25,6 +25,10 @@
 <style>
   :root {
     --black: #0a0908;
+    --bg-warm: #0f0d0a;
+    --bg-rich: #161210;
+    --bg-loft: #1d1813;
+    --bg-deep: #07060a;
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
@@ -32,7 +36,7 @@
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
-    --line: rgba(217, 176, 112, 0.28);
+    --line: rgba(217, 176, 112, 0.36);
     --ok: #a3c08b;
     --warn: #e2c373;
   }
@@ -40,7 +44,7 @@
   .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
-    background: var(--black); color: var(--soft);
+    background: var(--bg-warm); color: var(--soft);
     font-family: 'Lora', serif;
     -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     min-height: 100%;
@@ -52,7 +56,7 @@
     display: flex; justify-content: space-between; align-items: center;
     padding: clamp(20px, 3.6vh, 36px) clamp(20px, 5vw, 56px);
     border-bottom: 1px solid var(--line);
-    position: sticky; top: 0; background: var(--black); z-index: 5;
+    position: sticky; top: 0; background: rgba(10, 9, 8, 0.96); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 5;
   }
   .wordmark {
     display: inline-flex;
@@ -126,14 +130,14 @@
   .gallery { display: flex; flex-direction: column; gap: 18px; }
   .main-img {
     aspect-ratio: 1 / 1;
-    background: var(--charcoal); border: 1px solid var(--line);
+    background: var(--bg-loft); border: 1px solid var(--line);
     overflow: hidden; position: relative;
   }
   .main-img img { width: 100%; height: 100%; object-fit: cover; filter: saturate(0.96); }
   .thumbs { display: flex; gap: 10px; flex-wrap: wrap; }
   .thumbs button {
     width: 64px; height: 64px;
-    background: var(--charcoal); border: 1px solid var(--line); padding: 0; overflow: hidden;
+    background: var(--bg-loft); border: 1px solid var(--line); padding: 0; overflow: hidden;
     transition: border-color 0.4s ease;
   }
   .thumbs button.active { border-color: var(--gold-1); }
@@ -198,7 +202,7 @@
     letter-spacing: 0.38em; text-transform: uppercase; color: var(--softest);
   }
   .engraving-input {
-    background: var(--charcoal); border: 1px solid var(--line);
+    background: var(--bg-loft); border: 1px solid var(--line);
     color: var(--soft); font-family: 'Lora', serif; font-size: 15px;
     letter-spacing: 0.06em; font-style: italic;
     padding: 10px 14px; border-radius: 4px; width: 100%;
@@ -264,7 +268,7 @@
   .wishlist-tooltip {
     display: none; position: absolute;
     bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
-    background: var(--charcoal); border: 1px solid var(--line);
+    background: var(--bg-loft); border: 1px solid var(--line);
     padding: 8px 14px; white-space: nowrap; border-radius: 4px;
     font-family: 'Playfair Display', serif; font-size: 10px;
     letter-spacing: 0.28em; text-transform: uppercase; color: var(--soft);
@@ -286,7 +290,7 @@
   /* Notify-me form for out of stock */
   .notify-wrap {
     display: flex; flex-direction: column; gap: 10px;
-    padding: 16px; background: var(--charcoal); border: 1px solid var(--line); border-radius: 4px;
+    padding: 16px; background: var(--bg-loft); border: 1px solid var(--line); border-radius: 4px;
   }
   .notify-wrap p {
     font-family: 'Playfair Display', serif; font-size: 11px;
@@ -327,7 +331,7 @@
   }
   .modal-overlay.open { display: flex; }
   .modal-box {
-    background: var(--charcoal); border: 1px solid var(--line);
+    background: var(--bg-loft); border: 1px solid var(--line);
     padding: clamp(24px, 4vw, 48px);
     max-width: 520px; width: calc(100vw - 40px);
     max-height: 90vh; overflow-y: auto;
@@ -395,7 +399,7 @@
   .reviews-count { font-size: 13px; color: var(--softer); font-style: italic; }
   .review-list { display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px; }
   .review-card {
-    padding: 20px; background: var(--charcoal); border: 1px solid var(--line); border-radius: 4px;
+    padding: 20px; background: var(--bg-loft); border: 1px solid var(--line); border-radius: 4px;
   }
   .review-header {
     display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;
@@ -426,7 +430,7 @@
   .review-form-wrap { display: none; }
   .review-form-wrap.open { display: block; }
   .review-form {
-    background: var(--charcoal); border: 1px solid var(--line);
+    background: var(--bg-loft); border: 1px solid var(--line);
     padding: clamp(20px, 3vw, 36px); border-radius: 4px;
     display: flex; flex-direction: column; gap: 16px;
   }
@@ -497,7 +501,7 @@
   .shelf-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
   .shelf-card {
     flex: 0 0 180px; display: flex; flex-direction: column; gap: 10px;
-    background: var(--charcoal); border: 1px solid var(--line);
+    background: var(--bg-loft); border: 1px solid var(--line);
     border-radius: 4px; overflow: hidden;
     transition: border-color 0.3s ease;
     text-decoration: none; color: inherit;
