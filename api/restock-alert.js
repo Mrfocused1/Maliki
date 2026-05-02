@@ -32,10 +32,12 @@ module.exports = async (req, res) => {
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
 
   try {
+    const alertId = `rst_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
     await supabaseFetch('/restock_alerts', {
       method: 'POST',
       headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
       body: JSON.stringify({
+        id: alertId,
         product_id,
         email,
         notified: false,

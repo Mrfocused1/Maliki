@@ -21,10 +21,19 @@ module.exports = async (req, res) => {
 
   if (req.method === 'GET') {
     try {
-      // Fetch all unnotified alerts joined with product title
       const alerts = await supabaseFetch(
-        '/restock_alerts?notified=eq.false&select=product_id,email,products(title)'
+        '/restock_alerts?notified=eq.false&select=product_id,email'
       );
+
+      // Fetch product titles in a single query for all unique product ids
+      const productIds = [...new Set(alerts.map((a) => a.product_id))];
+      const titleMap = {};
+      if (productIds.length) {
+        const products = await supabaseFetch(
+          `/products?id=in.(${productIds.map(encodeURIComponent).join(',')})&select=id,title`
+        ).catch(() => []);
+        for (const p of products) titleMap[p.id] = p.title;
+      }
 
       // Group by product_id
       const grouped = {};
@@ -33,7 +42,7 @@ module.exports = async (req, res) => {
         if (!grouped[pid]) {
           grouped[pid] = {
             product_id: pid,
-            product_title: row.products?.title || pid,
+            product_title: titleMap[pid] || pid,
             emails: [],
           };
         }
@@ -98,7 +107,7 @@ module.exports = async (req, res) => {
         {
           method: 'PATCH',
           headers: { Prefer: 'return=minimal' },
-          body: JSON.stringify({ notified: true, notified_at: new Date().toISOString() }),
+          body: JSON.stringify({ notified: true }),
         }
       );
 
