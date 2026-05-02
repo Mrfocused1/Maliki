@@ -63,14 +63,16 @@ module.exports = async (req, res) => {
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
 
   try {
+    const subId = `sub_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
     await supabaseFetch('/subscribers', {
       method: 'POST',
       headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
       body: JSON.stringify({
+        id: subId,
         email,
         subscribed_at: new Date().toISOString(),
         source: 'popup',
-        status: 'active',
+        status: 'subscribed',
       }),
     });
 
