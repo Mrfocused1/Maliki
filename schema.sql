@@ -245,3 +245,30 @@ alter table customer_profiles add column if not exists referred_by text;
 alter table products add column if not exists engraving_enabled boolean default false;
 alter table products add column if not exists engraving_label text default 'Add a personal engraving';
 alter table products add column if not exists engraving_max_chars integer default 20;
+
+-- Atomic counters: avoid read-modify-write races when concurrent webhooks
+-- decrement stock or increment discount usage_count for the same row.
+create or replace function decrement_stock(p_id text, p_qty integer)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update products
+  set stock = greatest(0, stock - p_qty)
+  where id = p_id and stock is not null;
+$$;
+
+create or replace function increment_discount_usage(p_code text)
+returns void
+language sql
+security definer
+set search_path = public
+as $$
+  update discounts
+  set usage_count = usage_count + 1
+  where code = p_code;
+$$;
+
+grant execute on function decrement_stock(text, integer) to anon, authenticated, service_role;
+grant execute on function increment_discount_usage(text) to anon, authenticated, service_role;

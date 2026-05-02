@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
 
     try {
       const reviews = await supabaseFetch(
-        `/product_reviews?product_id=eq.${encodeURIComponent(productId)}&approved=eq.true&order=created_at.desc&limit=20`
+        `/product_reviews?product_id=eq.${encodeURIComponent(productId)}&approved=eq.true&order=created_at.desc&limit=20&select=id,product_id,customer_name,rating,title,body,verified_purchase,created_at`
       );
 
       const count = reviews.length;

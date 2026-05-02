@@ -241,28 +241,21 @@ module.exports = async (req, res) => {
           body: JSON.stringify({ status: 'paid' }),
         });
 
-        // Decrement stock — batch fetch all products in one query
+        // Decrement stock atomically via RPC (avoids read-modify-write race)
         try {
           const items = await supabaseFetch(
             `/order_items?order_id=eq.${encodeURIComponent(orderId)}&select=product_id,quantity`
           );
           const stockItems = (items || []).filter((i) => i.product_id);
-          if (stockItems.length) {
-            const ids = stockItems.map((i) => encodeURIComponent(i.product_id)).join(',');
-            const stockRows = await supabaseFetch(`/products?id=in.(${ids})&select=id,stock`).catch(() => []);
-            const stockMap = Object.fromEntries((stockRows || []).map((r) => [r.id, r.stock]));
-            await Promise.allSettled(
-              stockItems.map((item) => {
-                const stock = stockMap[item.product_id];
-                if (typeof stock !== 'number') return;
-                return supabaseFetch(`/products?id=eq.${encodeURIComponent(item.product_id)}`, {
-                  method: 'PATCH',
-                  headers: { Prefer: 'return=minimal' },
-                  body: JSON.stringify({ stock: Math.max(0, stock - item.quantity) }),
-                });
+          await Promise.allSettled(
+            stockItems.map((item) =>
+              supabaseFetch('/rpc/decrement_stock', {
+                method: 'POST',
+                headers: { Prefer: 'return=minimal' },
+                body: JSON.stringify({ p_id: item.product_id, p_qty: item.quantity }),
               })
-            );
-          }
+            )
+          );
         } catch (stockErr) {
           console.error('stripe-webhook: stock decrement failed', stockErr.message);
         }
@@ -273,16 +266,12 @@ module.exports = async (req, res) => {
         ).catch(() => []);
         const order = orderRows?.[0];
 
-        // Increment discount usage_count
+        // Increment discount usage_count atomically via RPC
         if (order?.discount_code) {
-          const dRows = await supabaseFetch(
-            `/discounts?code=eq.${encodeURIComponent(order.discount_code)}&select=usage_count`
-          ).catch(() => []);
-          const cur = dRows?.[0]?.usage_count ?? 0;
-          await supabaseFetch(`/discounts?code=eq.${encodeURIComponent(order.discount_code)}`, {
-            method: 'PATCH',
+          await supabaseFetch('/rpc/increment_discount_usage', {
+            method: 'POST',
             headers: { Prefer: 'return=minimal' },
-            body: JSON.stringify({ usage_count: cur + 1 }),
+            body: JSON.stringify({ p_code: order.discount_code }),
           }).catch(() => {});
         }
 

@@ -1,4 +1,4 @@
-const { requireAdmin } = require('../_lib/auth');
+const { requireAdmin, sameOrigin } = require('../_lib/auth');
 const { supabaseFetch } = require('../_lib/supabase');
 const { sendTemplatedEmail } = require('../_lib/mailer');
 
@@ -18,6 +18,7 @@ const parseBody = (req) => {
 
 module.exports = async (req, res) => {
   if (!requireAdmin(req, res)) return;
+  if (req.method !== 'GET' && !sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
   if (req.method === 'GET') {
     try {

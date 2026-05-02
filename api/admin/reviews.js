@@ -1,4 +1,4 @@
-const { requireAdmin } = require('../_lib/auth');
+const { requireAdmin, sameOrigin } = require('../_lib/auth');
 const { supabaseFetch } = require('../_lib/supabase');
 
 const json = (res, status, body) => {
@@ -17,6 +17,7 @@ const parseBody = (req) => {
 
 module.exports = async (req, res) => {
   if (!requireAdmin(req, res)) return;
+  if (req.method !== 'GET' && !sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
   if (req.method === 'GET') {
     try {
@@ -40,7 +41,7 @@ module.exports = async (req, res) => {
       await supabaseFetch(`/product_reviews?id=eq.${encodeURIComponent(id)}`, {
         method: 'PATCH',
         headers: { Prefer: 'return=minimal' },
-        body: JSON.stringify({ approved, updated_at: new Date().toISOString() }),
+        body: JSON.stringify({ approved }),
       });
       return json(res, 200, { success: true });
     } catch (err) {

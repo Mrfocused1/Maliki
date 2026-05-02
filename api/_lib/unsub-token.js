@@ -1,9 +1,13 @@
 const crypto = require('crypto');
 
-const secret = () =>
-  process.env.STRIPE_WEBHOOK_SECRET ||
-  process.env.SUPABASE_SERVICE_KEY ||
-  'maliki-unsub';
+const secret = () => {
+  const s = process.env.UNSUB_TOKEN_SECRET ||
+            process.env.STRIPE_WEBHOOK_SECRET ||
+            process.env.SUPABASE_SERVICE_ROLE_KEY ||
+            process.env.SUPABASE_SERVICE_KEY;
+  if (!s) throw new Error('unsub_token_secret_missing');
+  return s;
+};
 
 const generate = (email) =>
   crypto

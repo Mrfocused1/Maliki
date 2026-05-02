@@ -13,7 +13,7 @@ module.exports = async (req, res) => {
   if (!user) return;
 
   const orders = await supabaseFetch(
-    `/orders?customer_email=eq.${encodeURIComponent(user.email)}&order=placed_at.desc&limit=50&select=*,order_items(*)`
+    `/orders?customer_email=eq.${encodeURIComponent(user.email)}&order=created_at.desc&limit=50&select=*,order_items(*)`
   );
   return json(res, 200, { orders: (orders || []).map(normalizeOrder) });
 };
