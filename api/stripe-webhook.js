@@ -169,10 +169,10 @@ const sendConfirmation = async (order) => {
   const { RESEND_API_KEY, NOTIFY_FROM } = process.env;
   if (!RESEND_API_KEY || !NOTIFY_FROM) return;
 
-  // Respect the admin toggle — default to sending if template not found
+  // Only send if the template exists and is enabled
   const tplRows = await supabaseFetch('/email_templates?key=eq.order_confirmation&limit=1').catch(() => []);
   const tpl = tplRows?.[0];
-  if (tpl && tpl.enabled === false) return;
+  if (!tpl?.enabled) return;
 
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',

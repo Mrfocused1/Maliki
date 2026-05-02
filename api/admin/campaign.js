@@ -1,4 +1,4 @@
-const { requireAdmin } = require('../_lib/auth');
+const { requireAdmin, sameOrigin } = require('../_lib/auth');
 const { supabaseFetch } = require('../_lib/supabase');
 const { sendTemplatedEmail } = require('../_lib/mailer');
 
@@ -49,8 +49,8 @@ const getTargets = async (segment, customers, orders) => {
   }
 
   if (segment.startsWith('country:')) {
-    const country = segment.slice(8);
-    return customers.filter((c) => c.country === country);
+    const country = segment.slice(8).trim();
+    return customers.filter((c) => c.country?.toLowerCase() === country.toLowerCase());
   }
 
   // Single customer: 'customer:ID'
@@ -65,6 +65,7 @@ const getTargets = async (segment, customers, orders) => {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
   if (!requireAdmin(req, res)) return;
+  if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
   const body = req.body || {};
   const template_key = String(body.template_key || '').trim();
@@ -73,11 +74,13 @@ module.exports = async (req, res) => {
 
   if (!template_key) return json(res, 400, { error: 'template_key_required' });
 
+  const MAX_RECIPIENTS = 500;
+
   try {
     const [tplRows, customers, orders] = await Promise.all([
       supabaseFetch(`/email_templates?key=eq.${encodeURIComponent(template_key)}&limit=1`),
-      supabaseFetch('/customers?select=*'),
-      supabaseFetch('/orders?select=customer_id,total_cents,status,created_at&status=neq.pending'),
+      supabaseFetch('/customers?select=*&limit=10000'),
+      supabaseFetch('/orders?select=customer_id,total_cents,status,created_at&status=not.in.(pending,failed)'),
     ]);
 
     const template = tplRows?.[0];
@@ -92,9 +95,19 @@ module.exports = async (req, res) => {
       });
     }
 
+    if (targets.length > MAX_RECIPIENTS) {
+      return json(res, 400, {
+        error: 'too_many_recipients',
+        count: targets.length,
+        limit: MAX_RECIPIENTS,
+      });
+    }
+
+    const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     let sent = 0;
     let failed = 0;
     for (const customer of targets) {
+      if (!customer.email || !EMAIL_RX.test(customer.email)) { failed++; continue; }
       try {
         const result = await sendTemplatedEmail({
           template_key,

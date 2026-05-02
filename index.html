@@ -40,6 +40,7 @@
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
 
+<link rel="canonical" href="https://www.malikiatelier.com/" />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content="Maliki Atelier" />
 <meta property="og:title" content="Maliki Atelier — Coming Soon" />
@@ -555,7 +556,7 @@
           />
           <button type="submit" aria-label="Request access">Request Access</button>
         </label>
-        <div class="consent">Private List · No Announcements, Only Invitations</div>
+        <div class="consent">Private List · No Announcements, Only Invitations<br><span style="opacity:0.65;letter-spacing:0.12em;text-transform:none;font-size:10px">By joining you agree to our <a href="/privacy/" style="color:inherit;text-decoration:underline;opacity:0.8">privacy policy</a></span></div>
         <div class="thanks" id="thanks" role="status" aria-live="polite"></div>
       </form>
     </section>
@@ -653,6 +654,6 @@
       }
     });
   </script>
-  <script>(function(){try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:location.pathname,referrer:document.referrer})});}catch(e){}})();</script>
+  <script>(function(){try{var k='maliki.vid',s='maliki.sid',v=localStorage.getItem(k);if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem(k,v);}var sid=sessionStorage.getItem(s);if(!sid){sid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(s,sid);}var u=new URLSearchParams(location.search);var d={path:location.pathname,referrer:document.referrer,visitor_id:v,session_id:sid,screen:innerWidth+'x'+innerHeight,utm_source:u.get('utm_source')||'',utm_medium:u.get('utm_medium')||'',utm_campaign:u.get('utm_campaign')||''};fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true});}catch(e){}})();</script>
 </body>
 </html>

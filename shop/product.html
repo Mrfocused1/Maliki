@@ -6,7 +6,19 @@
 <title>Maliki Atelier</title>
 <meta name="description" content="A piece from the Maliki Atelier ring collection." />
 <meta name="theme-color" content="#0a0908" />
+<meta property="og:type" content="product" />
+<meta property="og:site_name" content="Maliki Atelier" />
+<meta property="og:title" content="Maliki Atelier" />
+<meta property="og:description" content="A piece from the Maliki Atelier ring collection." />
+<meta property="og:url" content="https://www.malikiatelier.com/shop/" />
+<meta property="og:image" content="https://www.malikiatelier.com/og.jpg" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Maliki Atelier" />
+<meta name="twitter:description" content="A piece from the Maliki Atelier ring collection." />
+<meta name="twitter:image" content="https://www.malikiatelier.com/og.jpg" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:wght@400;500;600;700&family=Allura&display=swap" rel="stylesheet" />
@@ -16,7 +28,7 @@
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
-    --softest: rgba(245, 236, 218, 0.62);
+    --softest: rgba(245, 236, 218, 0.78);
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
@@ -24,6 +36,8 @@
     --ok: #a3c08b;
     --warn: #e2c373;
   }
+  .skip-link { position:absolute; top:-40px; left:8px; background:#d9b070; color:#0a0908; padding:8px 14px; border-radius:0; z-index:100; font-family:'Playfair Display',serif; letter-spacing:0.18em; text-transform:uppercase; font-size:11px; transition:top .15s ease; }
+  .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
     background: var(--black); color: var(--soft);
@@ -56,6 +70,29 @@
     font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: #f5ecda;
   }
   .nav a:hover { color: var(--gold-hi); }
+  .burger {
+    display: none; flex-direction: column; justify-content: space-between;
+    width: 24px; height: 18px; background: transparent; border: none;
+    cursor: pointer; padding: 0;
+  }
+  .burger span { display: block; height: 1.5px; width: 100%; background: var(--soft); }
+  .mobile-nav {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: rgba(10, 9, 8, 0.98);
+    flex-direction: column; justify-content: center; align-items: center; gap: 36px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; color: #f5ecda;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { transition: color 0.2s; }
+  .mobile-nav a:hover { color: var(--gold-hi); }
+  .mobile-nav-close {
+    position: absolute; top: clamp(16px, 3vh, 28px); right: clamp(20px, 5vw, 56px);
+    background: transparent; border: none; color: var(--softer);
+    font-size: 20px; cursor: pointer; padding: 8px; line-height: 1;
+  }
+  .mobile-nav-close:hover { color: var(--gold-hi); }
+  @media (max-width: 768px) { .nav { display: none; } .burger { display: flex; } }
   .cart-btn {
     background: transparent; border: 1px solid var(--line); color: var(--soft);
     font-family: 'Playfair Display', serif;
@@ -119,6 +156,11 @@
     font-style: italic; font-size: clamp(20px, 1.9vw, 24px);
     letter-spacing: 0.14em; color: #f3d89e;
   }
+  .bnpl {
+    font-size: 13px; color: var(--softer); letter-spacing: 0.02em;
+    margin-top: -10px;
+  }
+  .bnpl strong { color: var(--soft); }
   .rule { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, rgba(217, 176, 112, 0.55), transparent); }
   .info .desc {
     color: var(--soft); line-height: 1.75; font-size: 16px; letter-spacing: 0.03em; white-space: pre-wrap;
@@ -135,6 +177,37 @@
     letter-spacing: 0.42em; text-transform: uppercase; color: var(--softest); margin-bottom: 4px;
   }
   .specs .value { color: var(--soft); font-style: italic; font-size: 15px; letter-spacing: 0.04em; }
+
+  .size-guide-link {
+    display: inline-block;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--gold-1); border-bottom: 1px solid var(--line);
+    cursor: pointer; background: transparent; border-top: none; border-left: none; border-right: none;
+    padding: 0; padding-bottom: 2px;
+    transition: color 0.3s ease;
+    margin-top: -8px;
+  }
+  .size-guide-link:hover { color: var(--gold-hi); }
+
+  .engraving-wrap {
+    display: flex; flex-direction: column; gap: 6px;
+  }
+  .engraving-wrap label {
+    font-family: 'Playfair Display', serif; font-size: 11px;
+    letter-spacing: 0.38em; text-transform: uppercase; color: var(--softest);
+  }
+  .engraving-input {
+    background: var(--charcoal); border: 1px solid var(--line);
+    color: var(--soft); font-family: 'Lora', serif; font-size: 15px;
+    letter-spacing: 0.06em; font-style: italic;
+    padding: 10px 14px; border-radius: 4px; width: 100%;
+    transition: border-color 0.3s ease;
+  }
+  .engraving-input:focus { border-color: rgba(217, 176, 112, 0.6); outline: none; }
+  .engraving-counter {
+    font-size: 11px; color: var(--softest); text-align: right; letter-spacing: 0.04em;
+  }
 
   .stock {
     font-family: 'Playfair Display', serif; font-size: 11px;
@@ -173,6 +246,34 @@
   .add:hover { filter: brightness(1.06); }
   .add:disabled { opacity: 0.5; cursor: not-allowed; }
 
+  /* Wishlist button */
+  .wishlist-btn {
+    background: transparent; border: none;
+    color: var(--gold-1); font-size: 22px;
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 8px 4px;
+    transition: color 0.3s ease, transform 0.2s ease;
+    position: relative;
+  }
+  .wishlist-btn:hover { color: var(--gold-hi); transform: scale(1.08); }
+  .wishlist-btn .wl-label {
+    font-family: 'Playfair Display', serif; font-size: 10px;
+    letter-spacing: 0.32em; text-transform: uppercase; color: var(--softer);
+    vertical-align: middle;
+  }
+  .wishlist-tooltip {
+    display: none; position: absolute;
+    bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%);
+    background: var(--charcoal); border: 1px solid var(--line);
+    padding: 8px 14px; white-space: nowrap; border-radius: 4px;
+    font-family: 'Playfair Display', serif; font-size: 10px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--soft);
+    z-index: 20;
+  }
+  .wishlist-tooltip a { color: var(--gold-1); border-bottom: 1px solid var(--line); }
+  .wishlist-btn:focus .wishlist-tooltip,
+  .wishlist-tooltip.show { display: block; }
+
   .added {
     margin-top: 8px;
     color: var(--ok);
@@ -182,11 +283,255 @@
   }
   .added.show { opacity: 1; }
 
+  /* Notify-me form for out of stock */
+  .notify-wrap {
+    display: flex; flex-direction: column; gap: 10px;
+    padding: 16px; background: var(--charcoal); border: 1px solid var(--line); border-radius: 4px;
+  }
+  .notify-wrap p {
+    font-family: 'Playfair Display', serif; font-size: 11px;
+    letter-spacing: 0.32em; text-transform: uppercase; color: var(--softer);
+  }
+  .notify-form { display: flex; gap: 8px; flex-wrap: wrap; }
+  .notify-email {
+    flex: 1; min-width: 160px;
+    background: var(--black); border: 1px solid var(--line);
+    color: var(--soft); font-family: 'Lora', serif; font-size: 14px;
+    font-style: italic; letter-spacing: 0.04em;
+    padding: 9px 12px; border-radius: 4px;
+    transition: border-color 0.3s ease;
+  }
+  .notify-email:focus { border-color: rgba(217, 176, 112, 0.6); outline: none; }
+  .notify-submit {
+    background: transparent; border: 1px solid var(--gold-2);
+    color: var(--gold-1);
+    font-family: 'Playfair Display', serif; font-size: 10px;
+    letter-spacing: 0.38em; text-transform: uppercase;
+    padding: 9px 16px; border-radius: 4px;
+    transition: background 0.3s ease, color 0.3s ease;
+  }
+  .notify-submit:hover { background: rgba(217, 176, 112, 0.1); }
+  .notify-msg {
+    font-size: 13px; font-style: italic; letter-spacing: 0.04em;
+    display: none;
+  }
+  .notify-msg.ok { color: var(--ok); display: block; }
+  .notify-msg.err { color: var(--warn); display: block; }
+
+  /* Size guide modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0;
+    background: rgba(10, 9, 8, 0.85); z-index: 50;
+    align-items: center; justify-content: center;
+    backdrop-filter: blur(3px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-box {
+    background: var(--charcoal); border: 1px solid var(--line);
+    padding: clamp(24px, 4vw, 48px);
+    max-width: 520px; width: calc(100vw - 40px);
+    max-height: 90vh; overflow-y: auto;
+    position: relative;
+  }
+  .modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2vw, 22px); letter-spacing: 0.22em;
+    text-transform: uppercase; color: #f5ecda; font-weight: 400;
+    margin-bottom: 20px;
+  }
+  .modal-close {
+    position: absolute; top: 16px; right: 16px;
+    background: transparent; border: none; color: var(--softer);
+    font-size: 22px; line-height: 1; padding: 4px 8px;
+    transition: color 0.2s ease;
+  }
+  .modal-close:hover { color: var(--gold-hi); }
+  .size-table {
+    width: 100%; border-collapse: collapse; margin-bottom: 20px;
+  }
+  .size-table th {
+    font-family: 'Playfair Display', serif; font-size: 10px;
+    letter-spacing: 0.38em; text-transform: uppercase; color: var(--softest);
+    padding: 8px 10px; text-align: left;
+    border-bottom: 1px solid var(--line);
+  }
+  .size-table td {
+    font-size: 14px; font-style: italic; letter-spacing: 0.04em;
+    padding: 9px 10px; color: var(--soft);
+    border-bottom: 1px solid rgba(217, 176, 112, 0.1);
+  }
+  .size-table tr:last-child td { border-bottom: none; }
+  .modal-measure {
+    font-size: 14px; color: var(--softer); line-height: 1.7;
+    letter-spacing: 0.03em; border-top: 1px solid var(--line); padding-top: 16px;
+  }
+  .modal-measure strong { color: var(--gold-1); font-style: normal; }
+
   .loading, .notfound {
     text-align: center; padding: 120px 20px;
     color: var(--softer); font-style: italic; letter-spacing: 0.14em;
   }
   .notfound a { color: var(--gold-1); border-bottom: 1px solid var(--line); }
+
+  /* Reviews section */
+  .reviews-section {
+    max-width: 1320px; margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 56px) clamp(48px, 8vh, 96px);
+  }
+  .reviews-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(20px, 2.4vw, 28px); letter-spacing: 0.22em;
+    text-transform: uppercase; font-weight: 400; color: #f5ecda;
+    margin-bottom: 24px;
+  }
+  .reviews-summary {
+    display: flex; align-items: center; gap: 14px; margin-bottom: 28px;
+  }
+  .reviews-stars { color: var(--gold-1); font-size: 20px; letter-spacing: 2px; }
+  .reviews-avg {
+    font-family: 'Playfair Display', serif; font-size: 15px;
+    letter-spacing: 0.14em; color: var(--soft);
+  }
+  .reviews-count { font-size: 13px; color: var(--softer); font-style: italic; }
+  .review-list { display: flex; flex-direction: column; gap: 24px; margin-bottom: 32px; }
+  .review-card {
+    padding: 20px; background: var(--charcoal); border: 1px solid var(--line); border-radius: 4px;
+  }
+  .review-header {
+    display: flex; align-items: baseline; gap: 12px; margin-bottom: 8px; flex-wrap: wrap;
+  }
+  .review-author {
+    font-family: 'Playfair Display', serif; font-size: 12px;
+    letter-spacing: 0.28em; text-transform: uppercase; color: var(--soft);
+  }
+  .review-star { color: var(--gold-1); font-size: 14px; letter-spacing: 1px; }
+  .review-date { font-size: 12px; color: var(--softest); font-style: italic; }
+  .review-title {
+    font-family: 'Playfair Display', serif; font-size: 14px;
+    letter-spacing: 0.12em; color: var(--gold-1); margin-bottom: 6px;
+  }
+  .review-body { font-size: 15px; line-height: 1.7; color: var(--softer); font-style: italic; }
+
+  .write-review-btn {
+    background: transparent; border: 1px solid var(--line);
+    color: var(--gold-1);
+    font-family: 'Playfair Display', serif; font-size: 11px;
+    letter-spacing: 0.38em; text-transform: uppercase;
+    padding: 11px 22px; border-radius: 4px;
+    transition: border-color 0.3s ease, color 0.3s ease;
+    margin-bottom: 24px;
+  }
+  .write-review-btn:hover { border-color: rgba(217, 176, 112, 0.5); color: var(--gold-hi); }
+
+  .review-form-wrap { display: none; }
+  .review-form-wrap.open { display: block; }
+  .review-form {
+    background: var(--charcoal); border: 1px solid var(--line);
+    padding: clamp(20px, 3vw, 36px); border-radius: 4px;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+  .review-form-title {
+    font-family: 'Playfair Display', serif; font-size: 13px;
+    letter-spacing: 0.32em; text-transform: uppercase; color: var(--softer);
+    margin-bottom: 4px;
+  }
+  .rf-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  @media (max-width: 560px) { .rf-row { grid-template-columns: 1fr; } }
+  .rf-label {
+    font-family: 'Playfair Display', serif; font-size: 10px;
+    letter-spacing: 0.36em; text-transform: uppercase; color: var(--softest);
+    display: block; margin-bottom: 6px;
+  }
+  .rf-input, .rf-textarea {
+    background: var(--black); border: 1px solid var(--line);
+    color: var(--soft); font-family: 'Lora', serif; font-size: 14px;
+    font-style: italic; letter-spacing: 0.04em;
+    padding: 10px 14px; border-radius: 4px; width: 100%;
+    transition: border-color 0.3s ease;
+  }
+  .rf-input:focus, .rf-textarea:focus { border-color: rgba(217, 176, 112, 0.6); outline: none; }
+  .rf-textarea { resize: vertical; min-height: 90px; }
+  .star-selector { display: flex; gap: 6px; }
+  .star-selector button {
+    background: transparent; border: none;
+    color: var(--softest); font-size: 24px; padding: 2px;
+    transition: color 0.2s ease; line-height: 1;
+  }
+  .star-selector button.active, .star-selector button:hover { color: var(--gold-1); }
+  .rf-submit {
+    align-self: flex-start;
+    background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
+    border: 0; color: #1a120a; font-weight: 600;
+    font-family: 'Playfair Display', serif; font-size: 11px;
+    letter-spacing: 0.38em; text-transform: uppercase;
+    padding: 12px 28px; border-radius: 4px;
+    transition: filter 0.3s ease;
+  }
+  .rf-submit:hover { filter: brightness(1.06); }
+  .rf-msg {
+    font-size: 14px; font-style: italic; letter-spacing: 0.04em;
+    display: none;
+  }
+  .rf-msg.ok { color: var(--ok); display: block; }
+  .rf-msg.err { color: var(--warn); display: block; }
+
+  /* Recently viewed & related products */
+  .shelf-section {
+    padding: 0 clamp(20px, 5vw, 56px) clamp(48px, 8vh, 96px);
+    max-width: 1320px; margin: 0 auto;
+  }
+  .shelf-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(17px, 2vw, 22px); letter-spacing: 0.28em;
+    text-transform: uppercase; font-weight: 400; color: #f5ecda;
+    margin-bottom: 20px;
+  }
+  .shelf-scroll {
+    display: flex; gap: 16px; overflow-x: auto;
+    padding-bottom: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  .shelf-scroll::-webkit-scrollbar { height: 4px; }
+  .shelf-scroll::-webkit-scrollbar-track { background: transparent; }
+  .shelf-scroll::-webkit-scrollbar-thumb { background: var(--line); border-radius: 2px; }
+  .shelf-card {
+    flex: 0 0 180px; display: flex; flex-direction: column; gap: 10px;
+    background: var(--charcoal); border: 1px solid var(--line);
+    border-radius: 4px; overflow: hidden;
+    transition: border-color 0.3s ease;
+    text-decoration: none; color: inherit;
+  }
+  .shelf-card:hover { border-color: rgba(217, 176, 112, 0.45); }
+  .shelf-card-img {
+    width: 180px; height: 180px; object-fit: cover;
+    display: block; filter: saturate(0.96);
+  }
+  .shelf-card-img-placeholder {
+    width: 180px; height: 180px;
+    background: var(--black);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--softest); font-style: italic; font-size: 12px;
+  }
+  .shelf-card-body { padding: 10px 12px 14px; display: flex; flex-direction: column; gap: 4px; }
+  .shelf-card-name {
+    font-family: 'Playfair Display', serif; font-size: 12px;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--soft);
+    line-height: 1.4;
+  }
+  .shelf-card-price {
+    font-style: italic; font-size: 13px; color: var(--gold-1); letter-spacing: 0.06em;
+  }
+
+  /* Separator */
+  .section-rule {
+    max-width: 1320px; margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 56px);
+    margin-bottom: clamp(32px, 5vh, 64px);
+  }
+  .section-rule hr {
+    border: none; border-top: 1px solid var(--line);
+  }
 
   .footer {
     border-top: 1px solid var(--line);
@@ -195,26 +540,87 @@
     font-family: 'Playfair Display', serif;
     font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
   }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
   <header class="topbar">
     <a href="/" class="wordmark" aria-label="Maliki Atelier home"><img src="/assets/maliki-logo.svg" alt="Maliki Atelier"></a>
     <nav class="nav">
+      <a href="/">Home</a>
       <a href="/shop">Shop</a>
       <a href="/about">About</a>
       <a href="/contact">Contact</a>
+      <a href="/account">Account</a>
       <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
     </nav>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
-  <nav class="crumbs"><a href="/shop">Shop</a> <span style="margin:0 10px;color:var(--line)">/</span> <span id="crumb-title">…</span></nav>
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+    <a href="/">Home</a>
+    <a href="/shop">Shop</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/account">Account</a>
+    <a href="/cart">Cart</a>
+  </div>
+
+  <nav class="crumbs" id="main"><a href="/shop">Shop</a> <span style="margin:0 10px;color:var(--line)">/</span> <span id="crumb-title">…</span></nav>
 
   <main id="root"><div class="loading">Loading…</div></main>
 
+  <!-- Sections rendered by JS after product loads -->
+  <div id="reviews-root"></div>
+  <div id="recently-viewed-root"></div>
+  <div id="related-root"></div>
+
+  <!-- Ring size guide modal -->
+  <div class="modal-overlay" id="sizeModal" role="dialog" aria-modal="true" aria-label="Ring size guide">
+    <div class="modal-box">
+      <button class="modal-close" id="sizeModalClose" aria-label="Close size guide">&times;</button>
+      <h2 class="modal-title">Ring Size Guide</h2>
+      <table class="size-table">
+        <thead>
+          <tr>
+            <th>UK</th>
+            <th>EU</th>
+            <th>US</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>G</td><td>44</td><td>3.5</td></tr>
+          <tr><td>K</td><td>49</td><td>5.5</td></tr>
+          <tr><td>M</td><td>52</td><td>6.5</td></tr>
+          <tr><td>O</td><td>55</td><td>7.5</td></tr>
+          <tr><td>P</td><td>57</td><td>8</td></tr>
+          <tr><td>Q</td><td>58</td><td>8.5</td></tr>
+          <tr><td>R</td><td>60</td><td>9</td></tr>
+          <tr><td>S</td><td>62</td><td>9.5</td></tr>
+          <tr><td>T</td><td>63</td><td>10</td></tr>
+          <tr><td>U</td><td>65</td><td>10.5</td></tr>
+        </tbody>
+      </table>
+      <div class="modal-measure">
+        <strong>How to measure:</strong> wrap a thin strip of paper around your finger, mark where it overlaps, measure the length in mm. Use the chart above to find your size.
+      </div>
+    </div>
+  </div>
+
   <footer class="footer">
-    <span>© Maliki Atelier</span>
-    <span>White-Glove Courier · Insured Worldwide</span>
+    <span>&copy; Maliki Atelier</span>
+    <span>White-Glove Courier &middot; Insured Worldwide</span>
   </footer>
 
   <script src="/assets/ring-svg.js"></script>
@@ -222,20 +628,21 @@
   <script src="/assets/store.js"></script>
   <script src="/assets/supabase-sync.js"></script>
   <script>
+    const SB_URL = 'https://yvjjtbejnicwckzmcadj.supabase.co';
+    const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2amp0YmVqbmljd2Nrem1jYWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTYxNDAsImV4cCI6MjA5MzE3MjE0MH0.lADuHfTnozqMVXOdbc-MGEG6Em0C2eFcXAOfMbelnMc';
+
     const fmtPrice = (cents, currency) => {
       try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0 }).format((cents || 0) / 100); }
       catch { return `£${((cents || 0) / 100).toFixed(0)}`; }
     };
     const escape = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-    // Slug can arrive two ways: via the Vercel rewrite (/shop/<slug>, browser
-    // URL stays the same — query is empty), or via direct ?slug=… access used
-    // by the local static dev server. Prefer the path; fall back to the query.
+    // Slug detection — prefer path, fall back to query param
     const slug = (() => {
       const segs = location.pathname.split('/').filter(Boolean);
       const last = segs[segs.length - 1] || '';
       if (segs[0] === 'shop' && last && last !== 'shop' && !last.endsWith('.html')) {
-        return decodeURIComponent(last);
+        try { return decodeURIComponent(last); } catch { return last; }
       }
       return new URLSearchParams(location.search).get('slug') || '';
     })();
@@ -243,7 +650,70 @@
     const crumbTitle = document.getElementById('crumb-title');
 
     let qty = 1;
+    let engravingText = '';
 
+    // ── Auth helpers ────────────────────────────────────────────────────
+    const getAuthToken = () => {
+      try {
+        const token = localStorage.getItem('maliki.auth_token');
+        const expires = parseInt(localStorage.getItem('maliki.auth_expires') || '0', 10);
+        if (token && Date.now() < expires) return token;
+      } catch {}
+      return null;
+    };
+
+    // ── Recently viewed logic ───────────────────────────────────────────
+    const RV_KEY = 'maliki.recently_viewed';
+    const updateRecentlyViewed = (currentSlug) => {
+      try {
+        let list = JSON.parse(localStorage.getItem(RV_KEY) || '[]');
+        list = [currentSlug, ...list.filter(s => s !== currentSlug)].slice(0, 6);
+        localStorage.setItem(RV_KEY, JSON.stringify(list));
+        return list;
+      } catch { return [currentSlug]; }
+    };
+    const getRecentlyViewed = () => {
+      try { return JSON.parse(localStorage.getItem(RV_KEY) || '[]'); }
+      catch { return []; }
+    };
+
+    // ── Wishlist state ──────────────────────────────────────────────────
+    let wishlistSlugs = [];
+
+    const fetchWishlist = async (token) => {
+      try {
+        const res = await fetch('/api/account/wishlist', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          wishlistSlugs = await res.json();
+        }
+      } catch {}
+    };
+
+    const toggleWishlist = async (productSlug, token) => {
+      const isWishlisted = wishlistSlugs.includes(productSlug);
+      const action = isWishlisted ? 'remove' : 'add';
+      try {
+        const res = await fetch('/api/account/wishlist', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ slug: productSlug, action })
+        });
+        if (res.ok) {
+          wishlistSlugs = isWishlisted
+            ? wishlistSlugs.filter(s => s !== productSlug)
+            : [...wishlistSlugs, productSlug];
+          return true;
+        }
+      } catch {}
+      return false;
+    };
+
+    // ── Render helpers ──────────────────────────────────────────────────
     const renderNotFound = () => {
       crumbTitle.textContent = 'Not found';
       root.innerHTML = `
@@ -262,21 +732,342 @@
       return `<div class="stock in">In stock</div>`;
     };
 
-    const renderProduct = (p) => {
+    const starsHtml = (rating, total) => {
+      const full = Math.round(rating);
+      let s = '';
+      for (let i = 1; i <= 5; i++) s += i <= full ? '★' : '☆';
+      return s;
+    };
+
+    const renderReviews = async (p) => {
+      const container = document.getElementById('reviews-root');
+      if (!container) return;
+
+      let reviews = [];
+      let avgRating = 0;
+      let reviewCount = 0;
+      try {
+        const res = await fetch(`/api/reviews?product_id=${encodeURIComponent(p.id)}`);
+        if (res.ok) {
+          const data = await res.json();
+          reviews = data.reviews || [];
+          avgRating = data.avg_rating || 0;
+          reviewCount = data.count || 0;
+        }
+      } catch {}
+
+      const avg = reviewCount
+        ? (avgRating).toFixed(1)
+        : null;
+
+      const formatName = (name) => {
+        const parts = String(name || '').trim().split(/\s+/);
+        if (parts.length === 1) return parts[0];
+        return parts[0] + ' ' + parts[parts.length - 1].charAt(0) + '.';
+      };
+
+      const formatDate = (dateStr) => {
+        try {
+          return new Date(dateStr).toLocaleDateString('en-GB', { year: 'numeric', month: 'long', day: 'numeric' });
+        } catch { return ''; }
+      };
+
+      const reviewCards = reviews.slice(0, 6).map(r => `
+        <div class="review-card">
+          <div class="review-header">
+            <span class="review-author">${escape(formatName(r.name))}</span>
+            <span class="review-star">${starsHtml(r.rating)}</span>
+            <span class="review-date">${escape(formatDate(r.created_at || r.date))}</span>
+          </div>
+          ${r.title ? `<div class="review-title">${escape(r.title)}</div>` : ''}
+          <div class="review-body">${escape(r.body || '')}</div>
+        </div>
+      `).join('');
+
+      const summaryHtml = avg
+        ? `<div class="reviews-summary">
+            <span class="reviews-stars">${starsHtml(parseFloat(avg))}</span>
+            <span class="reviews-avg">${avg}</span>
+            <span class="reviews-count">&middot; ${reviewCount} review${reviewCount !== 1 ? 's' : ''}</span>
+          </div>`
+        : '';
+
+      const noReviews = !reviews.length;
+
+      container.innerHTML = `
+        <div class="section-rule"><hr></div>
+        <section class="reviews-section">
+          <h2 class="reviews-title">Customer Reviews</h2>
+          ${summaryHtml}
+          ${noReviews
+            ? `<p style="color:var(--softer);font-style:italic;margin-bottom:24px;">No reviews yet.</p>`
+            : `<div class="review-list">${reviewCards}</div>`
+          }
+          <button class="write-review-btn" id="writeReviewBtn">
+            ${noReviews ? 'Be the first to review this piece →' : 'Write a Review'}
+          </button>
+          <div class="review-form-wrap" id="reviewFormWrap">
+            <form class="review-form" id="reviewForm" novalidate>
+              <div class="review-form-title">Your Review</div>
+              <div class="rf-row">
+                <div>
+                  <label class="rf-label" for="rfName">Name</label>
+                  <input class="rf-input" id="rfName" type="text" placeholder="Your name" required>
+                </div>
+                <div>
+                  <label class="rf-label" for="rfEmail">Email</label>
+                  <input class="rf-input" id="rfEmail" type="email" placeholder="your@email.com" required>
+                </div>
+              </div>
+              <div>
+                <label class="rf-label">Rating</label>
+                <div class="star-selector" id="starSelector" role="group" aria-label="Star rating">
+                  ${[1,2,3,4,5].map(n => `<button type="button" data-star="${n}" aria-label="${n} star${n>1?'s':''}">★</button>`).join('')}
+                </div>
+              </div>
+              <div>
+                <label class="rf-label" for="rfTitle">Title</label>
+                <input class="rf-input" id="rfTitle" type="text" placeholder="Summary of your experience">
+              </div>
+              <div>
+                <label class="rf-label" for="rfBody">Your Review</label>
+                <textarea class="rf-textarea" id="rfBody" rows="4" placeholder="Share your thoughts on this piece..." required></textarea>
+              </div>
+              <button type="submit" class="rf-submit">Submit Review</button>
+              <div class="rf-msg" id="rfMsg"></div>
+            </form>
+          </div>
+        </section>
+      `;
+
+      // Write review toggle
+      let selectedRating = 0;
+      document.getElementById('writeReviewBtn').addEventListener('click', () => {
+        const wrap = document.getElementById('reviewFormWrap');
+        const isOpen = wrap.classList.toggle('open');
+        document.getElementById('writeReviewBtn').textContent = isOpen ? 'Cancel' : (noReviews ? 'Be the first to review this piece →' : 'Write a Review');
+      });
+
+      // Star selector
+      document.getElementById('starSelector').addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-star]');
+        if (!btn) return;
+        selectedRating = parseInt(btn.dataset.star, 10);
+        document.querySelectorAll('#starSelector button').forEach((b, i) => {
+          b.classList.toggle('active', i < selectedRating);
+        });
+      });
+
+      // Review form submit
+      document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const msg = document.getElementById('rfMsg');
+        msg.className = 'rf-msg';
+        const name = document.getElementById('rfName').value.trim();
+        const email = document.getElementById('rfEmail').value.trim();
+        const title = document.getElementById('rfTitle').value.trim();
+        const body = document.getElementById('rfBody').value.trim();
+        if (!name || !email || !body || !selectedRating) {
+          msg.textContent = 'Please fill in all required fields and select a rating.';
+          msg.className = 'rf-msg err';
+          return;
+        }
+        try {
+          const res = await fetch('/api/reviews', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ product_id: p.id, name, email, rating: selectedRating, title, body })
+          });
+          if (res.ok) {
+            msg.textContent = 'Thank you — your review is pending approval.';
+            msg.className = 'rf-msg ok';
+            document.getElementById('reviewForm').reset();
+            selectedRating = 0;
+            document.querySelectorAll('#starSelector button').forEach(b => b.classList.remove('active'));
+          } else {
+            throw new Error();
+          }
+        } catch {
+          msg.textContent = 'Could not submit — please try again.';
+          msg.className = 'rf-msg err';
+        }
+      });
+    };
+
+    const renderShelfCards = (products) => {
+      return products.map(prod => {
+        const img = (prod.images || [])[0];
+        return `
+          <a class="shelf-card" href="/shop/${escape(prod.slug || prod.id)}">
+            ${img
+              ? `<img class="shelf-card-img" src="${escape(img)}" alt="${escape(prod.title)}" width="180" height="180" loading="lazy">`
+              : `<div class="shelf-card-img-placeholder">No image</div>`
+            }
+            <div class="shelf-card-body">
+              <div class="shelf-card-name">${escape(prod.title)}</div>
+              <div class="shelf-card-price">${escape(fmtPrice(prod.price_cents, prod.currency))}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
+    };
+
+    const renderRecentlyViewed = (currentSlug) => {
+      const container = document.getElementById('recently-viewed-root');
+      if (!container) return;
+
+      // Get the updated list (already includes current slug at front)
+      const allSlugs = getRecentlyViewed();
+      const otherSlugs = allSlugs.filter(s => s !== currentSlug).slice(0, 4);
+      if (!otherSlugs.length) return;
+
+      // Try to resolve against Store products
+      const products = otherSlugs
+        .map(s => {
+          try { return Store.productBySlug(s); } catch { return null; }
+        })
+        .filter(Boolean)
+        .filter(pr => pr.published !== false);
+
+      if (!products.length) return;
+
+      container.innerHTML = `
+        <div class="section-rule"><hr></div>
+        <div class="shelf-section">
+          <h2 class="shelf-title">You Also Viewed</h2>
+          <div class="shelf-scroll">${renderShelfCards(products)}</div>
+        </div>
+      `;
+    };
+
+    const renderRelated = (currentProduct) => {
+      const container = document.getElementById('related-root');
+      if (!container) return;
+
+      let allProducts = [];
+      try { allProducts = Store.allProducts ? Store.allProducts() : []; } catch {}
+      if (!allProducts.length) return;
+
+      const related = allProducts.filter(pr => {
+        if (pr.id === currentProduct.id || pr.published === false) return false;
+        return (
+          (currentProduct.category && pr.category === currentProduct.category) ||
+          (currentProduct.metal && pr.metal === currentProduct.metal)
+        );
+      }).slice(0, 4);
+
+      if (!related.length) return;
+
+      container.innerHTML = `
+        <div class="section-rule"><hr></div>
+        <div class="shelf-section">
+          <h2 class="shelf-title">You May Also Like</h2>
+          <div class="shelf-scroll">${renderShelfCards(related)}</div>
+        </div>
+      `;
+    };
+
+    const renderProduct = async (p) => {
       crumbTitle.textContent = p.title;
       document.title = `${p.title} — Maliki Atelier`;
 
+      const ogTitle = `${p.title} — Maliki Atelier`;
+      const ogDesc = p.description ? p.description.slice(0, 200) : 'A piece from the Maliki Atelier collection.';
+      const ogImg = (p.images || [])[0] || '';
+      document.querySelector('meta[property="og:title"]')?.setAttribute('content', ogTitle);
+      document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', ogTitle);
+      document.querySelector('meta[property="og:description"]')?.setAttribute('content', ogDesc);
+      document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', ogDesc);
+      document.querySelector('meta[name="description"]')?.setAttribute('content', ogDesc);
+      if (ogImg) {
+        document.querySelector('meta[property="og:image"]')?.setAttribute('content', ogImg);
+        document.querySelector('meta[name="twitter:image"]')?.setAttribute('content', ogImg);
+      }
+      const productSlug = p.slug || p.id || '';
+      if (productSlug) {
+        const cleanUrl = `https://www.malikiatelier.com/shop/${productSlug}`;
+        document.querySelector('meta[property="og:url"]')?.setAttribute('content', cleanUrl);
+        const canonical = document.querySelector('link[rel="canonical"]');
+        if (canonical) canonical.setAttribute('href', cleanUrl);
+      }
+
+      const productUrl = `https://www.malikiatelier.com/shop/${productSlug}`;
+      const ldData = {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "Product",
+            "@id": `${productUrl}#product`,
+            "name": p.title,
+            "description": p.description || `${p.title} — Maliki Atelier`,
+            "sku": p.id,
+            "image": (p.images || []).filter(Boolean).map(u => u.startsWith('http') ? u : `https://www.malikiatelier.com${u.startsWith('/') ? u : '/' + u}`),
+            "brand": { "@type": "Brand", "name": "Maliki Atelier" },
+            "category": p.category || "Jewelry",
+            ...(p.metal ? { "material": p.metal } : {}),
+            "offers": {
+              "@type": "Offer",
+              "url": productUrl,
+              "priceCurrency": p.currency || "GBP",
+              "price": ((p.price_cents || 0) / 100).toFixed(2),
+              "availability": (p.stock === 0) ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+              "itemCondition": "https://schema.org/NewCondition",
+              "seller": { "@type": "Organization", "name": "Maliki Atelier" }
+            }
+          },
+          {
+            "@type": "BreadcrumbList",
+            "itemListElement": [
+              { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.malikiatelier.com/home/" },
+              { "@type": "ListItem", "position": 2, "name": "Shop", "item": "https://www.malikiatelier.com/shop/" },
+              { "@type": "ListItem", "position": 3, "name": p.title, "item": productUrl }
+            ]
+          }
+        ]
+      };
+      let ld = document.getElementById('ld-product');
+      if (!ld) { ld = document.createElement('script'); ld.id = 'ld-product'; ld.type = 'application/ld+json'; document.head.appendChild(ld); }
+      ld.textContent = JSON.stringify(ldData);
+
       const images = (p.images || []).filter(Boolean);
       const main = images[0]
-        ? `<div class="main-img"><img id="mainImg" src="${escape(images[0])}" alt="${escape(p.title)}"></div>`
+        ? `<div class="main-img"><img id="mainImg" src="${escape(images[0])}" alt="${escape(p.title)}" width="800" height="800"></div>`
         : `<div class="main-img"><div style="display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:var(--softer)">No image</div></div>`;
       const thumbs = images.length > 1
         ? `<div class="thumbs">${images.map((src, i) =>
-            `<button type="button" data-src="${escape(src)}" class="${i === 0 ? 'active' : ''}"><img src="${escape(src)}" alt=""></button>`
+            `<button type="button" data-src="${escape(src)}" class="${i === 0 ? 'active' : ''}"><img src="${escape(src)}" alt="${escape(p.title)} view ${i+1}" width="120" height="120"></button>`
           ).join('')}</div>`
         : '';
 
       const outOfStock = p.stock === 0;
+
+      // BNPL calculation — price / 3, integer
+      const bnplAmount = p.price_cents ? Math.floor(p.price_cents / 3 / 100) : null;
+      const bnplHtml = bnplAmount
+        ? `<div class="bnpl">or 3 interest-free payments of £${bnplAmount} with <strong>Klarna</strong></div>`
+        : '';
+
+      // Notify-me form for out-of-stock
+      const notifyHtml = outOfStock ? `
+        <div class="notify-wrap">
+          <p>Notify me when back in stock</p>
+          <div class="notify-form">
+            <input class="notify-email" id="notifyEmail" type="email" placeholder="your@email.com" aria-label="Email address">
+            <button class="notify-submit" id="notifySubmit" type="button">Notify Me</button>
+          </div>
+          <div class="notify-msg" id="notifyMsg"></div>
+        </div>
+      ` : '';
+
+      // Engraving option
+      const engravingMax = p.engraving_max_chars || 20;
+      const engravingHtml = p.engraving_enabled ? `
+        <div class="engraving-wrap">
+          <label class="specs-label" for="engravingInput">${escape(p.engraving_label || 'Add a personal engraving')}</label>
+          <input class="engraving-input" id="engravingInput" type="text" maxlength="${engravingMax}" placeholder="Your inscription&hellip;" autocomplete="off">
+          <div class="engraving-counter" id="engravingCounter">0/${engravingMax}</div>
+        </div>
+      ` : '';
 
       root.innerHTML = `
         <article class="product">
@@ -289,6 +1080,7 @@
             <h1>${escape(p.title)}</h1>
             ${p.subtitle ? `<div class="subtitle">${escape(p.subtitle)}</div>` : ''}
             <div class="price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
+            ${bnplHtml}
             <div class="rule"></div>
             <div class="desc">${escape(p.description || '')}</div>
 
@@ -299,21 +1091,34 @@
               <div><div class="label">Delivery</div><div class="value">White-glove, insured</div></div>
             </div>
 
+            <button class="size-guide-link" id="sizeGuideBtn" type="button" aria-haspopup="dialog">Ring size guide &rarr;</button>
+
+            ${engravingHtml}
+
             ${stockBadge(p)}
 
             <div class="actions">
               <div class="qty">
-                <button type="button" id="qtyMinus" aria-label="Decrease">−</button>
+                <button type="button" id="qtyMinus" aria-label="Decrease quantity">&#8722;</button>
                 <span id="qtyVal">${qty}</span>
-                <button type="button" id="qtyPlus" aria-label="Increase">+</button>
+                <button type="button" id="qtyPlus" aria-label="Increase quantity">+</button>
               </div>
               <button class="add" id="addBtn" ${outOfStock ? 'disabled' : ''}>${outOfStock ? 'Sold Out' : 'Add to Cart'}</button>
+              <button class="wishlist-btn" id="wishlistBtn" type="button" aria-label="Save to wishlist">
+                <span id="wishlistHeart">&hearts;</span>
+                <span class="wl-label">Save</span>
+                <span class="wishlist-tooltip" id="wishlistTooltip">Sign in to save &rarr; <a href="/account">Account</a></span>
+              </button>
             </div>
+
+            ${notifyHtml}
+
             <div class="added" id="added">Added to cart</div>
           </div>
         </article>
       `;
 
+      // Gallery interactions
       const mainImg = document.getElementById('mainImg');
       document.querySelectorAll('.thumbs button').forEach((btn) => {
         btn.addEventListener('click', () => {
@@ -323,18 +1128,112 @@
         });
       });
 
+      // Quantity controls
       const qtyEl = document.getElementById('qtyVal');
       document.getElementById('qtyMinus').addEventListener('click', () => { qty = Math.max(1, qty - 1); qtyEl.textContent = qty; });
-      document.getElementById('qtyPlus').addEventListener('click', () => { qty = Math.min(p.stock == null ? 99 : Math.min(99, p.stock), qty + 1); qtyEl.textContent = qty; });
+      document.getElementById('qtyPlus').addEventListener('click', () => { qty = Math.min(p.stock == null ? 5 : Math.min(5, p.stock), qty + 1); qtyEl.textContent = qty; });
 
+      // Add to cart
       const addBtn = document.getElementById('addBtn');
       const added = document.getElementById('added');
       if (!outOfStock) {
         addBtn.addEventListener('click', () => {
-          Store.addToCart(p.id, qty);
+          const cartOpts = {};
+          if (engravingText) cartOpts.engraving = engravingText;
+          try {
+            if (typeof Store.addToCart === 'function') {
+              // Pass engraving via third argument if supported, else use sessionStorage
+              if (Store.addToCart.length >= 2) {
+                Store.addToCart(p.id, qty, cartOpts);
+              } else {
+                if (engravingText) sessionStorage.setItem('maliki.pendingEngraving', engravingText);
+                Store.addToCart(p.id, qty);
+              }
+            }
+          } catch {}
           added.classList.add('show');
           setTimeout(() => added.classList.remove('show'), 1800);
         });
+      }
+
+      // Size guide modal
+      document.getElementById('sizeGuideBtn').addEventListener('click', () => {
+        document.getElementById('sizeModal').classList.add('open');
+        document.getElementById('sizeModalClose').focus();
+      });
+
+      // Engraving input
+      if (p.engraving_enabled) {
+        const engInput = document.getElementById('engravingInput');
+        const engCounter = document.getElementById('engravingCounter');
+        engInput.addEventListener('input', () => {
+          engravingText = engInput.value;
+          engCounter.textContent = `${engravingText.length}/${engravingMax}`;
+        });
+      }
+
+      // Notify-me form
+      if (outOfStock) {
+        document.getElementById('notifySubmit').addEventListener('click', async () => {
+          const email = document.getElementById('notifyEmail').value.trim();
+          const msg = document.getElementById('notifyMsg');
+          msg.className = 'notify-msg';
+          if (!email) {
+            msg.textContent = 'Please enter your email address.';
+            msg.className = 'notify-msg err';
+            return;
+          }
+          try {
+            const res = await fetch('/api/restock-alert', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ product_id: p.id, email })
+            });
+            if (res.ok) {
+              msg.textContent = "We’ll let you know when this piece returns.";
+              msg.className = 'notify-msg ok';
+              document.getElementById('notifyEmail').value = '';
+            } else {
+              throw new Error();
+            }
+          } catch {
+            msg.textContent = 'Could not save — please try again.';
+            msg.className = 'notify-msg err';
+          }
+        });
+      }
+
+      // Wishlist button
+      const token = getAuthToken();
+      const wishlistBtn = document.getElementById('wishlistBtn');
+      const wishlistHeart = document.getElementById('wishlistHeart');
+      const wishlistTooltip = document.getElementById('wishlistTooltip');
+
+      const updateHeartIcon = () => {
+        wishlistHeart.innerHTML = wishlistSlugs.includes(productSlug) ? '&hearts;' : '&hearts;';
+        wishlistHeart.style.opacity = wishlistSlugs.includes(productSlug) ? '1' : '0.55';
+        wishlistBtn.setAttribute('aria-label', wishlistSlugs.includes(productSlug) ? 'Remove from wishlist' : 'Save to wishlist');
+      };
+
+      if (token) {
+        await fetchWishlist(token);
+        updateHeartIcon();
+        wishlistBtn.addEventListener('click', async () => {
+          const success = await toggleWishlist(productSlug, token);
+          if (success) updateHeartIcon();
+        });
+      } else {
+        // Not signed in — show tooltip on click
+        let tooltipVisible = false;
+        wishlistBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          tooltipVisible = !tooltipVisible;
+          wishlistTooltip.classList.toggle('show', tooltipVisible);
+        });
+        document.addEventListener('click', () => {
+          tooltipVisible = false;
+          wishlistTooltip.classList.remove('show');
+        }, { capture: true, once: false });
       }
     };
 
@@ -344,14 +1243,55 @@
 
     Store.on(() => updateCartCount());
 
-    if (!slug) renderNotFound();
-    else {
+    // ── Size guide modal global handlers ────────────────────────────────
+    document.getElementById('sizeModalClose').addEventListener('click', () => {
+      document.getElementById('sizeModal').classList.remove('open');
+    });
+    document.getElementById('sizeModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('sizeModal')) {
+        document.getElementById('sizeModal').classList.remove('open');
+      }
+    });
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') document.getElementById('sizeModal').classList.remove('open');
+    });
+
+    // ── Main init ───────────────────────────────────────────────────────
+    if (!slug) {
+      renderNotFound();
+    } else {
       const p = Store.productBySlug(slug);
-      if (!p || p.published === false) renderNotFound();
-      else renderProduct(p);
+      if (!p || p.published === false) {
+        renderNotFound();
+      } else {
+        // Update recently viewed before rendering
+        updateRecentlyViewed(slug);
+
+        renderProduct(p).then(() => {
+          // Render supplementary sections after product is in the DOM
+          renderReviews(p);
+          renderRecentlyViewed(slug);
+          renderRelated(p);
+        });
+      }
     }
     updateCartCount();
   </script>
-  <script>(function(){try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:location.pathname,referrer:document.referrer})});}catch(e){}})();</script>
+  <script>(function(){try{var k='maliki.vid',s='maliki.sid',v=localStorage.getItem(k);if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem(k,v);}var sid=sessionStorage.getItem(s);if(!sid){sid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(s,sid);}var u=new URLSearchParams(location.search);var d={path:location.pathname,referrer:document.referrer,visitor_id:v,session_id:sid,screen:innerWidth+'x'+innerHeight,utm_source:u.get('utm_source')||'',utm_medium:u.get('utm_medium')||'',utm_campaign:u.get('utm_campaign')||''};if(localStorage.getItem('maliki.cookies')==='accepted'){fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true});}}catch(e){}})();</script>
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(20,19,17,0.97);border-top:1px solid rgba(217,176,112,0.28);padding:16px clamp(20px,5vw,56px);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:Lora,serif;font-size:13px;color:rgba(245,236,218,0.86)"><span>We use cookies to improve your experience. <a href="/page/?slug=privacy" style="color:#d9b070;text-underline-offset:3px;text-decoration:underline">Privacy policy</a></span><div style="display:flex;gap:10px;flex-shrink:0"><button onclick="setCookies(true)" style="background:linear-gradient(180deg,#d9b070,#b68a4e);border:0;color:#1a120a;font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Accept</button><button onclick="setCookies(false)" style="background:transparent;border:1px solid rgba(217,176,112,0.3);color:rgba(245,236,218,0.62);font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Decline</button></div></div><script>(function(){var b=document.getElementById("cookie-banner");if(!localStorage.getItem("maliki.cookies")&&b){b.style.display="flex";}window.setCookies=function(v){localStorage.setItem("maliki.cookies",v?"accepted":"declined");if(b)b.style.display="none";}})()</script>
+<script>
+  (function(){
+    var burger = document.getElementById('burgerBtn');
+    var nav = document.getElementById('mobileNav');
+    var closeBtn = document.getElementById('mobileNavClose');
+    if (!burger || !nav) return;
+    function openNav() { nav.classList.add('open'); burger.setAttribute('aria-expanded','true'); nav.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeNav() { nav.classList.remove('open'); burger.setAttribute('aria-expanded','false'); nav.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+    burger.addEventListener('click', openNav);
+    closeBtn.addEventListener('click', closeNav);
+    nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
+  })();
+</script>
+<script src="/assets/animations.js" defer></script>
 </body>
 </html>

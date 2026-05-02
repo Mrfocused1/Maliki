@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Page Not Found — Maliki Atelier</title>
+<meta name="description" content="The page you are looking for is not where it should be." />
+<meta name="theme-color" content="#0a0908" />
+<meta name="robots" content="noindex" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400;1,500&family=Playfair+Display:wght@400;500;600;700&family=Pinyon+Script&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --bg: #0a0908;
+    --charcoal: #141311;
+    --soft: rgba(245, 236, 218, 0.98);
+    --softer: rgba(245, 236, 218, 0.86);
+    --softest: rgba(245, 236, 218, 0.78);
+    --gold-1: #e8c488;
+    --gold-2: #b68a4e;
+    --gold-hi: #f8e3b4;
+    --line: rgba(217, 176, 112, 0.28);
+  }
+  .skip-link { position:absolute; top:-40px; left:8px; background:#d9b070; color:#0a0908; padding:8px 14px; border-radius:0; z-index:100; font-family:'Playfair Display',serif; letter-spacing:0.18em; text-transform:uppercase; font-size:11px; transition:top .15s ease; }
+  .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--bg);
+    color: var(--soft);
+    font-family: 'Cormorant Garamond', serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    min-height: 100%;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* ---- TOPBAR ---- */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: clamp(16px, 3vh, 28px) clamp(20px, 5vw, 56px);
+    border-bottom: 1px solid var(--line);
+    position: sticky; top: 0;
+    background: rgba(10, 9, 8, 0.96);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    z-index: 10;
+  }
+  .wordmark {
+    display: inline-flex; align-items: center; line-height: 0;
+  }
+  .wordmark img {
+    height: clamp(52px, 5.5vw, 80px); width: auto; display: block;
+  }
+
+  /* ---- MAIN ---- */
+  .main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    min-height: calc(100svh - 120px - 60px);
+    padding: clamp(48px, 8vh, 96px) clamp(20px, 5vw, 56px);
+    gap: clamp(16px, 2.5vh, 28px);
+  }
+
+  .num {
+    font-family: 'Pinyon Script', cursive;
+    font-size: clamp(96px, 18vw, 200px);
+    line-height: 0.9;
+    background: linear-gradient(160deg, #8a6531 0%, #c99a5a 30%, #f3dba6 50%, #d9b070 65%, #a77b41 85%, #7a5727 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    -webkit-text-fill-color: transparent;
+            color: transparent;
+    filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6));
+    display: block;
+    margin-bottom: 8px;
+  }
+
+  .rule {
+    display: flex; align-items: center; gap: 14px; opacity: 0.6;
+  }
+  .rule .line { width: clamp(40px, 7vw, 80px); height: 1px; background: linear-gradient(90deg, transparent, rgba(217, 176, 112, 0.55), transparent); }
+  .rule .dot { width: 4px; height: 4px; border-radius: 50%; background: var(--gold-2); }
+
+  .headline {
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: clamp(18px, 2.4vw, 28px);
+    color: var(--softer);
+    letter-spacing: 0.06em;
+    line-height: 1.5;
+    max-width: 480px;
+  }
+
+  .cta {
+    display: inline-block;
+    border: 1px solid rgba(217, 176, 112, 0.45);
+    color: #f3d89e;
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 13px 28px; border-radius: 4px;
+    margin-top: 8px;
+    transition: background 0.4s ease, color 0.4s ease, border-color 0.4s ease;
+  }
+  .cta:hover {
+    background: rgba(217, 176, 112, 0.1);
+    border-color: rgba(217, 176, 112, 0.65);
+    color: var(--gold-hi);
+  }
+
+  /* ---- FOOTER ---- */
+  .footer {
+    border-top: 1px solid var(--line);
+    padding: clamp(18px, 4vh, 32px) clamp(20px, 5vw, 56px);
+    display: flex; justify-content: center; align-items: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--softer);
+  }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+  button:focus-visible, a:focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+<a href="#main" class="skip-link">Skip to content</a>
+
+  <header class="topbar">
+    <a href="/home/" class="wordmark" aria-label="Maliki Atelier home">
+      <img src="/assets/maliki-logo.svg" alt="Maliki Atelier">
+    </a>
+  </header>
+
+  <main class="main" id="main">
+    <span class="num" aria-label="404">404</span>
+
+    <div class="rule" aria-hidden="true">
+      <span class="line"></span>
+      <span class="dot"></span>
+      <span class="line"></span>
+    </div>
+
+    <p class="headline">This piece is not where it should be.</p>
+
+    <a href="/home/" class="cta">Return to the atelier</a>
+  </main>
+
+  <footer class="footer">
+    <span>© Maliki Atelier</span>
+  </footer>
+
+  <script>(function(){try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:location.pathname,referrer:document.referrer})});}catch(e){}})();</script>
+</body>
+</html>

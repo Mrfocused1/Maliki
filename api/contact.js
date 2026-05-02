@@ -1,6 +1,11 @@
+const { rateLimit } = require('./_lib/rate-limit');
+const { supabaseFetch } = require('./_lib/supabase');
+
 const RESEND_BASE = 'https://api.resend.com';
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const uid = () => `em_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
@@ -19,6 +24,28 @@ const resend = async (path, body) => {
   const data = await r.json().catch(() => ({}));
   return { ok: r.ok, status: r.status, data };
 };
+
+const logEmail = ({ template_key, recipient_email, recipient_name, subject, status }) => {
+  supabaseFetch('/email_log', {
+    method: 'POST',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({
+      id: uid(),
+      template_key,
+      recipient_email,
+      recipient_name: recipient_name || '',
+      subject,
+      order_id: null,
+      status,
+      sent_at: new Date().toISOString(),
+    }),
+  }).catch((e) => console.error('contact: log failed', e.message));
+};
+
+const escHtml = (s) =>
+  String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
+    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
+  );
 
 const notificationHtml = ({ name, email, subject, message, source }) => `<!DOCTYPE html>
 <html>
@@ -102,10 +129,70 @@ const notificationText = ({ name, email, subject, message, source }) =>
     'Reply directly to this email to respond.',
   ].join('\n');
 
-const escHtml = (s) =>
-  String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
-    ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
-  );
+const confirmationHtml = (name, subject) => `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Maliki Atelier — Your enquiry</title>
+</head>
+<body style="margin:0;padding:0;background:#0a0908;font-family:'Cormorant Garamond',Georgia,'Times New Roman',serif;color:#f5ecda;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background:#0a0908;">
+    <tr>
+      <td align="center" style="padding:64px 24px 48px;">
+        <table role="presentation" width="560" cellspacing="0" cellpadding="0" border="0" style="max-width:560px;width:100%;">
+          <tr>
+            <td align="center" style="padding-bottom:32px;font-family:'Italiana',Georgia,serif;font-size:11px;letter-spacing:0.62em;text-transform:uppercase;color:rgba(245,236,218,0.78);">
+              By&nbsp;Appointment&nbsp;Only
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:8px 0 4px;">
+              <div style="font-family:'Pinyon Script','Apple Chancery',cursive;font-size:84px;line-height:1;color:#d9b070;letter-spacing:0.01em;">Maliki</div>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:14px 0 36px;font-family:'Italiana',Georgia,serif;font-size:14px;letter-spacing:0.55em;text-transform:uppercase;color:#f5ecda;">Atelier</td>
+          </tr>
+          <tr>
+            <td align="center" style="padding-bottom:32px;">
+              <div style="width:96px;height:1px;background:linear-gradient(90deg,transparent,rgba(217,176,112,0.55),transparent);margin:0 auto;font-size:0;">&nbsp;</div>
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:0 8px 20px;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:21px;line-height:1.55;letter-spacing:0.06em;color:#f5ecda;">
+              Your message has been received.
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:0 8px 32px;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;line-height:1.7;letter-spacing:0.04em;color:rgba(245,236,218,0.82);">
+              Dear ${escHtml(name)}, thank you for your enquiry regarding <em>${escHtml(subject || 'your commission')}</em>.<br/>
+              A member of the atelier will be in touch shortly.
+            </td>
+          </tr>
+          <tr>
+            <td align="center" style="padding:36px 0 0;font-family:'Italiana',Georgia,serif;font-size:11px;letter-spacing:0.42em;text-transform:uppercase;color:rgba(245,236,218,0.6);">
+              Maliki&nbsp;Atelier &middot; By&nbsp;Appointment
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+const confirmationText = (name, subject) =>
+  [
+    'MALIKI ATELIER',
+    '',
+    'Your message has been received.',
+    '',
+    `Dear ${name}, thank you for your enquiry regarding ${subject || 'your commission'}.`,
+    'A member of the atelier will be in touch shortly.',
+    '',
+    '— Maliki Atelier · By Appointment',
+  ].join('\n');
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') {
@@ -124,6 +211,10 @@ module.exports = async (req, res) => {
     return json(res, 403, { error: 'forbidden' });
   }
 
+  if (rateLimit(req, { key: 'contact', max: 5, windowMs: 60000 })) {
+    return json(res, 429, { error: 'too_many_requests' });
+  }
+
   // Parse body
   let body = req.body;
   if (typeof body === 'string') {
@@ -138,9 +229,9 @@ module.exports = async (req, res) => {
   const subject = String(body.subject || '').trim().slice(0, 200);
   const source  = String(body.source  || '').trim().slice(0, 100);
 
-  if (!name)              return json(res, 400, { error: 'name_required' });
+  if (!name)                 return json(res, 400, { error: 'name_required' });
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
-  if (!message)           return json(res, 400, { error: 'message_required' });
+  if (!message)              return json(res, 400, { error: 'message_required' });
 
   const { RESEND_API_KEY, NOTIFY_FROM, NOTIFY_TO } = process.env;
 
@@ -150,21 +241,52 @@ module.exports = async (req, res) => {
   }
 
   const payload = { name, email, subject, message, source };
-  const emailSubject = `New enquiry — ${subject || 'General'} — ${name}`;
+  const adminSubject = `New enquiry — ${subject || 'General'} — ${name}`;
 
-  const result = await resend('/emails', {
+  // Notify admin
+  const adminResult = await resend('/emails', {
     from: NOTIFY_FROM,
     to: NOTIFY_TO,
-    reply_to: email,
-    subject: emailSubject,
+    reply_to: email.replace(/[\r\n]/g, ''),
+    subject: adminSubject,
     html: notificationHtml(payload),
     text: notificationText(payload),
   });
 
-  if (!result.ok) {
-    console.error('contact: send failed', result.status, result.data);
+  if (!adminResult.ok) {
+    console.error('contact: admin notify failed', adminResult.status, adminResult.data);
     return json(res, 502, { error: 'send_failed' });
   }
+
+  logEmail({
+    template_key: 'contact_notification',
+    recipient_email: NOTIFY_TO,
+    recipient_name: 'Admin',
+    subject: adminSubject,
+    status: 'sent',
+  });
+
+  // Confirm receipt to the enquirer
+  const userSubject = 'Maliki Atelier — Your enquiry has been received';
+  const confirmResult = await resend('/emails', {
+    from: NOTIFY_FROM,
+    to: email,
+    subject: userSubject,
+    html: confirmationHtml(name, subject),
+    text: confirmationText(name, subject),
+  });
+
+  if (!confirmResult.ok) {
+    console.error('contact: confirmation send failed', confirmResult.status, confirmResult.data);
+  }
+
+  logEmail({
+    template_key: 'contact_confirmation',
+    recipient_email: email,
+    recipient_name: name,
+    subject: userSubject,
+    status: confirmResult.ok ? 'sent' : 'failed',
+  });
 
   return json(res, 200, { ok: true });
 };

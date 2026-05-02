@@ -25,16 +25,20 @@ module.exports = async (req, res) => {
       settings,
       emailTemplates,
       emailLog,
+      customerProfiles,
+      productReviews,
     ] = await Promise.all([
       supabaseFetch('/products?select=*,product_images(url,alt,position)&order=created_at.asc'),
-      supabaseFetch('/customers?select=*&order=joined_at.desc'),
-      supabaseFetch('/orders?select=*,order_items(*)&order=created_at.desc'),
+      supabaseFetch('/customers?select=*&order=joined_at.desc&limit=10000'),
+      supabaseFetch('/orders?select=*,order_items(*)&order=created_at.desc&limit=10000'),
       supabaseFetch('/subscribers?select=*&order=subscribed_at.desc'),
       supabaseFetch('/discounts?select=*&order=created_at.desc'),
       supabaseFetch('/pages?select=*&order=updated_at.desc'),
       supabaseFetch('/settings?select=*'),
       supabaseFetch('/email_templates?select=*&order=updated_at.desc'),
-      supabaseFetch('/email_log?select=*&order=sent_at.desc'),
+      supabaseFetch('/email_log?select=*&order=sent_at.desc&limit=500'),
+      supabaseFetch('/customer_profiles?select=*&order=updated_at.desc&limit=10000'),
+      supabaseFetch('/product_reviews?select=*&order=created_at.desc&limit=2000'),
     ]);
 
     return json(res, 200, {
@@ -51,9 +55,11 @@ module.exports = async (req, res) => {
         to: email.recipient_email,
         to_name: email.recipient_name,
       })),
+      customer_profiles: customerProfiles,
+      product_reviews: productReviews,
     });
   } catch (error) {
-    console.error('admin/data:', error.status || error.message, error.data || '');
+    console.error('admin/data:', error.status || error.message);
     return json(res, 500, { error: 'admin_data_unavailable' });
   }
 };

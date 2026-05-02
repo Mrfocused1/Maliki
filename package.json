@@ -1,0 +1,26 @@
+{
+  "name": "maliki",
+  "version": "1.0.0",
+  "description": "",
+  "main": "local-server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mrfocused1/Maliki.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mrfocused1/Maliki/issues"
+  },
+  "homepage": "https://github.com/Mrfocused1/Maliki#readme",
+  "dependencies": {
+    "gsap": "^3.15.0",
+    "motion": "^12.38.0",
+    "puppeteer": "^24.42.0",
+    "remotion": "^4.0.455"
+  }
+}

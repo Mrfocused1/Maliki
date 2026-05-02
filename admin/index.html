@@ -916,6 +916,29 @@ const toast = (msg, kind = 'ok') => {
 
 window.addEventListener('maliki:sync-error', (e) => toast(e.detail || 'Sync failed — changes may not have saved', 'err'));
 
+// ---------- adminFetch (auto-reload on 401) ----------
+const adminFetch = async (url, opts = {}) => {
+  const r = await fetch(url, { credentials: 'same-origin', ...opts });
+  if (r.status === 401) { location.reload(); throw new Error('unauthorized'); }
+  return r;
+};
+
+// ---------- Drawer keyboard helpers ----------
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    if (document.querySelector('.drawer.open')) { closeDrawer(); }
+  }
+  if (e.key !== 'Tab') return;
+  const drawer = document.querySelector('.drawer.open');
+  if (!drawer) return;
+  const focusables = drawer.querySelectorAll('a[href], button:not([disabled]), input:not([disabled]), textarea:not([disabled]), select:not([disabled]), [tabindex]:not([tabindex="-1"])');
+  if (!focusables.length) return;
+  const first = focusables[0];
+  const last = focusables[focusables.length - 1];
+  if (e.shiftKey && document.activeElement === first) { last.focus(); e.preventDefault(); }
+  else if (!e.shiftKey && document.activeElement === last) { first.focus(); e.preventDefault(); }
+});
+
 // Tiny inline icons (16x16). Stroke uses currentColor.
 const icon = (name) => {
   const paths = {
@@ -926,11 +949,14 @@ const icon = (name) => {
     subscribers: '<path d="M3 8l9 6 9-6"/><rect x="3" y="6" width="18" height="14" rx="2"/>',
     discounts: '<path d="M20 12L12 4H4v8l8 8z"/><circle cx="8" cy="8" r="1.5"/>',
     emails: '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 7 9-7"/>',
+    analytics: '<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>',
     reports: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
     content: '<path d="M5 4h14v16H5z"/><path d="M8 8h8M8 12h8M8 16h5"/>',
     settings: '<circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 00.3 1.8l.1.1a2 2 0 11-2.8 2.8l-.1-.1a1.7 1.7 0 00-1.8-.3 1.7 1.7 0 00-1 1.5V21a2 2 0 11-4 0v-.1a1.7 1.7 0 00-1-1.5 1.7 1.7 0 00-1.8.3l-.1.1a2 2 0 11-2.8-2.8l.1-.1a1.7 1.7 0 00.3-1.8 1.7 1.7 0 00-1.5-1H3a2 2 0 110-4h.1a1.7 1.7 0 001.5-1 1.7 1.7 0 00-.3-1.8l-.1-.1a2 2 0 112.8-2.8l.1.1a1.7 1.7 0 001.8.3 1.7 1.7 0 001-1.5V3a2 2 0 114 0v.1a1.7 1.7 0 001 1.5 1.7 1.7 0 001.8-.3l.1-.1a2 2 0 112.8 2.8l-.1.1a1.7 1.7 0 00-.3 1.8 1.7 1.7 0 001.5 1H21a2 2 0 110 4h-.1a1.7 1.7 0 00-1.5 1z"/>',
     shop: '<path d="M5 4h14l-1 4H6zM5 8h14v11H5z"/><path d="M9 11v3M15 11v3"/>',
     out: '<path d="M14 4h4a2 2 0 012 2v12a2 2 0 01-2 2h-4M10 17l-5-5 5-5M5 12h11"/>',
+    review: '<path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>',
+    alerts: '<path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/>',
   };
   return `<svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${paths[name] || ''}</svg>`;
 };
@@ -950,8 +976,12 @@ const state = {
   emailFilter: 'all',
   settingsTab: 'general',
   reportsRange: '90', // days
+  analyticsRange: 30, // days, for analytics panel
+  analyticsCache: null, // last fetched analytics payload
   editing: null,
   draftImages: [],
+  reviewsFilter: 'pending', // pending | approved | all
+  _reviewsBadge: null, // set after first fetch
 };
 
 // ---------- Login ----------
@@ -987,7 +1017,7 @@ const renderLogin = (errMsg = '') => {
         btn.disabled = false; btn.textContent = 'Enter'; return;
       }
       state.authed = true;
-      if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData();
+      if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData().catch(() => {});
       renderApp();
     } catch {
       err.textContent = 'Sign-in failed.';
@@ -1019,6 +1049,8 @@ const renderApp = () => {
         <button class="navlink" data-view="subscribers">${icon('subscribers')} <span>Subscribers</span> <span class="badge" data-badge="subscribers"></span></button>
         <button class="navlink" data-view="discounts">${icon('discounts')} <span>Discounts</span> <span class="badge" data-badge="discounts"></span></button>
         <button class="navlink" data-view="emails">${icon('emails')} <span>Emails</span> <span class="badge" data-badge="emails"></span></button>
+        <button class="navlink" data-view="reviews">${icon('review')} <span>Reviews</span> <span class="badge" data-badge="reviews"></span></button>
+        <button class="navlink" data-view="analytics">${icon('analytics')} <span>Analytics</span></button>
         <button class="navlink" data-view="reports">${icon('reports')} <span>Reports</span></button>
 
         <div class="navgroup">Manage</div>
@@ -1034,7 +1066,6 @@ const renderApp = () => {
               <strong>Atelier</strong>
               Signed in
             </div>
-            <button class="iconbtn" id="logoutBtn" title="Sign out">${icon('out')}</button>
           </div>
         </div>
       </aside>
@@ -1075,7 +1106,6 @@ const renderApp = () => {
   $$('.navlink[data-view]').forEach((b) =>
     b.addEventListener('click', () => { state.view = b.dataset.view; closeSidebar(); render(); })
   );
-  $('#logoutBtn').addEventListener('click', logout);
   $('#closeDrawer').addEventListener('click', closeDrawer);
   $('#backdrop').addEventListener('click', closeDrawer);
   $('#menuToggle').addEventListener('click', toggleSidebar);
@@ -1105,6 +1135,11 @@ const render = () => {
   $$('[data-badge]').forEach((b) => {
     if (badges[b.dataset.badge] != null) b.textContent = badges[b.dataset.badge];
   });
+  // Reviews badge — only show when pending count loaded
+  const rvBadgeEl = document.querySelector('[data-badge="reviews"]');
+  if (rvBadgeEl && typeof state._reviewsBadge === 'number') {
+    rvBadgeEl.textContent = state._reviewsBadge > 0 ? state._reviewsBadge : '';
+  }
 
   if (state.view === 'overview') renderOverview();
   else if (state.view === 'products') renderProducts();
@@ -1113,6 +1148,8 @@ const render = () => {
   else if (state.view === 'subscribers') renderSubscribers();
   else if (state.view === 'discounts') renderDiscounts();
   else if (state.view === 'emails') renderEmails();
+  else if (state.view === 'reviews') renderReviews();
+  else if (state.view === 'analytics') renderAnalytics();
   else if (state.view === 'reports') renderReports();
   else if (state.view === 'content') renderContent();
   else if (state.view === 'settings') renderSettings();
@@ -1421,7 +1458,7 @@ const openProductDrawer = (productId) => {
 
     <div class="form-row">
       <label for="f-title">Title</label>
-      <input class="input" id="f-title" value="${escape(p?.title || '')}" autofocus />
+      <input class="input" id="f-title" value="${escape(p?.title || '')}" autofocus maxlength="200" />
     </div>
     <div class="form-row">
       <label for="f-subtitle">Subtitle</label>
@@ -1430,7 +1467,7 @@ const openProductDrawer = (productId) => {
     <div class="form-row split-2">
       <div class="form-row" style="margin:0">
         <label for="f-slug">URL slug</label>
-        <input class="input" id="f-slug" value="${escape(p?.slug || '')}" />
+        <input class="input" id="f-slug" value="${escape(p?.slug || '')}" maxlength="80" />
         <div class="hint">/shop/<span id="slugPreview">${escape(p?.slug || '…')}</span></div>
       </div>
       <div class="form-row" style="margin:0">
@@ -1474,6 +1511,22 @@ const openProductDrawer = (productId) => {
       <label class="checkbox"><input type="checkbox" id="f-pub" ${p == null || p.published ? 'checked' : ''} /><span>Published</span></label>
       <label class="checkbox"><input type="checkbox" id="f-feat" ${p?.featured ? 'checked' : ''} /><span>Featured</span></label>
     </div>
+
+    <div style="height:1px;background:var(--line-2);margin:8px 0 18px"></div>
+    <div class="lbl" style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--softest);margin-bottom:14px">Engraving options</div>
+    <div class="form-row" style="display:flex;gap:24px;flex-direction:row;margin-bottom:14px">
+      <label class="checkbox"><input type="checkbox" id="f-engraving" ${p?.engraving_enabled ? 'checked' : ''} /><span>Enable engraving</span></label>
+    </div>
+    <div class="form-row split-2">
+      <div class="form-row" style="margin:0">
+        <label for="f-engraving-label">Engraving prompt label</label>
+        <input class="input" id="f-engraving-label" value="${escape(p?.engraving_label || '')}" placeholder="e.g. Add a personal engraving" maxlength="120" />
+      </div>
+      <div class="form-row" style="margin:0">
+        <label for="f-engraving-max">Max characters</label>
+        <input class="input" id="f-engraving-max" type="number" min="1" max="500" step="1" value="${p?.engraving_max_chars != null ? p.engraving_max_chars : 20}" />
+      </div>
+    </div>
   `;
 
   // Slug auto-fill
@@ -1504,8 +1557,7 @@ const openProductDrawer = (productId) => {
   $('#prodSave').addEventListener('click', saveProduct);
   if (!isNew) $('#prodDelete').addEventListener('click', () => deleteProductFromDrawer(productId));
 
-  $('#backdrop').classList.add('open');
-  $('#drawer').classList.add('open');
+  openDrawer();
 };
 
 const renderDraftImages = () => {
@@ -1546,6 +1598,7 @@ const handleFiles = async (fileList) => {
 const collectProductForm = () => {
   const priceUnits = Number($('#f-price').value);
   const stockRaw = $('#f-stock').value.trim();
+  const engMaxRaw = $('#f-engraving-max') ? Number($('#f-engraving-max').value) : 20;
   return {
     title: $('#f-title').value.trim(),
     subtitle: $('#f-subtitle').value.trim(),
@@ -1560,16 +1613,21 @@ const collectProductForm = () => {
     images: state.draftImages,
     published: $('#f-pub').checked,
     featured: $('#f-feat').checked,
+    engraving_enabled: $('#f-engraving') ? $('#f-engraving').checked : false,
+    engraving_label: $('#f-engraving-label') ? $('#f-engraving-label').value.trim() : '',
+    engraving_max_chars: Number.isFinite(engMaxRaw) && engMaxRaw > 0 ? Math.round(engMaxRaw) : 20,
   };
 };
 
 const saveProduct = async () => {
   const fb = $('#prodFeedback');
+  const btn = $('#prodSave');
   fb.className = 'feedback';
   const data = collectProductForm();
   if (!data.title) { fb.textContent = 'Title is required.'; fb.className = 'feedback error'; return; }
   if (!data.slug)  { fb.textContent = 'Slug is required.';  fb.className = 'feedback error'; return; }
 
+  btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Saving…';
   try {
     let product;
     if (state.editing === 'new') {
@@ -1587,6 +1645,8 @@ const saveProduct = async () => {
       ? 'Could not save. Please try again.'
       : (e.message || 'Save failed.');
     fb.className = 'feedback error';
+  } finally {
+    btn.disabled = false; btn.textContent = btn.dataset.label || 'Save';
   }
 };
 
@@ -1663,6 +1723,77 @@ const renderOrders = () => {
   $$('tr[data-oid]').forEach((tr) =>
     tr.addEventListener('click', () => openOrderDrawer(tr.dataset.oid))
   );
+
+  // Restock alerts section — append after the orders card
+  const alertsSection = document.createElement('div');
+  alertsSection.style.marginTop = '24px';
+  alertsSection.innerHTML = `
+    <div class="card" id="restockCard">
+      <div class="card-head">
+        <h2>Back-in-stock alerts</h2>
+        <div class="tools"><button class="btn ghost sm" id="restockRefresh">Refresh</button></div>
+      </div>
+      <div class="card-body flush" id="restockBody">
+        <div class="empty" style="padding:28px 0"><em>Loading…</em></div>
+      </div>
+    </div>
+  `;
+  $('#content').appendChild(alertsSection);
+
+  const loadRestockAlerts = () => {
+    const body = $('#restockBody');
+    if (!body) return;
+    body.innerHTML = '<div class="empty" style="padding:28px 0"><em>Loading…</em></div>';
+    adminFetch('/api/admin/restock').then(async (r) => {
+      const data = await r.json();
+      const alerts = Array.isArray(data) ? data : (data.alerts || []);
+      if (alerts.length === 0) {
+        body.innerHTML = '<div class="empty" style="padding:28px 0">No restock alerts yet.</div>';
+        return;
+      }
+      body.innerHTML = `
+        <table class="t">
+          <thead><tr><th>Product</th><th>Emails waiting</th><th>Action</th></tr></thead>
+          <tbody>
+            ${alerts.map((a) => `
+              <tr class="no-hover" data-raid="${escape(a.product_id)}">
+                <td style="color:#f5ecda;font-weight:500">${escape(a.product_title || a.product_id)}</td>
+                <td>${a.emails ? a.emails.length : (a.count || 0)}</td>
+                <td>
+                  <button class="btn sm" data-ra-notify="${escape(a.product_id)}">Send notifications</button>
+                </td>
+              </tr>
+            `).join('')}
+          </tbody>
+        </table>
+      `;
+      $$('button[data-ra-notify]').forEach((b) => {
+        b.addEventListener('click', async () => {
+          const pid = b.dataset.raNotify;
+          b.disabled = true; b.textContent = 'Sending…';
+          try {
+            const r = await adminFetch('/api/admin/restock', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ product_id: pid }),
+            });
+            if (!r.ok) throw new Error('notify_failed');
+            toast('Notifications sent');
+            loadRestockAlerts();
+          } catch {
+            toast('Could not send notifications', 'err');
+            b.disabled = false; b.textContent = 'Send notifications';
+          }
+        });
+      });
+    }).catch(() => {
+      const body = $('#restockBody');
+      if (body) body.innerHTML = '<div class="empty" style="padding:28px 0">Could not load restock alerts.</div>';
+    });
+  };
+
+  loadRestockAlerts();
+  $('#restockRefresh').addEventListener('click', loadRestockAlerts);
 };
 
 const openOrderDrawer = (orderId) => {
@@ -1671,12 +1802,21 @@ const openOrderDrawer = (orderId) => {
 
   $('#drawerTitle').textContent = `Order ${o.number}`;
   $('#drawerFoot').innerHTML = `
-    <div class="feedback" id="ordFeedback">Status:</div>
-    <select class="select" id="ordStatus" style="max-width:200px">
-      ${['pending', 'paid', 'fulfilled', 'refunded', 'failed', 'cancelled']
-        .map((s) => `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}
-    </select>
-    <button class="btn ghost" id="ordClose">Close</button>
+    <div style="display:flex;flex-direction:column;gap:10px;flex:1;min-width:0">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--softest);white-space:nowrap">Status:</span>
+        <select class="select" id="ordStatus" style="max-width:180px;flex:1">
+          ${['pending', 'paid', 'fulfilled', 'refunded', 'failed', 'cancelled']
+            .map((s) => `<option value="${s}" ${o.status === s ? 'selected' : ''}>${s[0].toUpperCase() + s.slice(1)}</option>`).join('')}
+        </select>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <input class="input" id="ordTracking" placeholder="Tracking URL…" value="${escape(o.tracking_url || '')}" style="flex:1;font-size:12px" />
+        <button class="btn ghost sm" id="ordTrackingSave">Save tracking</button>
+      </div>
+      <div class="feedback" id="ordFeedback" style="font-size:11px"></div>
+    </div>
+    <button class="btn ghost" id="ordClose" style="align-self:flex-start;margin-top:2px">Close</button>
   `;
 
   $('#drawerBody').innerHTML = `
@@ -1710,6 +1850,15 @@ const openOrderDrawer = (orderId) => {
       </div>
     </div>
 
+    ${o.gift_wrap ? `
+    <div style="margin-bottom:16px;padding:12px 14px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:6px;display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:16px">🎁</span>
+        <span style="color:var(--gold-1);font-size:12px;letter-spacing:0.1em;font-weight:600;text-transform:uppercase">Gift wrap</span>
+      </div>
+      ${o.gift_message ? `<div style="color:var(--softer);font-size:13px;font-style:italic">"${escape(o.gift_message)}"</div>` : ''}
+    </div>` : ''}
+
     <div class="lbl" style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--softest);margin-bottom:8px">Items</div>
     ${o.items.map((it) => `
       <div class="line-item">
@@ -1736,16 +1885,38 @@ const openOrderDrawer = (orderId) => {
     toast('Status updated');
     openOrderDrawer(orderId); // re-render
   });
+  $('#ordTrackingSave').addEventListener('click', async () => {
+    const btn = $('#ordTrackingSave');
+    const fb = $('#ordFeedback');
+    const url = $('#ordTracking').value.trim();
+    btn.disabled = true; btn.textContent = 'Saving…';
+    fb.textContent = ''; fb.className = 'feedback';
+    try {
+      const r = await adminFetch('/api/admin/orders', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: o.id, tracking_url: url }),
+      });
+      if (!r.ok) throw new Error('save_failed');
+      toast('Tracking URL saved');
+      fb.textContent = 'Saved'; fb.className = 'feedback ok';
+    } catch {
+      fb.textContent = 'Could not save tracking URL'; fb.className = 'feedback error';
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save tracking';
+    }
+  });
 
-  $('#backdrop').classList.add('open');
-  $('#drawer').classList.add('open');
+  openDrawer();
 };
 
 // ---------- Customers ----------
 const renderCustomers = () => {
-  $('#topbar').innerHTML = `<h1>Customers <small>${Store.customers().length} total</small></h1>`;
+  const all = Store.customersWithStats();
+  const accountCount = all.filter((c) => c.has_account).length;
+  $('#topbar').innerHTML = `<h1>Customers <small>${all.length} total · ${accountCount} with accounts</small></h1>`;
 
-  const list = Store.customersWithStats()
+  const list = all
     .filter((c) => !state.customerFilter ||
       c.name.toLowerCase().includes(state.customerFilter.toLowerCase()) ||
       c.email.toLowerCase().includes(state.customerFilter.toLowerCase()) ||
@@ -1769,6 +1940,7 @@ const renderCustomers = () => {
             <tr>
               <th>Customer</th>
               <th>Location</th>
+              <th>Account</th>
               <th>Orders</th>
               <th>Spent</th>
               <th>Last order</th>
@@ -1777,7 +1949,7 @@ const renderCustomers = () => {
           </thead>
           <tbody>
             ${list.length === 0
-              ? '<tr class="no-hover"><td colspan="6"><div class="empty">No customers.</div></td></tr>'
+              ? '<tr class="no-hover"><td colspan="7"><div class="empty">No customers.</div></td></tr>'
               : list.map((c) => `
                 <tr data-cid="${escape(c.id)}">
                   <td>
@@ -1785,6 +1957,7 @@ const renderCustomers = () => {
                     <div style="color:var(--softer);font-size:11px">${escape(c.email)}</div>
                   </td>
                   <td style="color:var(--softer)">${escape((c.city || '—') + (c.country ? ', ' + c.country : ''))}</td>
+                  <td>${c.has_account ? '<span class="pill ok" style="font-size:10px">Registered</span>' : '<span style="color:var(--softest);font-size:11px">Guest</span>'}</td>
                   <td>${c.orders_count}</td>
                   <td>${escape(fmtPrice(c.total_spent_cents))}</td>
                   <td style="color:var(--softer)">${c.last_order_at ? escape(fmtDate(c.last_order_at)) : '—'}</td>
@@ -1811,6 +1984,11 @@ const openCustomerDrawer = (customerId) => {
   if (!c) return;
   const orders = Store.orders().filter((o) => o.customer_id === customerId);
   const totalSpent = orders.filter((o) => o.status !== 'refunded').reduce((s, o) => s + o.total_cents, 0);
+  const profile = Store.profileByEmail(c.email);
+
+  const savedAddress = profile && profile.line1
+    ? [profile.line1, profile.line2, profile.city, profile.postal, profile.country].filter(Boolean).join(', ')
+    : null;
 
   $('#drawerTitle').textContent = c.name;
   $('#drawerFoot').innerHTML = `
@@ -1823,6 +2001,13 @@ const openCustomerDrawer = (customerId) => {
       <div>
         <div class="label">Email</div>
         <div class="value"><a href="mailto:${escape(c.email)}" style="color:var(--gold-1)">${escape(c.email)}</a></div>
+      </div>
+      <div>
+        <div class="label">Account</div>
+        <div class="value">${profile
+          ? `<span class="pill ok" style="font-size:10px">Registered</span>`
+          : `<span style="color:var(--softest)">Guest — no account</span>`
+        }</div>
       </div>
       <div>
         <div class="label">Location</div>
@@ -1840,6 +2025,11 @@ const openCustomerDrawer = (customerId) => {
         <div class="label">Joined</div>
         <div class="value">${escape(fmtDate(c.joined_at, { dateStyle: 'long' }))}</div>
       </div>
+      ${savedAddress ? `
+      <div style="grid-column:1/-1">
+        <div class="label">Saved shipping address</div>
+        <div class="value" style="color:var(--softer)">${escape(savedAddress)}</div>
+      </div>` : ''}
     </div>
 
     <div class="lbl" style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--softest);margin-bottom:8px">Order history</div>
@@ -1909,8 +2099,7 @@ const openCustomerDrawer = (customerId) => {
     });
   });
 
-  $('#backdrop').classList.add('open');
-  $('#drawer').classList.add('open');
+  openDrawer();
 };
 
 // ====================================================================
@@ -2043,8 +2232,7 @@ const openAddSubscriber = () => {
       fb.className = 'feedback error';
     }
   });
-  $('#backdrop').classList.add('open');
-  $('#drawer').classList.add('open');
+  openDrawer();
 };
 
 const exportSubscribersCsv = () => {
@@ -2077,7 +2265,7 @@ const renderDiscounts = () => {
           <thead><tr><th>Code</th><th>Type</th><th>Value</th><th>Used</th><th>Status</th><th>Ends</th></tr></thead>
           <tbody>
             ${list.length === 0
-              ? '<tr class="no-hover"><td colspan="6"><div class="empty">No discounts yet.</div></td></tr>'
+              ? '<tr class="no-hover"><td colspan="6"><div class="empty">No discounts yet.<br><button class="btn sm" style="margin-top:14px" onclick="document.getElementById(\'newDiscount\').click()">+ New discount</button></div></td></tr>'
               : list.map((d) => {
                 const valueLabel = d.type === 'percent' ? `${d.value}% off` : `${fmtPrice(d.value, 'GBP')} off`;
                 const limit = d.usage_limit || '∞';
@@ -2122,7 +2310,7 @@ const openDiscountDrawer = (id) => {
   $('#drawerBody').innerHTML = `
     <div class="form-row">
       <label for="d-code">Code</label>
-      <input class="input" id="d-code" value="${escape(d?.code || '')}" placeholder="e.g. ATELIER10" autofocus />
+      <input class="input" id="d-code" value="${escape(d?.code || '')}" placeholder="e.g. ATELIER10" autofocus maxlength="40" />
       <div class="hint">Customers will type this at checkout. Uppercase, no spaces.</div>
     </div>
     <div class="form-row split-2">
@@ -2183,8 +2371,9 @@ const openDiscountDrawer = (id) => {
   updateValueHint();
 
   $('#dscCancel').addEventListener('click', closeDrawer);
-  $('#dscSave').addEventListener('click', () => {
+  $('#dscSave').addEventListener('click', async () => {
     const fb = $('#dscFb');
+    const btn = $('#dscSave');
     const type = $('#d-type').value;
     const valNum = Number($('#d-value').value);
     const data = {
@@ -2199,6 +2388,7 @@ const openDiscountDrawer = (id) => {
       description: $('#d-desc').value,
     };
     if (!data.code) { fb.textContent = 'Code is required.'; fb.className = 'feedback error'; return; }
+    btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Saving…';
     try {
       if (d) Store.updateDiscount(d.id, data); else Store.addDiscount(data);
       toast(d ? 'Discount updated' : 'Discount created');
@@ -2206,14 +2396,15 @@ const openDiscountDrawer = (id) => {
     } catch (e) {
       fb.textContent = e.message === 'code_taken' ? 'That code is already in use.' : 'Save failed.';
       fb.className = 'feedback error';
+    } finally {
+      btn.disabled = false; btn.textContent = btn.dataset.label || 'Save';
     }
   });
   if (d) $('#dscDelete').addEventListener('click', () => {
     if (confirm(`Delete code ${d.code}?`)) { Store.deleteDiscount(d.id); toast('Deleted'); closeDrawer(); }
   });
 
-  $('#backdrop').classList.add('open');
-  $('#drawer').classList.add('open');
+  openDrawer();
 };
 
 // ====================================================================
@@ -2501,12 +2692,12 @@ const openTemplateDrawer = (key) => {
     </div>
     <div class="form-row">
       <label for="t-subject">Subject line</label>
-      <input class="input" id="t-subject" value="${escape(t.subject)}" />
+      <input class="input" id="t-subject" value="${escape(t.subject)}" maxlength="200" />
       <div class="hint">Placeholders: <code style="color:var(--gold-1)">{{name}}</code> <code style="color:var(--gold-1)">{{order_number}}</code> <code style="color:var(--gold-1)">{{product}}</code></div>
     </div>
     <div class="form-row">
       <label for="t-body">Body</label>
-      <textarea class="textarea" id="t-body" rows="14" style="font-family:Georgia,serif;line-height:1.7">${escape(t.body)}</textarea>
+      <textarea class="textarea" id="t-body" rows="14" style="font-family:Georgia,serif;line-height:1.7" maxlength="50000">${escape(t.body)}</textarea>
     </div>
     <div class="form-row">
       <div class="lbl">Preview</div>
@@ -2541,9 +2732,11 @@ const openTemplateDrawer = (key) => {
       render();
     });
   }
-  $('#tplSave').addEventListener('click', () => {
+  $('#tplSave').addEventListener('click', async () => {
     const fb = $('#tplFb');
+    const btn = $('#tplSave');
     fb.textContent = '';
+    btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Saving…';
     try {
       Store.updateTemplate(key, {
         subject: $('#t-subject').value,
@@ -2556,11 +2749,411 @@ const openTemplateDrawer = (key) => {
     } catch (err) {
       fb.textContent = err.message || 'Save failed';
       fb.className = 'feedback error';
+    } finally {
+      btn.disabled = false; btn.textContent = btn.dataset.label || 'Save';
     }
   });
 
-  $('#backdrop').classList.add('open');
-  $('#drawer').classList.add('open');
+  openDrawer();
+};
+
+// ====================================================================
+// Reviews
+// ====================================================================
+const renderReviews = () => {
+  $('#topbar').innerHTML = `<h1>Reviews <small>Moderation</small></h1>`;
+  $('#content').innerHTML = `<div class="empty" style="padding:60px 0"><em>Loading reviews…</em></div>`;
+
+  adminFetch('/api/admin/reviews').then(async (r) => {
+    const data = await r.json();
+    const reviews = Array.isArray(data) ? data : (data.reviews || []);
+
+    // Update pending badge
+    const pendingCount = reviews.filter((rv) => !rv.approved).length;
+    state._reviewsBadge = pendingCount || null;
+    const badgeEl = document.querySelector('[data-badge="reviews"]');
+    if (badgeEl) badgeEl.textContent = state._reviewsBadge || '';
+
+    const renderStars = (n) => {
+      const filled = Math.max(0, Math.min(5, Math.round(n || 0)));
+      return '<span style="color:var(--gold-1);letter-spacing:1px">' +
+        '★'.repeat(filled) + '<span style="color:var(--surface-3)">' + '★'.repeat(5 - filled) + '</span></span>';
+    };
+
+    const filterBtn = (key, label) =>
+      `<button class="filterbtn ${state.reviewsFilter === key ? 'active' : ''}" data-rflt="${key}">${label}</button>`;
+
+    const list = state.reviewsFilter === 'all'
+      ? reviews
+      : state.reviewsFilter === 'approved'
+        ? reviews.filter((rv) => rv.approved)
+        : reviews.filter((rv) => !rv.approved);
+
+    $('#content').innerHTML = `
+      <div class="toolbar">
+        <div class="left">
+          ${filterBtn('pending', 'Pending')}
+          ${filterBtn('approved', 'Approved')}
+          ${filterBtn('all', 'All')}
+        </div>
+        <div class="left"><span class="pill">${list.length} shown</span></div>
+      </div>
+      <div class="card">
+        <div class="card-body flush">
+          <table class="t">
+            <thead>
+              <tr>
+                <th>Product</th>
+                <th>Reviewer</th>
+                <th>Rating</th>
+                <th>Review</th>
+                <th>Date</th>
+                <th>Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${list.length === 0
+                ? '<tr class="no-hover"><td colspan="7"><div class="empty">No reviews match.</div></td></tr>'
+                : list.map((rv) => `
+                  <tr class="no-hover" data-rvid="${escape(rv.id)}">
+                    <td style="color:#f5ecda;font-weight:500;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escape(rv.product_title || rv.product_id || '—')}</td>
+                    <td>
+                      <div style="color:#f5ecda;font-weight:500">${escape(rv.reviewer_name || '—')}</div>
+                      <div style="color:var(--softer);font-size:11px">${escape(rv.reviewer_email || '')}</div>
+                    </td>
+                    <td>${renderStars(rv.rating)}</td>
+                    <td style="color:var(--softer);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escape((rv.body || rv.text || '').slice(0, 120))}</td>
+                    <td style="color:var(--softer)">${escape(fmtDate(rv.created_at))}</td>
+                    <td><span class="pill ${rv.approved ? 'live' : 'pending'}">${rv.approved ? 'Approved' : 'Pending'}</span></td>
+                    <td>
+                      <div style="display:flex;gap:6px;flex-wrap:nowrap">
+                        ${!rv.approved ? `<button class="btn sm" data-rv-approve="${escape(rv.id)}">Approve</button>` : ''}
+                        ${rv.approved ? `<button class="btn ghost sm" data-rv-reject="${escape(rv.id)}">Reject</button>` : ''}
+                        <button class="btn danger sm" data-rv-del="${escape(rv.id)}">Delete</button>
+                      </div>
+                    </td>
+                  </tr>
+                `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+
+    $$('.filterbtn[data-rflt]').forEach((b) =>
+      b.addEventListener('click', () => { state.reviewsFilter = b.dataset.rflt; renderReviews(); })
+    );
+
+    const patchReview = async (id, patch) => {
+      try {
+        const r = await adminFetch('/api/admin/reviews', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id, ...patch }),
+        });
+        if (!r.ok) throw new Error('patch_failed');
+        toast('Review updated');
+        renderReviews();
+      } catch {
+        toast('Could not update review', 'err');
+      }
+    };
+
+    const deleteReview = async (id) => {
+      if (!confirm('Delete this review? This cannot be undone.')) return;
+      try {
+        const r = await adminFetch('/api/admin/reviews', {
+          method: 'DELETE',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ id }),
+        });
+        if (!r.ok) throw new Error('delete_failed');
+        toast('Review deleted');
+        renderReviews();
+      } catch {
+        toast('Could not delete review', 'err');
+      }
+    };
+
+    $$('button[data-rv-approve]').forEach((b) =>
+      b.addEventListener('click', () => patchReview(b.dataset.rvApprove, { approved: true }))
+    );
+    $$('button[data-rv-reject]').forEach((b) =>
+      b.addEventListener('click', () => patchReview(b.dataset.rvReject, { approved: false }))
+    );
+    $$('button[data-rv-del]').forEach((b) =>
+      b.addEventListener('click', () => deleteReview(b.dataset.rvDel))
+    );
+
+  }).catch((err) => {
+    if (err.message === 'unauthorized') return;
+    $('#content').innerHTML = `<div class="empty"><strong>Could not load reviews</strong><br>${escape(err.message)}</div>`;
+  });
+};
+
+// ====================================================================
+// Analytics
+// ====================================================================
+
+const fetchAnalytics = async (days = 30) => {
+  const r = await adminFetch(`/api/admin/analytics?days=${days}`);
+  if (!r.ok) throw new Error('analytics_failed');
+  return r.json();
+};
+
+const renderAnalyticsDonut = (items, colors) => {
+  let acc = 0;
+  const C = 80, R = 64, SW = 24;
+  const total = items.reduce((s, it) => s + it.count, 0) || 1;
+  const segs = items.map((it, idx) => {
+    const frac = it.count / total;
+    const start = acc; acc += frac;
+    const ang0 = start * Math.PI * 2 - Math.PI / 2;
+    const ang1 = (start + frac) * Math.PI * 2 - Math.PI / 2;
+    const x0 = C + R * Math.cos(ang0), y0 = C + R * Math.sin(ang0);
+    const x1 = C + R * Math.cos(ang1), y1 = C + R * Math.sin(ang1);
+    const large = frac > 0.5 ? 1 : 0;
+    return frac > 0
+      ? `<path d="M ${x0} ${y0} A ${R} ${R} 0 ${large} 1 ${x1} ${y1}" stroke="${colors[idx % colors.length]}" stroke-width="${SW}" fill="none"/>`
+      : '';
+  }).join('');
+  const legend = items.map((it, idx) => `
+    <div class="row">
+      <div><span class="swatch" style="background:${colors[idx % colors.length]}"></span>${escape(it.key)}</div>
+      <div style="color:var(--soft)">${it.count} <span style="color:var(--softest)">(${Math.round((it.count / total) * 100)}%)</span></div>
+    </div>
+  `).join('');
+  return `
+    <div class="donut-wrap">
+      <svg class="donut-svg" viewBox="0 0 160 160">
+        <circle cx="80" cy="80" r="${R}" stroke="var(--surface-3)" stroke-width="${SW}" fill="none"/>
+        ${segs}
+      </svg>
+      <div class="donut-legend">${legend}</div>
+    </div>
+  `;
+};
+
+const renderAnalyticsChart = (series) => {
+  if (!series || series.length === 0) return '<div style="color:var(--softest);font-style:italic;padding:40px 0;text-align:center">No data</div>';
+  const W = 800, H = 200, P = { l: 36, r: 16, t: 14, b: 26 };
+  const w = W - P.l - P.r;
+  const h = H - P.t - P.b;
+  const maxV = Math.max(1, ...series.map((d) => d.views));
+  const step = w / Math.max(1, series.length - 1);
+  const pts = series.map((d, i) => [P.l + i * step, P.t + h - (d.views / maxV) * h]);
+  const path = pts.map(([x, y], i) => `${i === 0 ? 'M' : 'L'}${x},${y}`).join(' ');
+  const areaPath = `${path} L${P.l + w},${P.t + h} L${P.l},${P.t + h} Z`;
+
+  // Sample x-axis ticks — pick ~5 evenly
+  const tickCount = Math.min(5, series.length);
+  const tickIdxs = Array.from({ length: tickCount }, (_, i) => Math.round((i / (tickCount - 1 || 1)) * (series.length - 1)));
+  const xLabels = tickIdxs.map((idx) => {
+    const [x] = pts[idx];
+    const d = new Date(series[idx].date);
+    return `<text class="tick" x="${x}" y="${H - 6}" text-anchor="middle">${d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</text>`;
+  }).join('');
+
+  const yTicks = [0, Math.round(maxV / 2), maxV].map((v) => {
+    const y = P.t + h - (v / maxV) * h;
+    return `<g><line class="grid" x1="${P.l}" y1="${y}" x2="${P.l + w}" y2="${y}"/><text class="tick" x="${P.l - 6}" y="${y + 3}" text-anchor="end">${v}</text></g>`;
+  }).join('');
+
+  return `
+    <svg class="chart" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none">
+      <defs>
+        <linearGradient id="analyticsGrad" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="rgba(164,202,232,0.28)"/>
+          <stop offset="100%" stop-color="rgba(164,202,232,0)"/>
+        </linearGradient>
+      </defs>
+      ${yTicks}
+      <path d="${areaPath}" fill="url(#analyticsGrad)"/>
+      <path d="${path}" fill="none" stroke="#a4cae8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      ${xLabels}
+    </svg>
+  `;
+};
+
+const renderAnalytics = () => {
+  const days = state.analyticsRange;
+
+  $('#topbar').innerHTML = `
+    <h1>Analytics <small>Last ${days} days</small></h1>
+    <div class="actions">
+      ${[7, 30, 90, 365].map((d) =>
+        `<button class="filterbtn ${days === d ? 'active' : ''}" data-arng="${d}">${d}d</button>`
+      ).join('')}
+    </div>
+  `;
+
+  $$('.filterbtn[data-arng]').forEach((b) => b.addEventListener('click', () => {
+    state.analyticsRange = Number(b.dataset.arng);
+    state.analyticsCache = null;
+    renderAnalytics();
+  }));
+
+  // Loading state
+  $('#content').innerHTML = `<div class="empty" style="padding:60px 0"><em>Loading analytics…</em></div>`;
+
+  fetchAnalytics(days).then((data) => {
+    state.analyticsCache = data;
+
+    const { kpis, series, top_pages, top_referrers, top_countries, devices, utm, funnel } = data;
+
+    if (kpis.page_views === 0) {
+      $('#content').innerHTML = `
+        <div class="empty">
+          <strong>No data yet</strong>
+          No analytics data yet. Page views will appear here as visitors browse the site.
+        </div>
+      `;
+      return;
+    }
+
+    const fmtBounce = (v) => `${Math.round((v || 0) * 100)}%`;
+    const fmtSession = (secs) => {
+      const m = Math.floor((secs || 0) / 60);
+      const s = Math.round((secs || 0) % 60);
+      return m > 0 ? `${m}m ${s}s` : `${s}s`;
+    };
+
+    // Top pages / referrers bars
+    const renderBarList = (items, label) => {
+      if (!items || items.length === 0) return `<div class="empty" style="padding:20px 0">No data.</div>`;
+      const maxC = Math.max(1, ...items.map((it) => it.count));
+      return items.slice(0, 10).map((it) => `
+        <div style="padding:10px 0;border-bottom:1px solid var(--line-2)">
+          <div style="display:flex;justify-content:space-between;margin-bottom:5px">
+            <span style="color:var(--soft);font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:75%">${escape(it.key)}</span>
+            <span style="color:var(--softer);font-size:12px;flex-shrink:0;margin-left:8px">${it.count}</span>
+          </div>
+          <div style="background:var(--surface-3);height:3px;border-radius:2px">
+            <div style="background:var(--gold-2);height:3px;border-radius:2px;width:${Math.round((it.count / maxC) * 100)}%"></div>
+          </div>
+        </div>
+      `).join('');
+    };
+
+    // Donut colors
+    const COUNTRY_COLORS = ['#a4cae8', '#b5d39c', '#e2c373', '#d99a6c', '#c9a4e0', '#7acdc8'];
+    const DEVICE_COLORS  = ['#d9b070', '#a4cae8', '#b5d39c', '#d99a6c'];
+
+    // Normalise countries — group tail as Other
+    const countryItems = (() => {
+      const top6 = (top_countries || []).slice(0, 6);
+      const otherCount = (top_countries || []).slice(6).reduce((s, it) => s + it.count, 0);
+      return otherCount > 0 ? [...top6, { key: 'Other', count: otherCount }] : top6;
+    })();
+
+    // Funnel
+    const funnelSteps = [
+      { label: 'Visitors', count: funnel.visitors },
+      { label: 'Product views', count: funnel.product_views },
+      { label: 'Cart views', count: funnel.cart_views },
+      { label: 'Orders', count: funnel.orders },
+    ];
+    const funnelMax = Math.max(1, funnelSteps[0].count);
+    const funnelHtml = funnelSteps.map((step, i) => {
+      const pct = Math.round((step.count / funnelMax) * 100);
+      const convPct = i === 0 ? 100 : Math.round((step.count / funnelSteps[0].count) * 100);
+      return `
+        <div style="margin-bottom:14px">
+          <div style="display:flex;justify-content:space-between;margin-bottom:6px">
+            <span style="color:var(--soft);font-size:13px">${escape(step.label)}</span>
+            <span style="color:var(--softer);font-size:12px">${step.count.toLocaleString()} <span style="color:var(--softest)">(${convPct}%)</span></span>
+          </div>
+          <div style="background:var(--surface-3);height:8px;border-radius:4px">
+            <div style="background:linear-gradient(90deg,rgba(217,176,112,0.8),rgba(217,176,112,0.3));height:8px;border-radius:4px;width:${pct}%;transition:width 0.4s ease"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    // UTM section
+    const utmHtml = (utm && utm.length > 0) ? `
+      <div style="height:16px"></div>
+      <div class="card">
+        <div class="card-head"><h2>UTM campaigns</h2></div>
+        <div class="card-body flush">
+          <table class="t">
+            <thead><tr><th>Source / Medium · Campaign</th><th style="text-align:right">Sessions</th></tr></thead>
+            <tbody>
+              ${utm.slice(0, 10).map((u) => `
+                <tr class="no-hover">
+                  <td style="color:var(--soft)">${escape(u.key)}</td>
+                  <td style="text-align:right;color:#f5ecda;font-weight:500">${u.count}</td>
+                </tr>
+              `).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    ` : '';
+
+    $('#content').innerHTML = `
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Page views</div>
+          <div class="value">${kpis.page_views.toLocaleString()}</div>
+          <div class="delta"><span style="color:var(--softest)">Last ${days} days</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Unique visitors</div>
+          <div class="value">${kpis.visitors.toLocaleString()}</div>
+          <div class="delta"><span style="color:var(--softest)">Last ${days} days</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Sessions</div>
+          <div class="value">${kpis.sessions.toLocaleString()}</div>
+          <div class="delta"><span style="color:var(--softest)">Last ${days} days</span></div>
+        </div>
+        <div class="stat">
+          <div class="label">Bounce rate</div>
+          <div class="value">${fmtBounce(kpis.bounce_rate)}</div>
+          <div class="delta"><span style="color:var(--softest)">Avg session ${fmtSession(kpis.avg_session_seconds)}</span></div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><h2>Page views over time</h2></div>
+        <div class="card-body">${renderAnalyticsChart(series)}</div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="card">
+          <div class="card-head"><h2>Top pages</h2></div>
+          <div class="card-body">${renderBarList(top_pages, 'Views')}</div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Top referrers</h2></div>
+          <div class="card-body">${renderBarList(top_referrers, 'Sessions')}</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px">
+        <div class="card">
+          <div class="card-head"><h2>Countries</h2></div>
+          <div class="card-body">${countryItems.length ? renderAnalyticsDonut(countryItems, COUNTRY_COLORS) : '<div class="empty" style="padding:20px 0">No data.</div>'}</div>
+        </div>
+        <div class="card">
+          <div class="card-head"><h2>Devices</h2></div>
+          <div class="card-body">${devices && devices.length ? renderAnalyticsDonut(devices, DEVICE_COLORS) : '<div class="empty" style="padding:20px 0">No data.</div>'}</div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:16px">
+        <div class="card-head"><h2>Conversion funnel</h2></div>
+        <div class="card-body">${funnelHtml}</div>
+      </div>
+
+      ${utmHtml}
+    `;
+  }).catch((err) => {
+    if (err.message === 'unauthorized') return;
+    $('#content').innerHTML = `<div class="empty"><strong>Could not load analytics</strong>${escape(err.message)}</div>`;
+  });
 };
 
 // ====================================================================
@@ -2764,7 +3357,7 @@ const renderContent = () => {
           <thead><tr><th>Title</th><th>URL</th><th>Status</th><th>Updated</th></tr></thead>
           <tbody>
             ${list.length === 0
-              ? '<tr class="no-hover"><td colspan="4"><div class="empty">No pages yet.</div></td></tr>'
+              ? '<tr class="no-hover"><td colspan="4"><div class="empty">No pages yet.<br><button class="btn sm" style="margin-top:14px" onclick="document.getElementById(\'newPage\').click()">+ New page</button></div></td></tr>'
               : list.map((p) => `
                 <tr data-pgid="${escape(p.id)}">
                   <td><strong style="color:#f5ecda">${escape(p.title)}</strong></td>
@@ -2795,11 +3388,11 @@ const openPageDrawer = (id) => {
   $('#drawerBody').innerHTML = `
     <div class="form-row">
       <label for="pg-title">Title</label>
-      <input class="input" id="pg-title" value="${escape(p?.title || '')}" autofocus />
+      <input class="input" id="pg-title" value="${escape(p?.title || '')}" autofocus maxlength="200" />
     </div>
     <div class="form-row">
       <label for="pg-slug">URL slug</label>
-      <input class="input" id="pg-slug" value="${escape(p?.slug || '')}" />
+      <input class="input" id="pg-slug" value="${escape(p?.slug || '')}" maxlength="80" />
       <div class="hint">/pages/<span id="pgSlugPreview">${escape(p?.slug || '…')}</span></div>
     </div>
     <div class="form-row">
@@ -2828,8 +3421,9 @@ const openPageDrawer = (id) => {
   });
 
   $('#pgCancel').addEventListener('click', closeDrawer);
-  $('#pgSave').addEventListener('click', () => {
+  $('#pgSave').addEventListener('click', async () => {
     const fb = $('#pgFb');
+    const btn = $('#pgSave');
     const data = {
       title: $('#pg-title').value.trim(),
       slug: slugify($('#pg-slug').value),
@@ -2838,18 +3432,22 @@ const openPageDrawer = (id) => {
     };
     if (!data.title) { fb.textContent = 'Title is required.'; fb.className = 'feedback error'; return; }
     if (!data.slug) { fb.textContent = 'Slug is required.'; fb.className = 'feedback error'; return; }
+    btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Saving…';
     try {
       if (p) Store.updatePage(p.id, data); else Store.addPage(data);
       toast(p ? 'Page saved' : 'Page created');
       closeDrawer();
-    } catch (e) { fb.textContent = 'Save failed.'; fb.className = 'feedback error'; }
+    } catch (e) {
+      fb.textContent = 'Save failed.'; fb.className = 'feedback error';
+    } finally {
+      btn.disabled = false; btn.textContent = btn.dataset.label || 'Save';
+    }
   });
   if (p) $('#pgDelete').addEventListener('click', () => {
     if (confirm(`Delete "${p.title}"?`)) { Store.deletePage(p.id); toast('Deleted'); closeDrawer(); }
   });
 
-  $('#backdrop').classList.add('open');
-  $('#drawer').classList.add('open');
+  openDrawer();
 };
 
 // ====================================================================
@@ -2899,7 +3497,7 @@ const renderSettings = () => {
 
   if (state.settingsTab === 'general') {
     const g = s.general || {};
-    const siteMode = (typeof localStorage !== 'undefined' && localStorage.getItem('maliki.site_mode')) || 'coming_soon';
+    const siteMode = g.site_mode || 'coming_soon';
     body.innerHTML = `
       <div class="card"><div class="card-head"><h2>Site mode</h2></div>
         <div class="card-body">
@@ -3063,6 +3661,11 @@ const renderSettings = () => {
 };
 
 // ---------- Drawer plumbing ----------
+const openDrawer = () => {
+  $('#backdrop').classList.add('open');
+  $('#drawer').classList.add('open');
+  setTimeout(() => $('#drawer').querySelector('input, textarea, select')?.focus(), 50);
+};
 const closeDrawer = () => {
   $('#backdrop').classList.remove('open');
   $('#drawer').classList.remove('open');
@@ -3083,7 +3686,7 @@ const logout = async () => {
     const { authed } = await r.json();
     if (!authed) return renderLogin();
     state.authed = true;
-    if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData();
+    if (Store.loadRemoteAdminData) await Store.loadRemoteAdminData().catch(() => {});
     renderApp();
   } catch {
     renderLogin('Could not reach the server.');

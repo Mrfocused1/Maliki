@@ -1,6 +1,11 @@
+const { rateLimit } = require('./_lib/rate-limit');
+const { supabaseFetch } = require('./_lib/supabase');
+
 const RESEND_BASE = 'https://api.resend.com';
 
 const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+const uid = () => `em_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
@@ -18,6 +23,23 @@ const resend = async (path, body) => {
   });
   const data = await r.json().catch(() => ({}));
   return { ok: r.ok, status: r.status, data };
+};
+
+const logEmail = ({ template_key, recipient_email, recipient_name, subject, status }) => {
+  supabaseFetch('/email_log', {
+    method: 'POST',
+    headers: { Prefer: 'return=minimal' },
+    body: JSON.stringify({
+      id: uid(),
+      template_key,
+      recipient_email,
+      recipient_name: recipient_name || '',
+      subject,
+      order_id: null,
+      status,
+      sent_at: new Date().toISOString(),
+    }),
+  }).catch((e) => console.error('notify: log failed', e.message));
 };
 
 const thankYouHtml = () => `<!DOCTYPE html>
@@ -113,6 +135,10 @@ module.exports = async (req, res) => {
     return json(res, 405, { error: 'method_not_allowed' });
   }
 
+  if (rateLimit(req, { key: 'notify', max: 5, windowMs: 60000 })) {
+    return json(res, 429, { error: 'too_many_requests' });
+  }
+
   const host = req.headers.host || '';
   const origin = req.headers.origin || '';
   const referer = req.headers.referer || '';
@@ -157,10 +183,11 @@ module.exports = async (req, res) => {
     return json(res, 502, { error: 'signup_failed' });
   }
 
+  const thankYouSubject = 'Maliki Atelier — Your Invitation Will Follow';
   const thankYou = await resend('/emails', {
     from: NOTIFY_FROM,
     to: email,
-    subject: 'Maliki Atelier — Your Invitation Will Follow',
+    subject: thankYouSubject,
     html: thankYouHtml(),
     text: thankYouText(),
   });
@@ -168,17 +195,34 @@ module.exports = async (req, res) => {
     console.error('notify: thank-you send failed', thankYou.status, thankYou.data);
   }
 
+  logEmail({
+    template_key: 'waitlist_thank_you',
+    recipient_email: email,
+    recipient_name: '',
+    subject: thankYouSubject,
+    status: thankYou.ok ? 'sent' : 'failed',
+  });
+
   if (NOTIFY_TO) {
+    const adminSubject = `New waitlist signup — ${email}`;
     const notification = await resend('/emails', {
       from: NOTIFY_FROM,
       to: NOTIFY_TO,
-      reply_to: email,
-      subject: `New waitlist signup — ${email}`,
+      reply_to: email.replace(/[\r\n]/g, ''),
+      subject: adminSubject,
       html: notificationHtml(email),
     });
     if (!notification.ok) {
       console.error('notify: notification send failed', notification.status, notification.data);
     }
+
+    logEmail({
+      template_key: 'waitlist_notification',
+      recipient_email: NOTIFY_TO,
+      recipient_name: 'Admin',
+      subject: adminSubject,
+      status: notification.ok ? 'sent' : 'failed',
+    });
   }
 
   return json(res, 200, { ok: true });

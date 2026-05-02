@@ -1,4 +1,5 @@
 const { sameOrigin } = require('./_lib/auth');
+const { rateLimit } = require('./_lib/rate-limit');
 const { supabaseFetch } = require('./_lib/supabase');
 
 const json = (res, status, body) => {
@@ -9,6 +10,9 @@ const json = (res, status, body) => {
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
+  if (rateLimit(req, { key: 'discount', max: 20, windowMs: 60000 })) {
+    return json(res, 429, { error: 'too_many_requests' });
+  }
   if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
   const body = req.body || {};

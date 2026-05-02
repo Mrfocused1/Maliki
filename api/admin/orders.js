@@ -1,4 +1,4 @@
-const { requireAdmin } = require('../_lib/auth');
+const { requireAdmin, sameOrigin } = require('../_lib/auth');
 const { supabaseFetch } = require('../_lib/supabase');
 const { sendTemplatedEmail } = require('../_lib/mailer');
 
@@ -34,11 +34,12 @@ const maybeSendShipped = async (orderId) => {
 module.exports = async (req, res) => {
   if (req.method !== 'PATCH') return json(res, 405, { error: 'method_not_allowed' });
   if (!requireAdmin(req, res)) return;
+  if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
   const id = String((req.body || {}).id || '');
   const status = String((req.body || {}).status || '');
   if (!id) return json(res, 400, { error: 'id_required' });
-  if (!['pending', 'paid', 'fulfilled', 'refunded', 'cancelled'].includes(status)) {
+  if (!['pending', 'paid', 'fulfilled', 'refunded', 'cancelled', 'failed'].includes(status)) {
     return json(res, 400, { error: 'invalid_status' });
   }
 
@@ -50,7 +51,7 @@ module.exports = async (req, res) => {
     if (status === 'fulfilled') maybeSendShipped(id);
     return json(res, 200, { order: updated[0] || { id, status } });
   } catch (error) {
-    console.error('admin/orders:', error.status || error.message, error.data || '');
+    console.error('admin/orders:', error.status || error.message);
     return json(res, 500, { error: 'order_sync_failed' });
   }
 };

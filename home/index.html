@@ -6,6 +6,7 @@
 <title>Maliki Atelier — Hand-finished Rings, London</title>
 <meta name="description" content="Maliki Atelier — twelve rings, hand-finished in London. Made by hand, for a person whose name we know." />
 <meta name="theme-color" content="#0a0908" />
+<link rel="canonical" href="https://www.malikiatelier.com/home/" />
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
 
@@ -22,9 +23,39 @@
 <meta name="twitter:description" content="Made by hand, for a person whose name we know." />
 <meta name="twitter:image" content="https://www.malikiatelier.com/og.jpg" />
 
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Allura&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,400&family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Allura&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://www.malikiatelier.com/#org",
+      "name": "Maliki Atelier",
+      "url": "https://www.malikiatelier.com/",
+      "logo": "https://www.malikiatelier.com/og.jpg",
+      "email": "hello@malikiatelier.com",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "12 Hatton Garden",
+        "addressLocality": "London",
+        "addressCountry": "GB"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://www.malikiatelier.com/#site",
+      "url": "https://www.malikiatelier.com/",
+      "name": "Maliki Atelier",
+      "publisher": { "@id": "https://www.malikiatelier.com/#org" }
+    }
+  ]
+}
+</script>
 <style>
   :root {
     --bg: #0a0908;
@@ -39,6 +70,8 @@
     --ok: #a3c08b;
     --danger: #d99a6c;
   }
+  .skip-link { position:absolute; top:-40px; left:8px; background:#d9b070; color:#0a0908; padding:8px 14px; border-radius:0; z-index:100; font-family:'Playfair Display',serif; letter-spacing:0.18em; text-transform:uppercase; font-size:11px; transition:top .15s ease; }
+  .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html {
     background: var(--bg);
@@ -77,6 +110,29 @@
     color: #f5ecda;
   }
   .nav a:hover { color: var(--gold-hi); }
+  .burger {
+    display: none; flex-direction: column; justify-content: space-between;
+    width: 24px; height: 18px; background: transparent; border: none;
+    cursor: pointer; padding: 0;
+  }
+  .burger span { display: block; height: 1.5px; width: 100%; background: var(--soft); }
+  .mobile-nav {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: rgba(10, 9, 8, 0.98);
+    flex-direction: column; justify-content: center; align-items: center; gap: 36px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; color: #f5ecda;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { transition: color 0.2s; }
+  .mobile-nav a:hover { color: var(--gold-hi); }
+  .mobile-nav-close {
+    position: absolute; top: clamp(16px, 3vh, 28px); right: clamp(20px, 5vw, 56px);
+    background: transparent; border: none; color: var(--softer);
+    font-size: 20px; cursor: pointer; padding: 8px; line-height: 1;
+  }
+  .mobile-nav-close:hover { color: var(--gold-hi); }
+  @media (max-width: 768px) { .nav { display: none; } .burger { display: flex; } }
   .cart-btn {
     background: transparent; border: 1px solid var(--line); color: var(--soft);
     font-family: 'Playfair Display', serif;
@@ -154,8 +210,9 @@
     text-shadow: 0 1px 8px rgba(0,0,0,0.7);
   }
   .hero-headline {
-    font-family: 'Playfair Display', serif;
+    font-family: 'Cormorant Garamond', serif;
     font-style: italic;
+    font-weight: 300;
     font-size: clamp(36px, 5.5vw, 72px);
     line-height: 1.18;
     color: #f5ecda;
@@ -459,6 +516,67 @@
   .form-feedback.ok { color: var(--ok); }
   .form-feedback.err { color: var(--danger); }
 
+
+  /* ===================== TESTIMONIALS ===================== */
+  .testimonials {
+    padding: clamp(64px, 10vh, 120px) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .testimonials-header {
+    text-align: center;
+    margin-bottom: clamp(40px, 6vh, 64px);
+  }
+  .testimonials-header .section-title {
+    font-style: italic;
+  }
+  .testimonials-rule {
+    width: clamp(48px, 8vw, 88px); height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(217,176,112,0.6), transparent);
+    margin: 18px auto 0;
+  }
+  .testimonials-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: clamp(24px, 4vw, 48px);
+  }
+  @media (max-width: 800px) {
+    .testimonials-grid { grid-template-columns: 1fr; }
+  }
+  .testimonial-card {
+    display: flex; flex-direction: column;
+    gap: 16px;
+    padding: clamp(28px, 4vw, 40px) clamp(24px, 3.5vw, 36px);
+    border: 1px solid var(--line);
+    background: rgba(20, 19, 17, 0.55);
+    position: relative;
+  }
+  .testimonial-quote-mark {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px; line-height: 1;
+    color: var(--gold-2);
+    opacity: 0.72;
+    user-select: none;
+    margin-bottom: -8px;
+  }
+  .testimonial-text {
+    font-family: 'Lora', serif;
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.72;
+    letter-spacing: 0.03em;
+    color: var(--softer);
+    flex: 1;
+  }
+  .testimonial-attribution {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px;
+    letter-spacing: 0.38em;
+    text-transform: uppercase;
+    color: var(--softest);
+    padding-top: 8px;
+    border-top: 1px solid var(--line);
+  }
+
   /* ===================== FOOTER ===================== */
   .footer {
     border-top: 1px solid var(--line);
@@ -476,9 +594,14 @@
   .footer-email { color: var(--softest); }
   .footer-email a { color: var(--gold-2); transition: color 0.3s ease; }
   .footer-email a:hover { color: var(--gold-hi); }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
 
   <!-- ===================== TOPBAR ===================== -->
   <header class="topbar">
@@ -486,15 +609,30 @@
       <img src="/assets/maliki-logo.svg" alt="Maliki Atelier">
     </a>
     <nav class="nav">
+      <a href="/">Home</a>
       <a href="/shop">Shop</a>
       <a href="/about">About</a>
       <a href="/contact">Contact</a>
+      <a href="/account">Account</a>
       <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
     </nav>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+    <a href="/">Home</a>
+    <a href="/shop">Shop</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/account">Account</a>
+    <a href="/cart">Cart</a>
+  </div>
+
   <!-- ===================== HERO ===================== -->
-  <section class="hero" aria-label="Hero">
+  <section class="hero" id="main" aria-label="Hero">
     <video id="bg1" class="bg-video active" src="bg-1.mp4" muted playsinline preload="auto" autoplay aria-hidden="true"></video>
     <video id="bg2" class="bg-video"        src="bg-2.mp4" muted playsinline preload="metadata" aria-hidden="true"></video>
     <div class="hero-tint"    aria-hidden="true"></div>
@@ -606,6 +744,33 @@
     </div>
   </section>
 
+  <!-- ===================== TESTIMONIALS ===================== -->
+  <section class="testimonials" aria-label="Client testimonials">
+    <div class="section-inner">
+      <div class="testimonials-header">
+        <h2 class="section-title">What Our Clients Say</h2>
+        <div class="testimonials-rule" aria-hidden="true"></div>
+      </div>
+      <div class="testimonials-grid">
+        <article class="testimonial-card">
+          <div class="testimonial-quote-mark" aria-hidden="true">&#10077;</div>
+          <p class="testimonial-text">Every piece carries a quiet perfection that I find rare. The ring arrived beautifully presented and fits as though made for me.</p>
+          <p class="testimonial-attribution">&#8212;&thinsp;Sophie L., London</p>
+        </article>
+        <article class="testimonial-card">
+          <div class="testimonial-quote-mark" aria-hidden="true">&#10077;</div>
+          <p class="testimonial-text">I gifted this to my wife on our anniversary. The craftsmanship is extraordinary &mdash; she hasn't taken it off since.</p>
+          <p class="testimonial-attribution">&#8212;&thinsp;James K., Edinburgh</p>
+        </article>
+        <article class="testimonial-card">
+          <div class="testimonial-quote-mark" aria-hidden="true">&#10077;</div>
+          <p class="testimonial-text">The atelier experience is as beautiful as the jewellery itself. Prompt, careful, and truly personal.</p>
+          <p class="testimonial-attribution">&#8212;&thinsp;Amara O., Lagos</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
   <!-- ===================== FOOTER ===================== -->
   <footer class="footer">
     <span class="footer-links">
@@ -616,7 +781,7 @@
     <span>© Maliki Atelier</span>
     <span class="footer-email">
       White-Glove Courier · Insured Worldwide ·
-      <a href="mailto:atelier@malikiatelier.com">atelier@malikiatelier.com</a>
+      <a href="mailto:hello@malikiatelier.com">hello@malikiatelier.com</a>
     </span>
   </footer>
 
@@ -719,23 +884,195 @@
         btn.textContent = 'Sending…';
 
         try {
+          const ac = new AbortController();
+          const timer = setTimeout(() => ac.abort(), 12000);
           const res = await fetch('/api/contact', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ name, email, message, source: 'homepage' }),
+            signal: ac.signal,
           });
+          clearTimeout(timer);
           if (!res.ok) throw new Error('send_failed');
           showFb('Thank you — the atelier will be in touch.', 'ok');
           form.reset();
           btn.textContent = 'Sent';
-        } catch {
+        } catch (err) {
           btn.disabled = false;
           btn.textContent = 'Send message';
-          showFb('Something went wrong. Please try again.', 'err');
+          showFb(err?.name === 'AbortError' ? 'Request timed out. Please try again.' : 'Something went wrong. Please try again.', 'err');
         }
       });
     })();
   </script>
-  <script>(function(){try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:location.pathname,referrer:document.referrer})});}catch(e){}})();</script>
+  <script>(function(){try{var k='maliki.vid',s='maliki.sid',v=localStorage.getItem(k);if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem(k,v);}var sid=sessionStorage.getItem(s);if(!sid){sid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(s,sid);}var u=new URLSearchParams(location.search);var d={path:location.pathname,referrer:document.referrer,visitor_id:v,session_id:sid,screen:innerWidth+'x'+innerHeight,utm_source:u.get('utm_source')||'',utm_medium:u.get('utm_medium')||'',utm_campaign:u.get('utm_campaign')||''};if(localStorage.getItem('maliki.cookies')==='accepted'){fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true});}}catch(e){}})();</script>
+<script>
+  (function(){
+    var burger = document.getElementById('burgerBtn');
+    var nav = document.getElementById('mobileNav');
+    var closeBtn = document.getElementById('mobileNavClose');
+    if (!burger || !nav) return;
+    function openNav() { nav.classList.add('open'); burger.setAttribute('aria-expanded','true'); nav.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeNav() { nav.classList.remove('open'); burger.setAttribute('aria-expanded','false'); nav.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+    burger.addEventListener('click', openNav);
+    closeBtn.addEventListener('click', closeNav);
+    nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
+  })();
+</script>
+<script src="/assets/animations.js" defer></script>
+
+<!-- ===================== NEWSLETTER POPUP ===================== -->
+<style>
+  .nl-overlay {
+    position: fixed; inset: 0; z-index: 9990;
+    background: rgba(10, 9, 8, 0.72);
+    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px;
+    opacity: 0; pointer-events: none;
+    transition: opacity 0.45s ease;
+  }
+  .nl-overlay.visible { opacity: 1; pointer-events: all; }
+  .nl-box {
+    background: #141311;
+    border: 1px solid rgba(217,176,112,0.28);
+    max-width: 480px; width: 100%;
+    padding: clamp(32px, 5vw, 52px) clamp(24px, 5vw, 48px);
+    position: relative;
+    transform: translateY(24px);
+    transition: transform 0.45s cubic-bezier(.2,.8,.2,1);
+  }
+  .nl-overlay.visible .nl-box { transform: translateY(0); }
+  .nl-close {
+    position: absolute; top: 16px; right: 18px;
+    background: transparent; border: none;
+    color: var(--softest); font-size: 20px; cursor: pointer; line-height: 1; padding: 4px;
+  }
+  .nl-close:hover { color: var(--gold-hi); }
+  .nl-eyebrow {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.52em; text-indent: 0.52em;
+    text-transform: uppercase; color: var(--gold-1);
+    display: block; margin-bottom: 16px;
+  }
+  .nl-title {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-weight: 400;
+    font-size: clamp(22px, 3vw, 30px);
+    color: #f5ecda; line-height: 1.3; margin-bottom: 12px;
+  }
+  .nl-body {
+    font-family: 'Lora', serif;
+    font-size: 14px; line-height: 1.72; letter-spacing: 0.02em;
+    color: var(--softer); margin-bottom: 28px;
+  }
+  .nl-form { display: flex; flex-direction: column; gap: 12px; }
+  .nl-input {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(217,176,112,0.28);
+    color: var(--soft);
+    font-family: 'Lora', serif; font-size: 14px;
+    padding: 13px 16px; outline: none; width: 100%;
+    transition: border-color 0.2s;
+  }
+  .nl-input:focus { border-color: rgba(217,176,112,0.6); }
+  .nl-input::placeholder { color: var(--softest); }
+  .nl-submit {
+    background: linear-gradient(180deg, #d9b070, #b68a4e);
+    border: none; color: #1a120a;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 14px 24px; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .nl-submit:hover { opacity: 0.88; }
+  .nl-note {
+    font-family: 'Lora', serif;
+    font-size: 11px; color: var(--softest);
+    text-align: center; margin-top: 12px; letter-spacing: 0.02em;
+  }
+  .nl-success {
+    text-align: center; padding: 12px 0;
+    font-family: 'Playfair Display', serif;
+    font-style: italic; color: var(--gold-1); font-size: 17px;
+    display: none;
+  }
+</style>
+
+<div class="nl-overlay" id="nlOverlay" role="dialog" aria-modal="true" aria-labelledby="nlTitle">
+  <div class="nl-box">
+    <button class="nl-close" id="nlClose" aria-label="Close">&#x2715;</button>
+    <span class="nl-eyebrow">The Atelier</span>
+    <h2 class="nl-title" id="nlTitle">Join the inner circle.</h2>
+    <p class="nl-body">Be the first to know when a new piece is released, offered privately before it reaches the shop.</p>
+    <form class="nl-form" id="nlForm" novalidate>
+      <input class="nl-input" id="nlEmail" type="email" placeholder="Your email address" autocomplete="email" required />
+      <button class="nl-submit" type="submit">Subscribe</button>
+    </form>
+    <p class="nl-success" id="nlSuccess">Thank you — welcome to the atelier.</p>
+    <p class="nl-note">No noise. Unsubscribe at any time.</p>
+  </div>
+</div>
+
+<script>
+  (function(){
+    var SEEN_KEY = 'maliki.nl_seen';
+    if (localStorage.getItem(SEEN_KEY)) return;
+
+    var overlay = document.getElementById('nlOverlay');
+    var form    = document.getElementById('nlForm');
+    var emailEl = document.getElementById('nlEmail');
+    var success = document.getElementById('nlSuccess');
+    var closeBtn= document.getElementById('nlClose');
+
+    function show() { overlay.classList.add('visible'); }
+    function hide() {
+      overlay.classList.remove('visible');
+      localStorage.setItem(SEEN_KEY, '1');
+    }
+
+    // Show after 5 seconds
+    var t = setTimeout(show, 5000);
+
+    // Or on scroll past 40% of page
+    var scrollFired = false;
+    window.addEventListener('scroll', function onScroll() {
+      if (scrollFired) return;
+      var pct = window.scrollY / (document.body.scrollHeight - window.innerHeight);
+      if (pct > 0.4) {
+        scrollFired = true;
+        clearTimeout(t);
+        show();
+        window.removeEventListener('scroll', onScroll);
+      }
+    }, { passive: true });
+
+    closeBtn.addEventListener('click', hide);
+    overlay.addEventListener('click', function(e) { if (e.target === overlay) hide(); });
+    document.addEventListener('keydown', function(e) { if (e.key === 'Escape') hide(); });
+
+    form.addEventListener('submit', function(e) {
+      e.preventDefault();
+      var email = emailEl.value.trim();
+      if (!email) return;
+      form.style.opacity = '0.5';
+      fetch('/api/newsletter', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: email }),
+      }).then(function(r) {
+        form.style.display = 'none';
+        success.style.display = 'block';
+        localStorage.setItem(SEEN_KEY, '1');
+        setTimeout(hide, 2800);
+      }).catch(function() {
+        form.style.opacity = '1';
+        emailEl.style.borderColor = 'rgba(200,80,80,0.6)';
+      });
+    });
+  })();
+</script>
+
+<div id="cookie-banner" role="alert" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(20,19,17,0.97);border-top:1px solid rgba(217,176,112,0.28);padding:16px clamp(20px,5vw,56px);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:Lora,serif;font-size:13px;color:rgba(245,236,218,0.86)"><span>We use cookies to improve your experience. <a href="/page/?slug=privacy" style="color:#d9b070;text-underline-offset:3px;text-decoration:underline">Privacy policy</a></span><div style="display:flex;gap:10px;flex-shrink:0"><button onclick="setCookies(true)" style="background:linear-gradient(180deg,#d9b070,#b68a4e);border:0;color:#1a120a;font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Accept</button><button onclick="setCookies(false)" style="background:transparent;border:1px solid rgba(217,176,112,0.3);color:rgba(245,236,218,0.62);font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Decline</button></div></div><script>(function(){var b=document.getElementById("cookie-banner");if(!localStorage.getItem("maliki.cookies")&&b){b.style.display="flex";}window.setCookies=function(v){localStorage.setItem("maliki.cookies",v?"accepted":"declined");if(b)b.style.display="none";}})()</script>
 </body>
 </html>

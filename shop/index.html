@@ -6,22 +6,43 @@
 <title>Maliki Atelier — Shop</title>
 <meta name="description" content="The Maliki Atelier ring collection." />
 <meta name="theme-color" content="#0a0908" />
+<link rel="canonical" href="https://www.malikiatelier.com/shop/" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.malikiatelier.com/shop/" />
+<meta property="og:title" content="Shop — Maliki Atelier" />
+<meta property="og:description" content="Discover hand-finished fine jewellery rings from Maliki Atelier." />
+<meta property="og:image" content="https://www.malikiatelier.com/og.jpg" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:wght@400;500;600;700&family=Allura&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  "@id": "https://www.malikiatelier.com/shop/#page",
+  "url": "https://www.malikiatelier.com/shop/",
+  "name": "Shop — Maliki Atelier",
+  "description": "The Maliki Atelier ring collection.",
+  "isPartOf": { "@type": "WebSite", "@id": "https://www.malikiatelier.com/#site", "name": "Maliki Atelier", "url": "https://www.malikiatelier.com/" }
+}
+</script>
 <style>
   :root {
     --black: #0a0908;
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
-    --softest: rgba(245, 236, 218, 0.62);
+    --softest: rgba(245, 236, 218, 0.78);
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
     --line: rgba(217, 176, 112, 0.28);
   }
+  .skip-link { position:absolute; top:-40px; left:8px; background:#d9b070; color:#0a0908; padding:8px 14px; border-radius:0; z-index:100; font-family:'Playfair Display',serif; letter-spacing:0.18em; text-transform:uppercase; font-size:11px; transition:top .15s ease; }
+  .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
     background: var(--black); color: var(--soft);
@@ -55,6 +76,29 @@
     color: #f5ecda;
   }
   .nav a:hover { color: var(--gold-hi); }
+  .burger {
+    display: none; flex-direction: column; justify-content: space-between;
+    width: 24px; height: 18px; background: transparent; border: none;
+    cursor: pointer; padding: 0;
+  }
+  .burger span { display: block; height: 1.5px; width: 100%; background: var(--soft); }
+  .mobile-nav {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: rgba(10, 9, 8, 0.98);
+    flex-direction: column; justify-content: center; align-items: center; gap: 36px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; color: #f5ecda;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { transition: color 0.2s; }
+  .mobile-nav a:hover { color: var(--gold-hi); }
+  .mobile-nav-close {
+    position: absolute; top: clamp(16px, 3vh, 28px); right: clamp(20px, 5vw, 56px);
+    background: transparent; border: none; color: var(--softer);
+    font-size: 20px; cursor: pointer; padding: 8px; line-height: 1;
+  }
+  .mobile-nav-close:hover { color: var(--gold-hi); }
+  @media (max-width: 768px) { .nav { display: none; } .burger { display: flex; } }
   .cart-btn {
     background: transparent; border: 1px solid var(--line); color: var(--soft);
     font-family: 'Playfair Display', serif;
@@ -94,6 +138,35 @@
     margin: 22px auto 0; max-width: 560px;
     font-style: italic; font-size: clamp(14px, 1.3vw, 17px);
     letter-spacing: 0.12em; line-height: 1.6;
+  }
+
+  /* ── Search bar ── */
+  .search-bar {
+    display: flex; justify-content: center;
+    padding: 0 clamp(20px, 5vw, 56px) clamp(20px, 4vh, 36px);
+  }
+  .search-bar input {
+    width: 100%; max-width: 560px;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--line);
+    color: var(--soft);
+    font-family: 'Lora', serif;
+    font-size: 14px; letter-spacing: 0.12em;
+    font-style: italic;
+    padding: 11px 4px;
+    border-radius: 0;
+    outline: none;
+    transition: border-color 0.3s ease;
+    caret-color: var(--gold-1);
+  }
+  .search-bar input::placeholder {
+    color: var(--softest);
+    font-style: italic;
+    letter-spacing: 0.14em;
+  }
+  .search-bar input:focus {
+    border-bottom-color: rgba(217, 176, 112, 0.7);
   }
 
   .filters {
@@ -179,6 +252,76 @@
     color: var(--softer); font-style: italic; letter-spacing: 0.14em;
   }
 
+  /* ── Recently Viewed ── */
+  .rv-section {
+    padding: 0 clamp(20px, 5vw, 56px) clamp(60px, 10vh, 120px);
+    max-width: 1320px; margin: 0 auto;
+    display: none;
+  }
+  .rv-section.visible { display: block; }
+  .rv-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(18px, 2vw, 24px); letter-spacing: 0.26em; text-transform: uppercase;
+    color: #f5ecda;
+    margin-bottom: clamp(20px, 3vh, 32px);
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .rv-row {
+    display: flex;
+    gap: clamp(16px, 2vw, 28px);
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--line) transparent;
+  }
+  .rv-row::-webkit-scrollbar { height: 4px; }
+  .rv-row::-webkit-scrollbar-track { background: transparent; }
+  .rv-row::-webkit-scrollbar-thumb { background: var(--line); border-radius: 0; }
+  .rv-card {
+    flex: 0 0 200px;
+    display: block; color: inherit;
+    transition: transform 0.5s cubic-bezier(.2,.7,.2,1);
+  }
+  .rv-card:hover { transform: translateY(-3px); }
+  .rv-frame {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    overflow: hidden;
+    background: var(--charcoal);
+    border: 1px solid var(--line);
+    width: 200px; height: 200px;
+  }
+  .rv-frame img {
+    position: absolute; inset: 0;
+    width: 100%; height: 100%; object-fit: cover;
+    transition: transform 1.4s cubic-bezier(.2,.7,.2,1), filter 0.8s ease;
+    filter: saturate(0.96);
+  }
+  .rv-card:hover .rv-frame img { transform: scale(1.04); filter: saturate(1.05); }
+  .rv-frame.empty {
+    display: flex; align-items: center; justify-content: center;
+    color: var(--softer);
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.4em; text-transform: uppercase;
+  }
+  .rv-meta {
+    padding: 12px 2px 6px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .rv-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.2em; text-transform: uppercase; color: #f5ecda;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rv-subtitle {
+    font-style: italic; color: var(--softer); letter-spacing: 0.06em; font-size: 11px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rv-price {
+    font-style: italic; color: #f3d89e; letter-spacing: 0.12em; font-size: 13px; margin-top: 2px;
+  }
+
   .footer {
     border-top: 1px solid var(--line);
     padding: 24px clamp(20px, 5vw, 56px);
@@ -186,28 +329,68 @@
     font-family: 'Playfair Display', serif;
     font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
   }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
   <header class="topbar">
     <a href="/" class="wordmark" aria-label="Maliki Atelier home"><img src="/assets/maliki-logo.svg" alt="Maliki Atelier"></a>
     <nav class="nav">
+      <a href="/">Home</a>
       <a href="/shop">Shop</a>
       <a href="/about">About</a>
       <a href="/contact">Contact</a>
+      <a href="/account">Account</a>
       <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
     </nav>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
-  <section class="hero">
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+    <a href="/">Home</a>
+    <a href="/shop">Shop</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/account">Account</a>
+    <a href="/cart">Cart</a>
+  </div>
+
+  <section class="hero" id="main">
     <div class="eyebrow">The Collection</div>
     <h1 class="h1">Shop</h1>
     <p class="lede">Twelve pieces, hand-finished in the atelier. Each one made to be worn for a long time.</p>
   </section>
 
+  <div class="search-bar">
+    <input
+      type="search"
+      id="searchInput"
+      placeholder="Search the collection&hellip;"
+      aria-label="Search the collection"
+      autocomplete="off"
+      spellcheck="false"
+    />
+  </div>
+
   <div class="filters" id="filters"></div>
 
   <main class="grid" id="grid"></main>
+
+  <section class="rv-section" id="rvSection" aria-label="Recently Viewed">
+    <div class="rv-heading">Recently Viewed</div>
+    <div class="rv-row" id="rvRow"></div>
+  </section>
 
   <footer class="footer">
     <span>© Maliki Atelier</span>
@@ -239,6 +422,7 @@
     ];
 
     let active = 'all';
+    let searchQuery = '';
 
     const renderFilters = () => {
       const el = document.getElementById('filters');
@@ -257,19 +441,35 @@
       return f && f.match ? list.filter(f.match) : list;
     };
 
+    const searchProducts = (list, query) => {
+      if (!query) return list;
+      const q = query.toLowerCase().trim();
+      return list.filter((p) => {
+        const fields = [
+          p.title, p.subtitle, p.description,
+          p.metal, p.stone, p.category,
+        ];
+        return fields.some((f) => f && String(f).toLowerCase().includes(q));
+      });
+    };
+
     const renderGrid = () => {
       const grid = document.getElementById('grid');
       const all = Store.publishedProducts();
-      const list = filterProducts(all);
+      const filtered = filterProducts(all);
+      const list = searchProducts(filtered, searchQuery);
       if (list.length === 0) {
-        grid.innerHTML = `<div class="empty-state">Nothing matches that filter just yet.</div>`;
+        const msg = searchQuery
+          ? `No results for &ldquo;${escape(searchQuery)}&rdquo;`
+          : 'Nothing matches that filter just yet.';
+        grid.innerHTML = `<div class="empty-state">${msg}</div>`;
         return;
       }
       grid.innerHTML = list.map((p) => {
         const cover = (p.images || [])[0];
         const ribbon = p.featured ? '<div class="ribbon">Featured</div>' : (p.stock === 1 ? '<div class="ribbon">One left</div>' : '');
         const frame = cover
-          ? `<div class="frame">${ribbon}<img src="${escape(cover)}" alt="${escape(p.title)}" loading="lazy"></div>`
+          ? `<div class="frame">${ribbon}<img src="${escape(cover)}" alt="${escape(p.title)}" width="600" height="600" loading="lazy"></div>`
           : `<div class="frame empty">No Image</div>`;
         return `
           <a class="card" href="/shop/${escape(p.slug)}">
@@ -284,15 +484,81 @@
       }).join('');
     };
 
+    // ── Search debounce ──
+    let _searchTimer = null;
+    document.getElementById('searchInput').addEventListener('input', (e) => {
+      clearTimeout(_searchTimer);
+      _searchTimer = setTimeout(() => {
+        searchQuery = e.target.value;
+        renderGrid();
+      }, 200);
+    });
+
+    // ── Recently Viewed ──
+    const renderRecentlyViewed = () => {
+      const section = document.getElementById('rvSection');
+      const row = document.getElementById('rvRow');
+
+      let slugs = [];
+      try {
+        const raw = localStorage.getItem('maliki.recently_viewed');
+        if (raw) slugs = JSON.parse(raw);
+      } catch (_) {}
+
+      if (!Array.isArray(slugs) || slugs.length === 0) return;
+
+      const all = Store.publishedProducts();
+      const slugMap = Object.fromEntries(all.map((p) => [p.slug, p]));
+
+      // preserve localStorage order, filter to published only
+      const products = slugs.map((s) => slugMap[s]).filter(Boolean);
+      if (products.length === 0) return;
+
+      row.innerHTML = products.map((p) => {
+        const cover = (p.images || [])[0];
+        const frame = cover
+          ? `<div class="rv-frame"><img src="${escape(cover)}" alt="${escape(p.title)}" width="200" height="200" loading="lazy"></div>`
+          : `<div class="rv-frame empty">No Image</div>`;
+        return `
+          <a class="rv-card" href="/shop/${escape(p.slug)}">
+            ${frame}
+            <div class="rv-meta">
+              <div class="rv-title">${escape(p.title)}</div>
+              <div class="rv-subtitle">${escape(p.subtitle || '')}</div>
+              <div class="rv-price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
+            </div>
+          </a>
+        `;
+      }).join('');
+
+      section.classList.add('visible');
+    };
+
     const updateCartCount = () => {
       document.getElementById('cartCount').textContent = Store.cartCount();
     };
 
-    Store.on(() => { renderGrid(); updateCartCount(); });
+    Store.on(() => { renderGrid(); updateCartCount(); renderRecentlyViewed(); });
     renderFilters();
     renderGrid();
     updateCartCount();
+    renderRecentlyViewed();
   </script>
-  <script>(function(){try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:location.pathname,referrer:document.referrer})});}catch(e){}})();</script>
+  <script>(function(){try{var k='maliki.vid',s='maliki.sid',v=localStorage.getItem(k);if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem(k,v);}var sid=sessionStorage.getItem(s);if(!sid){sid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(s,sid);}var u=new URLSearchParams(location.search);var d={path:location.pathname,referrer:document.referrer,visitor_id:v,session_id:sid,screen:innerWidth+'x'+innerHeight,utm_source:u.get('utm_source')||'',utm_medium:u.get('utm_medium')||'',utm_campaign:u.get('utm_campaign')||''};if(localStorage.getItem('maliki.cookies')==='accepted'){fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true});}}catch(e){}})();</script>
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(20,19,17,0.97);border-top:1px solid rgba(217,176,112,0.28);padding:16px clamp(20px,5vw,56px);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:Lora,serif;font-size:13px;color:rgba(245,236,218,0.86)"><span>We use cookies to improve your experience. <a href="/page/?slug=privacy" style="color:#d9b070;text-underline-offset:3px;text-decoration:underline">Privacy policy</a></span><div style="display:flex;gap:10px;flex-shrink:0"><button onclick="setCookies(true)" style="background:linear-gradient(180deg,#d9b070,#b68a4e);border:0;color:#1a120a;font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Accept</button><button onclick="setCookies(false)" style="background:transparent;border:1px solid rgba(217,176,112,0.3);color:rgba(245,236,218,0.62);font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Decline</button></div></div><script>(function(){var b=document.getElementById("cookie-banner");if(!localStorage.getItem("maliki.cookies")&&b){b.style.display="flex";}window.setCookies=function(v){localStorage.setItem("maliki.cookies",v?"accepted":"declined");if(b)b.style.display="none";}})()</script>
+<script>
+  (function(){
+    var burger = document.getElementById('burgerBtn');
+    var nav = document.getElementById('mobileNav');
+    var closeBtn = document.getElementById('mobileNavClose');
+    if (!burger || !nav) return;
+    function openNav() { nav.classList.add('open'); burger.setAttribute('aria-expanded','true'); nav.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeNav() { nav.classList.remove('open'); burger.setAttribute('aria-expanded','false'); nav.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+    burger.addEventListener('click', openNav);
+    closeBtn.addEventListener('click', closeNav);
+    nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
+  })();
+</script>
+<script src="/assets/animations.js" defer></script>
 </body>
 </html>

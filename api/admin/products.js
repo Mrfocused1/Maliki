@@ -1,4 +1,4 @@
-const { requireAdmin } = require('../_lib/auth');
+const { requireAdmin, sameOrigin } = require('../_lib/auth');
 const { supabaseFetch } = require('../_lib/supabase');
 
 const json = (res, status, body) => {
@@ -49,6 +49,7 @@ const syncImages = async (productId, images = [], title = '') => {
 
 module.exports = async (req, res) => {
   if (!requireAdmin(req, res)) return;
+  if (req.method !== 'GET' && !sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
   try {
     if (req.method === 'POST') {
@@ -87,7 +88,7 @@ module.exports = async (req, res) => {
 
     return json(res, 405, { error: 'method_not_allowed' });
   } catch (error) {
-    console.error('admin/products:', error.status || error.message, error.data || '');
+    console.error('admin/products:', error.status || error.message);
     return json(res, 500, { error: 'product_sync_failed' });
   }
 };

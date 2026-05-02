@@ -11,6 +11,7 @@
     discounts: 'maliki.discounts',
     pages: 'maliki.pages',
     settings: 'maliki.settings',
+    customer_profiles: 'maliki.customer_profiles',
   };
 
   const writeStore = (key, value) => {
@@ -51,6 +52,9 @@
     return await res.json().catch(() => ({}));
   };
 
+  const emitSyncError = (msg) =>
+    window.dispatchEvent(new CustomEvent('maliki:sync-error', { detail: msg }));
+
   const base = {
     addProduct: window.Store.addProduct,
     updateProduct: window.Store.updateProduct,
@@ -61,19 +65,22 @@
 
   window.Store.addProduct = (data) => {
     const product = base.addProduct(data);
-    product.remoteSync = syncProduct('POST', product);
+    product.remoteSync = syncProduct('POST', product)
+      .catch((err) => emitSyncError(`Product save failed: ${err.message}`));
     return product;
   };
 
   window.Store.updateProduct = (id, data) => {
     const product = base.updateProduct(id, data);
-    if (product) product.remoteSync = syncProduct('PATCH', product);
+    if (product) product.remoteSync = syncProduct('PATCH', product)
+      .catch((err) => emitSyncError(`Product update failed: ${err.message}`));
     return product;
   };
 
   window.Store.deleteProduct = (id) => {
     base.deleteProduct(id);
-    return syncProduct('DELETE', { id }).catch(() => {});
+    return syncProduct('DELETE', { id })
+      .catch((err) => emitSyncError(`Product delete failed: ${err.message}`));
   };
 
   window.Store.updateOrderStatus = (id, status) => {
@@ -82,7 +89,7 @@
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, status }),
-    }).catch(() => {});
+    }).catch((err) => emitSyncError(`Order status failed: ${err.message}`));
     return order;
   };
 
@@ -108,7 +115,7 @@
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ section, value }),
-    }).catch(() => {});
+    }).catch((err) => emitSyncError(`Settings save failed: ${err.message}`));
     return result;
   };
 
@@ -119,7 +126,7 @@
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key, ...patch }),
-    }).catch(() => {});
+    }).catch((err) => emitSyncError(`Template save failed: ${err.message}`));
     return result;
   };
 

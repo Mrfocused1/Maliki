@@ -4,8 +4,17 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Cart — Maliki Atelier</title>
+<meta name="description" content="Your Maliki Atelier shopping cart." />
+<link rel="canonical" href="https://www.malikiatelier.com/cart/" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://www.malikiatelier.com/cart/" />
+<meta property="og:title" content="Cart — Maliki Atelier" />
+<meta property="og:description" content="Your Maliki Atelier shopping cart." />
+<meta property="og:image" content="https://www.malikiatelier.com/og.jpg" />
 <meta name="theme-color" content="#0a0908" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:wght@400;500;600;700&family=Allura&display=swap" rel="stylesheet" />
@@ -15,7 +24,7 @@
     --charcoal: #141311;
     --soft: rgba(245, 236, 218, 0.98);
     --softer: rgba(245, 236, 218, 0.86);
-    --softest: rgba(245, 236, 218, 0.62);
+    --softest: rgba(245, 236, 218, 0.78);
     --gold-1: #e8c488;
     --gold-2: #b68a4e;
     --gold-hi: #f8e3b4;
@@ -23,6 +32,8 @@
     --ok: #a3c08b;
     --danger: #d99a6c;
   }
+  .skip-link { position:absolute; top:-40px; left:8px; background:#d9b070; color:#0a0908; padding:8px 14px; border-radius:0; z-index:100; font-family:'Playfair Display',serif; letter-spacing:0.18em; text-transform:uppercase; font-size:11px; transition:top .15s ease; }
+  .skip-link:focus { top:8px; outline:2px solid #f8e3b4; outline-offset:2px; }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html, body {
     background: var(--black); color: var(--soft);
@@ -54,6 +65,29 @@
     font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: #f5ecda;
   }
   .nav a:hover { color: var(--gold-hi); }
+  .burger {
+    display: none; flex-direction: column; justify-content: space-between;
+    width: 24px; height: 18px; background: transparent; border: none;
+    cursor: pointer; padding: 0;
+  }
+  .burger span { display: block; height: 1.5px; width: 100%; background: var(--soft); }
+  .mobile-nav {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: rgba(10, 9, 8, 0.98);
+    flex-direction: column; justify-content: center; align-items: center; gap: 36px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; color: #f5ecda;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { transition: color 0.2s; }
+  .mobile-nav a:hover { color: var(--gold-hi); }
+  .mobile-nav-close {
+    position: absolute; top: clamp(16px, 3vh, 28px); right: clamp(20px, 5vw, 56px);
+    background: transparent; border: none; color: var(--softer);
+    font-size: 20px; cursor: pointer; padding: 8px; line-height: 1;
+  }
+  .mobile-nav-close:hover { color: var(--gold-hi); }
+  @media (max-width: 768px) { .nav { display: none; } .burger { display: flex; } }
 
   .hero {
     text-align: center;
@@ -246,6 +280,131 @@
   .discount-msg.ok { color: var(--ok); }
   .discount-msg.err { color: var(--danger); }
 
+  /* ---------- Gift wrap & newsletter checkboxes ---------- */
+  .cart-check-group {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 4px 0;
+  }
+  .cart-check {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .cart-check input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+    border: 1px solid rgba(217, 176, 112, 0.5);
+    background: transparent;
+    margin-top: 2px;
+    cursor: pointer;
+    position: relative;
+    transition: border-color 0.25s, background 0.25s;
+  }
+  .cart-check input[type="checkbox"]:checked {
+    background: rgba(217, 176, 112, 0.18);
+    border-color: rgba(217, 176, 112, 0.9);
+  }
+  .cart-check input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    top: 2px;
+    left: 4px;
+    width: 5px;
+    height: 9px;
+    border: 1.5px solid #d9b070;
+    border-top: 0;
+    border-left: 0;
+    transform: rotate(45deg);
+  }
+  .cart-check input[type="checkbox"]:focus-visible {
+    outline: 2px solid #f8e3b4;
+    outline-offset: 2px;
+  }
+  .cart-check-text {
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    color: var(--softer);
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+  }
+  .cart-check-text strong {
+    color: var(--gold-1);
+    font-weight: 400;
+  }
+  .gift-message-wrap {
+    display: none;
+    margin-top: 2px;
+  }
+  .gift-message-wrap.open { display: block; }
+  .gift-message-wrap textarea {
+    width: 100%;
+    background: transparent;
+    border: 0;
+    border-bottom: 1px solid var(--line);
+    color: #f5ecda;
+    font-family: 'Lora', serif;
+    font-size: 14px;
+    letter-spacing: 0.06em;
+    font-style: italic;
+    padding: 10px 2px;
+    resize: none;
+    outline: 0;
+    transition: border-color 0.4s ease;
+    line-height: 1.55;
+  }
+  .gift-message-wrap textarea::placeholder {
+    color: var(--softer);
+    font-style: italic;
+    letter-spacing: 0.14em;
+  }
+  .gift-message-wrap textarea:focus { border-color: rgba(217, 176, 112, 0.7); }
+  .gift-message-count {
+    text-align: right;
+    font-family: 'Playfair Display', serif;
+    font-size: 10px;
+    letter-spacing: 0.26em;
+    color: var(--softest);
+    margin-top: 4px;
+  }
+
+  /* ---------- Referral banner ---------- */
+  .referral-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    background: rgba(217, 176, 112, 0.07);
+    border: 1px solid rgba(217, 176, 112, 0.22);
+    margin-bottom: 6px;
+  }
+  .referral-banner-icon {
+    color: var(--gold-1);
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .referral-banner-text {
+    font-family: 'Lora', serif;
+    font-size: 13px;
+    font-style: italic;
+    color: var(--gold-1);
+    letter-spacing: 0.04em;
+    line-height: 1.55;
+  }
+  .referral-banner-text strong {
+    font-style: normal;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    color: var(--gold-hi);
+  }
+
   .place {
     margin-top: 10px;
     background: linear-gradient(180deg, #d9b070 0%, #b68a4e 100%);
@@ -332,19 +491,43 @@
     font-family: 'Playfair Display', serif;
     font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase; color: var(--softer);
   }
+
+  :focus { outline: none; }
+  :focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 2px solid #f8e3b4; outline-offset: 2px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+  }
 </style>
 </head>
 <body>
+<a href="#main" class="skip-link">Skip to content</a>
   <header class="topbar">
     <a href="/" class="wordmark" aria-label="Maliki Atelier home"><img src="/assets/maliki-logo.svg" alt="Maliki Atelier"></a>
     <nav class="nav">
+      <a href="/">Home</a>
       <a href="/shop">Shop</a>
       <a href="/about">About</a>
       <a href="/contact">Contact</a>
+      <a href="/account">Account</a>
     </nav>
+    <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
   </header>
 
-  <section class="hero">
+  <div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Navigation" aria-hidden="true">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+    <a href="/">Home</a>
+    <a href="/shop">Shop</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/account">Account</a>
+    <a href="/cart">Cart</a>
+  </div>
+
+  <section class="hero" id="main">
     <div class="eyebrow">Atelier</div>
     <h1 class="h1">Your <em>Cart</em></h1>
   </section>
@@ -362,6 +545,12 @@
   <script src="/assets/store.js"></script>
   <script src="/assets/supabase-sync.js"></script>
   <script>
+    // ── Referral code: capture from URL on page load ──────────────────────────
+    (function () {
+      const refCode = new URLSearchParams(location.search).get('ref');
+      if (refCode) sessionStorage.setItem('maliki.referral', refCode);
+    })();
+
     const fmtPrice = (cents, currency) => {
       try { return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0 }).format((cents || 0) / 100); }
       catch { return `£${((cents || 0) / 100).toFixed(0)}`; }
@@ -375,7 +564,60 @@
     let stripeElements = null;
     let pendingOrder = null;
     let savedDetails = {};
-    let appliedDiscount = null; // { code, discount_cents, label }
+    let appliedDiscount = null;
+    let accountSession = null; // { token, email } if signed in
+
+    // ── Checkout extras state ─────────────────────────────────────────────────
+    let giftWrap = false;
+    let giftMessage = '';
+    let newsletterOptIn = true;
+
+    // Auth helpers (same public keys as account page)
+    const SB_URL  = 'https://yvjjtbejnicwckzmcadj.supabase.co';
+    const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2amp0YmVqbmljd2Nrem1jYWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTYxNDAsImV4cCI6MjA5MzE3MjE0MH0.lADuHfTnozqMVXOdbc-MGEG6Em0C2eFcXAOfMbelnMc';
+
+    async function getValidToken() {
+      const token   = localStorage.getItem('maliki.auth_token');
+      const refresh = localStorage.getItem('maliki.auth_refresh');
+      const expires = parseInt(localStorage.getItem('maliki.auth_expires') || '0', 10);
+      if (!token) return null;
+      if (expires > Date.now() + 60000) return token;
+      if (!refresh) { ['maliki.auth_token','maliki.auth_refresh','maliki.auth_expires','maliki.auth_user'].forEach(k=>localStorage.removeItem(k)); return null; }
+      try {
+        const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`, {
+          method: 'POST',
+          headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refresh }),
+        });
+        if (!r.ok) { ['maliki.auth_token','maliki.auth_refresh','maliki.auth_expires','maliki.auth_user'].forEach(k=>localStorage.removeItem(k)); return null; }
+        const d = await r.json();
+        const exp = Date.now() + (d.expires_in || 3600) * 1000;
+        localStorage.setItem('maliki.auth_token',   d.access_token);
+        localStorage.setItem('maliki.auth_refresh', d.refresh_token);
+        localStorage.setItem('maliki.auth_expires', String(exp));
+        if (d.user) localStorage.setItem('maliki.auth_user', JSON.stringify(d.user));
+        return d.access_token;
+      } catch { return null; }
+    }
+
+    async function loadAccountProfile() {
+      try {
+        const token = await getValidToken();
+        if (!token) return;
+        const r = await fetch('/api/account/profile', { headers: { Authorization: `Bearer ${token}` } });
+        if (!r.ok) return;
+        const p = await r.json();
+        const user = JSON.parse(localStorage.getItem('maliki.auth_user') || '{}');
+        accountSession = { token, email: p.email || user.email || '' };
+        if (p.name)    savedDetails.name    = p.name;
+        if (p.email)   savedDetails.email   = p.email;
+        if (p.line1)   savedDetails.line1   = p.line1;
+        if (p.line2)   savedDetails.line2   = p.line2;
+        if (p.city)    savedDetails.city    = p.city;
+        if (p.postal)  savedDetails.postal  = p.postal;
+        if (p.country) savedDetails.country = p.country;
+      } catch {}
+    }
 
     // Load Stripe publishable key once
     const initStripe = (() => {
@@ -402,7 +644,7 @@
       renderConfirmation({ number: num, customer_email: email });
     } else {
       Store.on(() => { if (!pendingOrder) renderCart(); });
-      renderCart();
+      loadAccountProfile().then(() => renderCart());
       initStripe();
     }
 
@@ -430,13 +672,25 @@
       const subtotal = lines.reduce((s, l) => s + l.product.price_cents * l.quantity, 0);
       const currency = lines[0].product.currency;
 
+      // Referral banner: show only when a referral code is stored and no discount is applied yet
+      const storedRef = sessionStorage.getItem('maliki.referral') || '';
+      const showRefBanner = storedRef && !appliedDiscount;
+      const referralBannerHTML = showRefBanner
+        ? `<div class="referral-banner" id="referralBanner">
+             <span class="referral-banner-icon">✦</span>
+             <span class="referral-banner-text">
+               Welcome! Use code <strong>${esc(storedRef)}</strong> for 10% off — enter it in the discount field above.
+             </span>
+           </div>`
+        : '';
+
       root.innerHTML = `
         <section class="panel">
           <header><h2>Items</h2></header>
           <div class="body" id="lines">
             ${lines.map(l => `
               <div class="line" data-pid="${esc(l.product.id)}">
-                <div class="img"><img src="${esc((l.product.images || [])[0] || '')}" alt=""></div>
+                <div class="img"><img src="${esc((l.product.images || [])[0] || '')}" alt="${esc(l.product.title)}"></div>
                 <div class="info">
                   <div class="title">${esc(l.product.title)}</div>
                   <div class="subtitle">${esc(l.product.subtitle || '')}</div>
@@ -463,6 +717,16 @@
             <div class="row total"><span class="lbl">Total</span><span class="val" id="totalVal">${esc(fmtPrice(subtotal, currency))}</span></div>
 
             <form class="form" id="checkoutForm" novalidate>
+              ${accountSession
+                ? `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0 16px;border-bottom:1px solid var(--line);margin-bottom:4px;font-size:12px;color:rgba(245,236,218,0.62)">
+                    <span>Signed in as ${esc(accountSession.email)}</span>
+                    <a href="/account" style="color:rgba(217,176,112,0.8);letter-spacing:0.12em;font-size:11px">Manage account ↗</a>
+                   </div>`
+                : `<div style="display:flex;justify-content:space-between;align-items:center;padding:0 0 16px;font-size:12px;color:rgba(245,236,218,0.52)">
+                    <span>Have an account?</span>
+                    <a href="/account" style="color:rgba(217,176,112,0.8);letter-spacing:0.12em;font-size:11px">Sign in to pre-fill ↗</a>
+                   </div>`
+              }
               <div class="lbl">Your details</div>
               <div class="row2">
                 <label class="field"><input id="ckName" type="text" autocomplete="name" placeholder="Full name" value="${esc(savedDetails.name || '')}" required /></label>
@@ -472,7 +736,7 @@
               <label class="field"><input id="ckLine2" type="text" autocomplete="address-line2" placeholder="Apartment, suite, etc. (optional)" value="${esc(savedDetails.line2 || '')}" /></label>
               <div class="row2">
                 <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" value="${esc(savedDetails.city || '')}" required /></label>
-                <label class="field"><input id="ckPostal" type="text" autocomplete="postal-code" placeholder="Postcode / ZIP" value="${esc(savedDetails.postal || '')}" /></label>
+                <label class="field"><input id="ckPostal" type="text" autocomplete="postal-code" placeholder="Postcode / ZIP" value="${esc(savedDetails.postal || '')}" required /></label>
               </div>
               <div class="row2">
                 <label class="field" style="grid-column:1/-1">
@@ -494,6 +758,34 @@
                 <div class="discount-msg" id="discountMsg">${appliedDiscount ? appliedDiscount.label : ''}</div>
               </div>
 
+              ${referralBannerHTML}
+
+              <div class="cart-check-group">
+                <!-- Gift wrapping -->
+                <div>
+                  <label class="cart-check" for="ckGiftWrap">
+                    <input type="checkbox" id="ckGiftWrap" ${giftWrap ? 'checked' : ''} />
+                    <span class="cart-check-text">Add gift wrapping <strong>(+£0)</strong></span>
+                  </label>
+                  <div class="gift-message-wrap${giftWrap ? ' open' : ''}" id="giftMessageWrap">
+                    <textarea
+                      id="ckGiftMessage"
+                      rows="3"
+                      maxlength="200"
+                      placeholder="Write a personal note…"
+                      aria-label="Gift message (optional)"
+                    >${esc(giftMessage)}</textarea>
+                    <div class="gift-message-count" id="giftMessageCount">${giftMessage.length} / 200</div>
+                  </div>
+                </div>
+
+                <!-- Newsletter opt-in -->
+                <label class="cart-check" for="ckNewsletter">
+                  <input type="checkbox" id="ckNewsletter" ${newsletterOptIn ? 'checked' : ''} />
+                  <span class="cart-check-text">Keep me updated on new collections and exclusive previews</span>
+                </label>
+              </div>
+
               <button class="place" id="placeBtn" type="submit">Continue to Payment</button>
               <div class="feedback" id="checkoutFeedback"></div>
             </form>
@@ -506,11 +798,6 @@
           b.addEventListener('click', () => {
             const cur = Store.cart().find(c => c.product_id === id);
             if (!cur) return;
-            appliedDiscount = null;
-            const dr = document.getElementById('discountRow');
-            if (dr) dr.style.display = 'none';
-            const dt = document.getElementById('discountToggle');
-            if (dt) dt.textContent = 'Have a discount code?';
             if (b.dataset.act === 'inc') {
               const p = Store.productById(id);
               const maxQty = (p && p.stock != null) ? p.stock : 5;
@@ -592,6 +879,9 @@
             document.getElementById('discountRow').style.display = '';
             document.getElementById('discountVal').textContent = `−${fmtPrice(data.discount_cents, currency)}`;
             document.getElementById('totalVal').textContent = fmtPrice(newTotal, currency);
+            // Hide referral banner once a discount is applied
+            const banner = document.getElementById('referralBanner');
+            if (banner) banner.style.display = 'none';
           }
         } catch (err) {
           msg.textContent = err?.name === 'AbortError' ? 'Request timed out. Try again.' : 'Could not apply code. Try again.';
@@ -601,8 +891,32 @@
         }
       });
 
+      // ── Gift wrap toggle ───────────────────────────────────────────────────
+      document.getElementById('ckGiftWrap').addEventListener('change', function () {
+        giftWrap = this.checked;
+        const wrap = document.getElementById('giftMessageWrap');
+        if (giftWrap) {
+          wrap.classList.add('open');
+          document.getElementById('ckGiftMessage').focus();
+        } else {
+          wrap.classList.remove('open');
+        }
+      });
+
+      // Gift message character counter
+      document.getElementById('ckGiftMessage').addEventListener('input', function () {
+        giftMessage = this.value;
+        document.getElementById('giftMessageCount').textContent = `${this.value.length} / 200`;
+      });
+
+      // ── Newsletter toggle ──────────────────────────────────────────────────
+      document.getElementById('ckNewsletter').addEventListener('change', function () {
+        newsletterOptIn = this.checked;
+      });
+
       form.addEventListener('submit', async e => {
         e.preventDefault();
+        if (btn.disabled) return;
         const name = document.getElementById('ckName').value.trim();
         const email = document.getElementById('ckEmail').value.trim();
         const line1 = document.getElementById('ckLine1').value.trim();
@@ -610,11 +924,16 @@
         const city = document.getElementById('ckCity').value.trim();
         const postal = document.getElementById('ckPostal').value.trim();
         const country = document.getElementById('ckCountry').value;
-        if (!name) return showErr('Please add your full name.');
-        if (!EMAIL_RX.test(email)) return showErr('Please add a valid email address.');
-        if (!line1) return showErr('Please add your street address.');
-        if (!city) return showErr('Please add your city.');
-        if (!country) return showErr('Please choose a country.');
+        if (!name) { document.getElementById('ckName')?.focus(); return showErr('Please add your full name.'); }
+        if (!EMAIL_RX.test(email)) { document.getElementById('ckEmail')?.focus(); return showErr('Please add a valid email address.'); }
+        if (!line1) { document.getElementById('ckLine1')?.focus(); return showErr('Please add your street address.'); }
+        if (!city) { document.getElementById('ckCity')?.focus(); return showErr('Please add your city.'); }
+        if (!country) { document.getElementById('ckCountry')?.focus(); return showErr('Please choose a country.'); }
+
+        // Read latest checkbox state at submit time (guard against stale closure)
+        giftWrap = document.getElementById('ckGiftWrap').checked;
+        giftMessage = document.getElementById('ckGiftMessage').value.trim();
+        newsletterOptIn = document.getElementById('ckNewsletter').checked;
 
         savedDetails = { name, email, line1, line2, city, postal, country };
         btn.disabled = true;
@@ -632,6 +951,10 @@
               customer: { name, email, line1, line2, city, postal, country },
               items: Store.cart(),
               discount_code: appliedDiscount?.code || '',
+              gift_wrap: giftWrap,
+              gift_message: giftMessage,
+              newsletter_subscribe: newsletterOptIn,
+              referral_code: sessionStorage.getItem('maliki.referral') || '',
             }),
             signal: ckAbort.signal,
           });
@@ -666,7 +989,7 @@
           <div class="body">
             ${lines.map(l => `
               <div class="line">
-                <div class="img"><img src="${esc((l.product.images || [])[0] || '')}" alt=""></div>
+                <div class="img"><img src="${esc((l.product.images || [])[0] || '')}" alt="${esc(l.product.title)}"></div>
                 <div class="info">
                   <div class="title">${esc(l.product.title)}</div>
                   <div class="subtitle">${esc(l.product.subtitle || '')}</div>
@@ -713,12 +1036,23 @@
 
       stripeElements = stripeInstance.elements({ clientSecret, appearance });
       const paymentEl = stripeElements.create('payment');
-      paymentEl.mount('#payment-element');
+      try {
+        paymentEl.mount('#payment-element');
+      } catch (mountErr) {
+        console.error('Stripe mount failed:', mountErr);
+        const fb = document.getElementById('payFeedback');
+        if (fb) { fb.textContent = 'Payment form failed to load. Please refresh and try again.'; fb.classList.add('show'); }
+      }
+      paymentEl.on('loaderror', (e) => {
+        const fb = document.getElementById('payFeedback');
+        if (fb) { fb.textContent = e.error?.message || 'Payment form failed to load. Please refresh and try again.'; fb.classList.add('show'); }
+      });
 
       const payBtn = document.getElementById('payBtn');
       const fb = document.getElementById('payFeedback');
 
       payBtn.addEventListener('click', async () => {
+        if (payBtn.disabled) return;
         payBtn.disabled = true;
         payBtn.textContent = 'Processing…';
         fb.classList.remove('show');
@@ -763,6 +1097,9 @@
     }
 
     function renderConfirmation(order) {
+      const guestPrompt = !accountSession
+        ? `<p style="margin-top:28px;font-size:13px;color:var(--softer)">Save your details for next time — <a href="/account?register=1" style="color:var(--gold-1);text-decoration:underline;text-underline-offset:3px">Create an account ↗</a></p>`
+        : '';
       root.innerHTML = `
         <div class="confirm">
           <div class="seal">M</div>
@@ -770,10 +1107,26 @@
           <p>Your order has been received. The atelier will be in touch shortly to arrange your white-glove delivery.</p>
           <div class="order">${esc(order.number)}</div>
           <p style="font-size:14px;color:var(--softer);margin-top:18px">A confirmation will be sent to <strong style="color:var(--soft)">${esc(order.customer_email)}</strong>.</p>
+          ${guestPrompt}
           <a class="back" href="/shop">Continue browsing</a>
         </div>`;
     }
   </script>
-  <script>(function(){try{fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({path:location.pathname,referrer:document.referrer})});}catch(e){}})();</script>
+  <script>(function(){try{var k='maliki.vid',s='maliki.sid',v=localStorage.getItem(k);if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem(k,v);}var sid=sessionStorage.getItem(s);if(!sid){sid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(s,sid);}var u=new URLSearchParams(location.search);var d={path:location.pathname,referrer:document.referrer,visitor_id:v,session_id:sid,screen:innerWidth+'x'+innerHeight,utm_source:u.get('utm_source')||'',utm_medium:u.get('utm_medium')||'',utm_campaign:u.get('utm_campaign')||''};if(localStorage.getItem('maliki.cookies')==='accepted'){fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true});}}catch(e){}})();</script>
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(20,19,17,0.97);border-top:1px solid rgba(217,176,112,0.28);padding:16px clamp(20px,5vw,56px);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:Lora,serif;font-size:13px;color:rgba(245,236,218,0.86)"><span>We use cookies to improve your experience. <a href="/page/?slug=privacy" style="color:#d9b070;text-underline-offset:3px;text-decoration:underline">Privacy policy</a></span><div style="display:flex;gap:10px;flex-shrink:0"><button onclick="setCookies(true)" style="background:linear-gradient(180deg,#d9b070,#b68a4e);border:0;color:#1a120a;font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Accept</button><button onclick="setCookies(false)" style="background:transparent;border:1px solid rgba(217,176,112,0.3);color:rgba(245,236,218,0.62);font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Decline</button></div></div><script>(function(){var b=document.getElementById("cookie-banner");if(!localStorage.getItem("maliki.cookies")&&b){b.style.display="flex";}window.setCookies=function(v){localStorage.setItem("maliki.cookies",v?"accepted":"declined");if(b)b.style.display="none";}})()</script>
+<script>
+  (function(){
+    var burger = document.getElementById('burgerBtn');
+    var nav = document.getElementById('mobileNav');
+    var closeBtn = document.getElementById('mobileNavClose');
+    if (!burger || !nav) return;
+    function openNav() { nav.classList.add('open'); burger.setAttribute('aria-expanded','true'); nav.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeNav() { nav.classList.remove('open'); burger.setAttribute('aria-expanded','false'); nav.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+    burger.addEventListener('click', openNav);
+    closeBtn.addEventListener('click', closeNav);
+    nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
+  })();
+</script>
+<script src="/assets/animations.js" defer></script>
 </body>
 </html>

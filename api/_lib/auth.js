@@ -13,7 +13,7 @@ const fromB64url = (s) => {
 
 const secret = () => {
   const s = process.env.ADMIN_SECRET;
-  if (!s || s.length < 16) throw new Error('admin_secret_missing');
+  if (!s || s.length < 32) throw new Error('admin_secret_missing');
   return s;
 };
 

@@ -1,4 +1,4 @@
-const { requireAdmin } = require('../_lib/auth');
+const { requireAdmin, sameOrigin } = require('../_lib/auth');
 const { supabaseFetch } = require('../_lib/supabase');
 
 const json = (res, status, body) => {
@@ -9,6 +9,7 @@ const json = (res, status, body) => {
 
 module.exports = async (req, res) => {
   if (!requireAdmin(req, res)) return;
+  if (req.method !== 'GET' && !sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
   if (req.method === 'GET') {
     const templates = await supabaseFetch('/email_templates?select=*&order=key').catch(() => []);
@@ -21,8 +22,12 @@ module.exports = async (req, res) => {
     if (!key) return json(res, 400, { error: 'key_required' });
 
     const patch = { updated_at: new Date().toISOString() };
-    if (body.subject !== undefined) patch.subject = String(body.subject);
-    if (body.body !== undefined) patch.body = String(body.body);
+    if (body.subject !== undefined) patch.subject = String(body.subject).slice(0, 500);
+    if (body.body !== undefined) {
+      const bodyStr = String(body.body);
+      if (bodyStr.length > 51200) return json(res, 400, { error: 'body_too_large' });
+      patch.body = bodyStr;
+    }
     if (body.enabled !== undefined) patch.enabled = !!body.enabled;
 
     try {

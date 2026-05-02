@@ -4,17 +4,18 @@
 // the seed version bumps.
 (function () {
   const KEYS = {
-    products:        'maliki.products',
-    customers:       'maliki.customers',
-    orders:          'maliki.orders',
-    cart:            'maliki.cart',
-    email_templates: 'maliki.email_templates',
-    email_log:       'maliki.email_log',
-    subscribers:     'maliki.subscribers',
-    discounts:       'maliki.discounts',
-    pages:           'maliki.pages',
-    settings:        'maliki.settings',
-    version:         'maliki.seed_version',
+    products:          'maliki.products',
+    customers:         'maliki.customers',
+    orders:            'maliki.orders',
+    cart:              'maliki.cart',
+    email_templates:   'maliki.email_templates',
+    email_log:         'maliki.email_log',
+    subscribers:       'maliki.subscribers',
+    discounts:         'maliki.discounts',
+    pages:             'maliki.pages',
+    settings:          'maliki.settings',
+    customer_profiles: 'maliki.customer_profiles',
+    version:           'maliki.seed_version',
   };
 
   const seed = () => window.MOCK_DATA || {
@@ -33,6 +34,7 @@
   const write = (key, value) => localStorage.setItem(key, JSON.stringify(value));
 
   const ensureSeeded = () => {
+    if (!window.MOCK_DATA) return; // no seed data available — preserve existing localStorage
     const s = seed();
     const stored = Number(localStorage.getItem(KEYS.version) || 0);
     if (stored !== s.seed_version) {
@@ -240,6 +242,14 @@
   const removeFromCart = (product_id) => setCartQuantity(product_id, 0);
   const clearCart = () => { write(KEYS.cart, []); notify('cart'); };
 
+  // ---------- Customer profiles (registered accounts) ----------
+  const customerProfiles = () => read(KEYS.customer_profiles, []);
+  const profileByEmail = (email) => {
+    if (!email) return null;
+    const lower = email.toLowerCase();
+    return customerProfiles().find((p) => p.email && p.email.toLowerCase() === lower) || null;
+  };
+
   // ---------- Customer derived stats ----------
   const customersWithStats = () => {
     const list = customers();
@@ -248,11 +258,14 @@
       const mine = orderList.filter((o) => o.customer_id === c.id && o.status !== 'refunded');
       const total = mine.reduce((s, o) => s + o.total_cents, 0);
       const last = mine[0];
+      const profile = profileByEmail(c.email);
       return {
         ...c,
         orders_count: mine.length,
         total_spent_cents: total,
         last_order_at: last ? last.created_at : null,
+        has_account: !!profile,
+        profile: profile || null,
       };
     });
   };
@@ -440,6 +453,7 @@
     products, publishedProducts, productById, productBySlug,
     addProduct, updateProduct, deleteProduct,
     customers, customersWithStats, customerById, upsertCustomer,
+    customerProfiles, profileByEmail,
     orders, orderById, updateOrderStatus, placeOrder,
     cart, cartCount, addToCart, setCartQuantity, removeFromCart, clearCart,
     emailTemplates, templateByKey, updateTemplate,

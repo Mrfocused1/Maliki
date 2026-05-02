@@ -47,8 +47,11 @@ const verifyWebhook = (rawBody, signature, secret) => {
     .createHmac('sha256', secret)
     .update(`${parts.t}.${rawBody}`, 'utf8')
     .digest('hex');
-  if (expected !== parts.v1) throw new Error('invalid_stripe_signature');
-  if (Math.abs(Date.now() / 1000 - Number(parts.t)) > 300) throw new Error('webhook_expired');
+  const expectedBuf = Buffer.from(expected, 'hex');
+  const actualBuf = Buffer.from(parts.v1 || '', 'hex');
+  if (expectedBuf.length !== actualBuf.length || !crypto.timingSafeEqual(expectedBuf, actualBuf))
+    throw new Error('invalid_stripe_signature');
+  if (Math.abs(Date.now() / 1000 - Number(parts.t)) > 60) throw new Error('webhook_expired');
   return JSON.parse(rawBody);
 };
 

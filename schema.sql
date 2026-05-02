@@ -49,7 +49,7 @@ create table if not exists orders (
   shipping_cents integer not null default 0,
   total_cents integer not null default 0,
   currency text not null default 'GBP',
-  status text not null default 'paid',
+  status text not null default 'pending',
   shipping_address jsonb,
   discount_cents integer not null default 0,
   discount_code text not null default '',
@@ -142,3 +142,102 @@ create table if not exists email_log (
   sent_at timestamptz not null default now(),
   opened_at timestamptz
 );
+
+-- Analytics extensions to page_views (idempotent)
+alter table page_views add column if not exists session_id text;
+alter table page_views add column if not exists visitor_id text;
+alter table page_views add column if not exists user_agent text;
+alter table page_views add column if not exists country text;
+alter table page_views add column if not exists screen text;
+alter table page_views add column if not exists utm_source text;
+alter table page_views add column if not exists utm_medium text;
+alter table page_views add column if not exists utm_campaign text;
+
+create index if not exists page_views_created_at_idx on page_views(created_at desc);
+create index if not exists page_views_path_idx on page_views(path);
+create index if not exists page_views_session_idx on page_views(session_id);
+create index if not exists page_views_visitor_idx on page_views(visitor_id);
+
+-- Customer accounts (linked to Supabase Auth users)
+create table if not exists customer_profiles (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  name text not null default '',
+  email text not null default '',
+  line1 text not null default '',
+  line2 text not null default '',
+  city text not null default '',
+  postal text not null default '',
+  country text not null default '',
+  updated_at timestamptz not null default now()
+);
+
+alter table customer_profiles enable row level security;
+
+create policy "customer_profiles_own_select" on customer_profiles
+  for select using (auth.uid() = user_id);
+create policy "customer_profiles_own_insert" on customer_profiles
+  for insert with check (auth.uid() = user_id);
+create policy "customer_profiles_own_update" on customer_profiles
+  for update using (auth.uid() = user_id);
+
+create or replace function public.handle_new_auth_user()
+returns trigger language plpgsql security definer as $$
+begin
+  insert into public.customer_profiles (user_id, email, name)
+  values (new.id, new.email, coalesce(new.raw_user_meta_data->>'name', ''))
+  on conflict (user_id) do nothing;
+  return new;
+end;
+$$;
+
+drop trigger if exists on_auth_user_created on auth.users;
+create trigger on_auth_user_created
+  after insert on auth.users
+  for each row execute procedure public.handle_new_auth_user();
+
+-- Feature expansion (reviews, restock alerts, referrals, order/product/profile extensions)
+create table if not exists product_reviews (
+  id text primary key,
+  product_id text not null,
+  customer_name text not null default '',
+  customer_email text not null default '',
+  rating integer not null check (rating between 1 and 5),
+  title text default '',
+  body text not null default '',
+  verified_purchase boolean default false,
+  approved boolean default false,
+  created_at timestamptz not null default now()
+);
+create index if not exists product_reviews_product_idx on product_reviews(product_id, approved);
+
+create table if not exists restock_alerts (
+  id text primary key,
+  product_id text not null,
+  email text not null,
+  notified boolean default false,
+  created_at timestamptz not null default now(),
+  unique(product_id, email)
+);
+create index if not exists restock_alerts_product_idx on restock_alerts(product_id, notified);
+
+create table if not exists referrals (
+  id text primary key,
+  referrer_email text not null,
+  referee_email text not null,
+  order_id text,
+  created_at timestamptz not null default now()
+);
+
+alter table orders add column if not exists gift_wrap boolean default false;
+alter table orders add column if not exists gift_message text default '';
+alter table orders add column if not exists tracking_url text default '';
+alter table orders add column if not exists engraving_text text default '';
+
+alter table customer_profiles add column if not exists wishlist jsonb default '[]';
+alter table customer_profiles add column if not exists comms_prefs jsonb default '{"new_collections": true, "restock_alerts": true, "order_updates": true}';
+alter table customer_profiles add column if not exists referral_code text;
+alter table customer_profiles add column if not exists referred_by text;
+
+alter table products add column if not exists engraving_enabled boolean default false;
+alter table products add column if not exists engraving_label text default 'Add a personal engraving';
+alter table products add column if not exists engraving_max_chars integer default 20;

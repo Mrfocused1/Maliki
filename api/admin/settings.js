@@ -1,4 +1,4 @@
-const { requireAdmin } = require('../_lib/auth');
+const { requireAdmin, sameOrigin } = require('../_lib/auth');
 const { supabaseFetch } = require('../_lib/supabase');
 
 const json = (res, status, body) => {
@@ -10,8 +10,10 @@ const json = (res, status, body) => {
 module.exports = async (req, res) => {
   if (req.method !== 'PATCH') return json(res, 405, { error: 'method_not_allowed' });
   if (!requireAdmin(req, res)) return;
+  if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
-  const { section, value } = req.body || {};
+  const { section: rawSection, value } = req.body || {};
+  const section = String(rawSection || '').trim().toLowerCase().replace(/[^a-z0-9_]/g, '').slice(0, 64);
   if (!section || typeof value !== 'object' || value === null) {
     return json(res, 400, { error: 'invalid_payload' });
   }

@@ -1,4 +1,5 @@
 const { sameOrigin } = require('./_lib/auth');
+const { rateLimit } = require('./_lib/rate-limit');
 const { supabaseFetch } = require('./_lib/supabase');
 const { createPaymentIntent } = require('./_lib/stripe');
 
@@ -20,6 +21,9 @@ const cents = (value) => Math.max(0, Math.round(Number(value) || 0));
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
+  if (rateLimit(req, { key: 'checkout', max: 10, windowMs: 60000 })) {
+    return json(res, 429, { error: 'too_many_requests' });
+  }
   if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
   const body = req.body || {};
@@ -29,15 +33,21 @@ module.exports = async (req, res) => {
   const line1 = String(customerInput.line1 || '').trim().slice(0, 300);
   const line2 = String(customerInput.line2 || '').trim().slice(0, 300);
   const city = String(customerInput.city || '').trim().slice(0, 120);
+  const postal = String(customerInput.postal || '').trim().slice(0, 20);
   const country = String(customerInput.country || '').trim().slice(0, 120);
   const discount_code_input = String(body.discount_code || '').trim().toUpperCase();
+  const gift_wrap = body.gift_wrap === true;
+  const gift_message = String(body.gift_message || '').trim().slice(0, 200);
+  const newsletter_subscribe = body.newsletter_subscribe !== false;
+  const referral_code = String(body.referral_code || '').trim().toUpperCase().slice(0, 40);
   const items = Array.isArray(body.items) ? body.items : [];
 
   if (!name) return json(res, 400, { error: 'name_required' });
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
   if (!line1) return json(res, 400, { error: 'address_required' });
   if (!country) return json(res, 400, { error: 'country_required' });
-  if (!items.length) return json(res, 400, { error: 'cart_empty' });
+  if (!Array.isArray(body.items) || body.items.length === 0) return json(res, 400, { error: 'items_required' });
+  if (body.items.length > 100) return json(res, 400, { error: 'too_many_items' });
 
   try {
     const products = await supabaseFetch('/products?select=*,product_images(url,position)&published=eq.true');
@@ -76,6 +86,7 @@ module.exports = async (req, res) => {
         body: JSON.stringify({ id: uid('cus'), name, email, city, country, joined_at: new Date().toISOString() }),
       });
       customer = created[0];
+      if (!customer) throw new Error('customer_create_failed');
     }
 
     const subtotal = lineItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
@@ -132,8 +143,10 @@ module.exports = async (req, res) => {
         total_cents: total,
         currency: 'GBP',
         status: 'pending',
-        shipping_address: { line1, line2, city, country },
+        shipping_address: { line1, line2, city, postal, country },
         stripe_payment_intent_id: intent.id,
+        gift_wrap,
+        gift_message,
       }),
     });
     const order = createdOrders[0];
@@ -142,6 +155,30 @@ module.exports = async (req, res) => {
       method: 'POST',
       body: JSON.stringify(lineItems.map((item) => ({ order_id: order.id, ...item }))),
     });
+
+    // Newsletter opt-in
+    if (newsletter_subscribe) {
+      supabaseFetch('/subscribers', {
+        method: 'POST',
+        headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
+        body: JSON.stringify({ email, subscribed_at: new Date().toISOString(), source: 'checkout' }),
+      }).catch(() => {});
+    }
+
+    // Record referral
+    if (referral_code) {
+      supabaseFetch('/referrals', {
+        method: 'POST',
+        headers: { Prefer: 'return=minimal' },
+        body: JSON.stringify({
+          id: uid('ref'),
+          referral_code: referral_code,
+          referee_email: email,
+          order_id: order.id,
+          created_at: new Date().toISOString(),
+        }),
+      }).catch(() => {});
+    }
 
     return json(res, 200, {
       clientSecret: intent.client_secret,
@@ -156,7 +193,7 @@ module.exports = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error('checkout:', error.status || error.message, error.data || '');
+    console.error('checkout:', error.status || error.message);
     return json(res, 500, { error: 'checkout_failed' });
   }
 };

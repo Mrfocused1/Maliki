@@ -1,0 +1,1163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Account — Maliki Atelier</title>
+<meta name="description" content="Manage your Maliki Atelier account, orders, and wishlist." />
+<link rel="canonical" href="https://www.malikiatelier.com/account/" />
+<meta name="robots" content="noindex, nofollow" />
+<meta property="og:title" content="Account — Maliki Atelier" />
+<meta property="og:description" content="Manage your Maliki Atelier account, orders, and wishlist." />
+<meta name="theme-color" content="#0a0908" />
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  :root {
+    --black: #0a0908;
+    --charcoal: #141311;
+    --soft: rgba(245, 236, 218, 0.98);
+    --softer: rgba(245, 236, 218, 0.86);
+    --softest: rgba(245, 236, 218, 0.62);
+    --gold-1: #e8c488;
+    --gold-2: #b68a4e;
+    --gold-hi: #f8e3b4;
+    --line: rgba(217, 176, 112, 0.28);
+    --ok: #a3c08b;
+    --danger: #d99a6c;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body {
+    background: var(--black); color: var(--soft);
+    font-family: 'Lora', serif;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100%;
+  }
+  a { color: inherit; text-decoration: none; }
+  button { font-family: inherit; cursor: pointer; }
+
+  /* Topbar */
+  .topbar {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: clamp(20px, 3.6vh, 36px) clamp(20px, 5vw, 56px);
+    border-bottom: 1px solid var(--line);
+  }
+  .wordmark img { height: clamp(64px, 6vw, 96px); width: auto; display: block; }
+  .nav {
+    display: flex; gap: clamp(20px, 3vw, 36px); align-items: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase; color: #f5ecda;
+  }
+  .nav a:hover { color: var(--gold-hi); }
+  .burger {
+    display: none; flex-direction: column; justify-content: space-between;
+    width: 24px; height: 18px; background: transparent; border: none;
+    cursor: pointer; padding: 0;
+  }
+  .burger span { display: block; height: 1.5px; width: 100%; background: var(--soft); }
+  .mobile-nav {
+    display: none; position: fixed; inset: 0; z-index: 99;
+    background: rgba(10, 9, 8, 0.98);
+    flex-direction: column; justify-content: center; align-items: center; gap: 36px;
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; letter-spacing: 0.22em; text-transform: uppercase; color: #f5ecda;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a { transition: color 0.2s; }
+  .mobile-nav a:hover { color: var(--gold-hi); }
+  .mobile-nav-close {
+    position: absolute; top: clamp(16px, 3vh, 28px); right: clamp(20px, 5vw, 56px);
+    background: transparent; border: none; color: var(--softer);
+    font-size: 20px; cursor: pointer; padding: 8px; line-height: 1;
+  }
+  .mobile-nav-close:hover { color: var(--gold-hi); }
+  @media (max-width: 768px) { .nav { display: none; } .burger { display: flex; } }
+  .nav a.active { color: var(--gold-1); }
+  .nav .cart-btn {
+    display: flex; align-items: center; gap: 8px;
+  }
+  .nav .count {
+    background: var(--gold-2); color: var(--black);
+    font-size: 10px; font-family: 'Playfair Display', serif;
+    width: 18px; height: 18px; border-radius: 50%;
+    display: inline-flex; align-items: center; justify-content: center;
+    letter-spacing: 0; font-weight: 600;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: clamp(40px, 7vh, 72px) 24px clamp(28px, 5vh, 48px);
+  }
+  .eyebrow {
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.62em; text-indent: 0.62em;
+    text-transform: uppercase; color: var(--softer);
+    display: inline-block; padding-bottom: 14px;
+  }
+  .h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(28px, 4vw, 44px); letter-spacing: 0.18em;
+    text-transform: uppercase; color: #f5ecda;
+  }
+  .h1 em {
+    font-style: normal; color: #d9b070;
+  }
+
+  /* Layout */
+  .wrap {
+    max-width: 520px; margin: 0 auto;
+    padding: 0 24px clamp(60px, 10vh, 100px);
+  }
+
+  /* Tabs */
+  .tabs {
+    display: flex; border-bottom: 1px solid var(--line);
+    margin-bottom: 36px;
+  }
+  .tab {
+    background: none; border: none; color: var(--softest);
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 0 0 14px; margin-right: 28px; cursor: pointer;
+    border-bottom: 1px solid transparent; margin-bottom: -1px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .tab:hover { color: var(--softer); }
+  .tab.active { color: var(--gold-1); border-bottom-color: var(--gold-1); }
+
+  /* Form */
+  .lbl {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--softer); display: block; margin-bottom: 6px;
+  }
+  .field {
+    border-bottom: 1px solid var(--line);
+    display: block; transition: border-color 0.2s;
+    margin-bottom: 22px;
+  }
+  .field:focus-within { border-color: rgba(217, 176, 112, 0.7); }
+  .field input, .field select {
+    width: 100%; background: transparent; border: none; outline: none;
+    color: var(--soft); font-family: 'Lora', serif; font-size: 15px;
+    padding: 10px 0; appearance: none;
+  }
+  .field input::placeholder { color: var(--softest); }
+  .field select option { background: #141311; color: var(--soft); }
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+  /* Buttons */
+  .btn-primary {
+    width: 100%; background: transparent;
+    border: 1px solid rgba(217, 176, 112, 0.5);
+    color: var(--gold-1);
+    font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 16px 24px; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    margin-top: 8px;
+  }
+  .btn-primary:hover { border-color: var(--gold-1); color: var(--gold-hi); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .btn-ghost {
+    background: none; border: none;
+    color: var(--softest); font-family: 'Lora', serif; font-size: 13px;
+    cursor: pointer; padding: 0; transition: color 0.2s;
+  }
+  .btn-ghost:hover { color: var(--softer); }
+
+  /* Feedback */
+  .feedback {
+    font-size: 13px; margin-top: 14px; min-height: 18px; text-align: center;
+  }
+  .feedback.err { color: var(--danger); }
+  .feedback.ok { color: var(--ok); }
+
+  /* Forgot / helpers */
+  .helper {
+    text-align: center; margin-top: 20px;
+    font-size: 12px; color: var(--softest);
+  }
+  .helper a, .helper button {
+    color: var(--softer); text-decoration: underline;
+    text-underline-offset: 3px; background: none; border: none;
+    font-family: 'Lora', serif; font-size: 12px; cursor: pointer;
+  }
+  .helper a:hover, .helper button:hover { color: var(--gold-1); }
+
+  /* Profile — signed in */
+  .account-header {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 32px; gap: 12px; flex-wrap: wrap;
+  }
+  .account-header-left {
+    display: flex; align-items: center; gap: 12px; flex-wrap: wrap;
+  }
+  .account-email {
+    font-size: 13px; color: var(--softer);
+  }
+
+  /* Loyalty badge */
+  .loyalty-badge {
+    position: relative; display: inline-block;
+  }
+  .loyalty-badge-btn {
+    background: none; border: 1px solid rgba(217, 176, 112, 0.35);
+    color: var(--gold-1); font-family: 'Playfair Display', serif;
+    font-size: 9px; letter-spacing: 0.38em; text-transform: uppercase;
+    padding: 4px 10px; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+  }
+  .loyalty-badge-btn:hover { border-color: var(--gold-1); color: var(--gold-hi); }
+  .loyalty-popover {
+    display: none; position: absolute; top: calc(100% + 10px); left: 0;
+    min-width: 230px; background: var(--charcoal);
+    border: 1px solid var(--line); padding: 18px 20px;
+    z-index: 100; box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  }
+  .loyalty-popover.open { display: block; }
+  .loyalty-popover-tier {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--gold-1); margin-bottom: 6px;
+  }
+  .loyalty-popover-desc {
+    font-size: 12px; color: var(--softer); margin-bottom: 14px;
+    font-style: italic; line-height: 1.5;
+  }
+  .loyalty-progress-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 9px; letter-spacing: 0.32em; text-transform: uppercase;
+    color: var(--softest); margin-bottom: 7px;
+  }
+  .loyalty-bar-track {
+    width: 100%; height: 2px; background: rgba(217,176,112,0.15);
+  }
+  .loyalty-bar-fill {
+    height: 2px; background: var(--gold-2); transition: width 0.4s ease;
+  }
+  .loyalty-progress-values {
+    display: flex; justify-content: space-between;
+    font-size: 10px; color: var(--softest); margin-top: 6px;
+  }
+
+  /* Section title */
+  .section-lbl {
+    font-family: 'Playfair Display', serif;
+    font-size: 10px; letter-spacing: 0.52em; text-transform: uppercase;
+    color: var(--softest); margin-bottom: 24px;
+    padding-bottom: 12px; border-bottom: 1px solid var(--line);
+  }
+
+  /* Orders */
+  .order-card {
+    border: 1px solid var(--line); padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+  .order-row {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .order-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.3em; text-transform: uppercase;
+    color: var(--gold-1);
+  }
+  .order-date { font-size: 12px; color: var(--softest); }
+  .order-items { font-size: 13px; color: var(--softer); margin-top: 6px; }
+  .order-total {
+    font-size: 13px; color: var(--soft); margin-top: 8px;
+  }
+  .order-status {
+    display: inline-block; font-size: 10px; letter-spacing: 0.3em;
+    text-transform: uppercase; padding: 3px 8px;
+    border: 1px solid var(--line); color: var(--softer); margin-top: 10px;
+  }
+  .order-status.paid { color: var(--ok); border-color: rgba(163,192,139,0.3); }
+  .order-status.fulfilled { color: var(--gold-1); border-color: rgba(217,176,112,0.3); }
+
+  .empty {
+    text-align: center; padding: 48px 0;
+    color: var(--softest); font-size: 14px; font-style: italic;
+  }
+  .empty a { color: var(--gold-1); text-decoration: underline; text-underline-offset: 3px; }
+  .empty a:hover { color: var(--gold-hi); }
+
+  /* Loading */
+  .loading {
+    text-align: center; padding: 60px 0;
+    color: var(--softest); font-size: 13px;
+    font-family: 'Playfair Display', serif; letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+
+  /* Footer */
+  .footer {
+    text-align: center; padding: 28px 24px;
+    border-top: 1px solid var(--line);
+    font-size: 11px; letter-spacing: 0.28em; text-transform: uppercase;
+    color: var(--softest); display: flex; justify-content: center; gap: 32px;
+  }
+
+  /* Divider */
+  .divider { border: none; border-top: 1px solid var(--line); margin: 28px 0; }
+
+  /* Wishlist grid */
+  .wishlist-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 18px;
+    margin-top: 4px;
+  }
+  .wishlist-card {
+    border: 1px solid var(--line); overflow: hidden;
+    display: flex; flex-direction: column;
+  }
+  .wishlist-card-img {
+    width: 100%; aspect-ratio: 3/4; object-fit: cover;
+    background: var(--charcoal); display: block;
+  }
+  .wishlist-card-img-placeholder {
+    width: 100%; aspect-ratio: 3/4; background: var(--charcoal);
+    display: flex; align-items: center; justify-content: center;
+    color: var(--softest); font-size: 11px; letter-spacing: 0.3em;
+    text-transform: uppercase;
+  }
+  .wishlist-card-body {
+    padding: 14px 14px 12px; flex: 1; display: flex; flex-direction: column; gap: 6px;
+  }
+  .wishlist-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 13px; letter-spacing: 0.1em; color: var(--soft);
+    line-height: 1.4;
+  }
+  .wishlist-card-price {
+    font-size: 12px; color: var(--softer);
+  }
+  .wishlist-card-actions {
+    display: flex; gap: 8px; margin-top: auto; padding-top: 10px; flex-wrap: wrap;
+  }
+  .wishlist-card-link {
+    flex: 1; background: transparent;
+    border: 1px solid rgba(217,176,112,0.4); color: var(--gold-1);
+    font-family: 'Playfair Display', serif;
+    font-size: 9px; letter-spacing: 0.38em; text-transform: uppercase;
+    padding: 9px 8px; text-align: center;
+    transition: border-color 0.2s, color 0.2s; white-space: nowrap;
+    display: inline-block;
+  }
+  .wishlist-card-link:hover { border-color: var(--gold-1); color: var(--gold-hi); }
+  .wishlist-card-remove {
+    background: none; border: 1px solid rgba(217,176,112,0.18);
+    color: var(--softest); font-family: 'Playfair Display', serif;
+    font-size: 9px; letter-spacing: 0.28em; text-transform: uppercase;
+    padding: 9px 10px; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s; white-space: nowrap;
+  }
+  .wishlist-card-remove:hover { border-color: rgba(217,176,112,0.4); color: var(--softer); }
+
+  /* Referral section */
+  .referral-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--softer); margin-bottom: 8px;
+  }
+  .referral-sub {
+    font-size: 13px; color: var(--softest); line-height: 1.6; margin-bottom: 18px;
+    font-style: italic;
+  }
+  .referral-link-row {
+    display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+    margin-bottom: 4px;
+  }
+  .referral-link-display {
+    flex: 1; font-size: 12px; color: var(--softer);
+    border-bottom: 1px solid var(--line); padding: 8px 0;
+    word-break: break-all; min-width: 0;
+    font-family: 'Lora', serif;
+  }
+  .btn-copy {
+    background: transparent; border: 1px solid rgba(217,176,112,0.4);
+    color: var(--gold-1); font-family: 'Playfair Display', serif;
+    font-size: 9px; letter-spacing: 0.38em; text-transform: uppercase;
+    padding: 10px 16px; cursor: pointer; white-space: nowrap;
+    transition: border-color 0.2s, color 0.2s; flex-shrink: 0;
+  }
+  .btn-copy:hover { border-color: var(--gold-1); color: var(--gold-hi); }
+  .btn-copy.copied { color: var(--ok); border-color: rgba(163,192,139,0.4); }
+
+  /* Communication preferences toggles */
+  .prefs-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 12px; letter-spacing: 0.42em; text-transform: uppercase;
+    color: var(--softer); margin-bottom: 18px;
+  }
+  .pref-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 0; border-bottom: 1px solid var(--line); gap: 16px;
+  }
+  .pref-label {
+    font-size: 13px; color: var(--softer); line-height: 1.4;
+  }
+  .toggle-wrap {
+    position: relative; flex-shrink: 0;
+  }
+  .toggle-wrap input[type="checkbox"] {
+    position: absolute; opacity: 0; width: 0; height: 0;
+  }
+  .toggle-track {
+    display: block; width: 36px; height: 20px;
+    background: rgba(217,176,112,0.12); border: 1px solid var(--line);
+    border-radius: 10px; cursor: pointer;
+    transition: background 0.2s, border-color 0.2s;
+    position: relative;
+  }
+  .toggle-track::after {
+    content: ''; position: absolute;
+    top: 3px; left: 3px;
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--softest);
+    transition: transform 0.2s, background 0.2s;
+  }
+  .toggle-wrap input:checked + .toggle-track {
+    background: rgba(217,176,112,0.2); border-color: rgba(217,176,112,0.5);
+  }
+  .toggle-wrap input:checked + .toggle-track::after {
+    transform: translateX(16px); background: var(--gold-1);
+  }
+  .btn-prefs {
+    width: 100%; background: transparent;
+    border: 1px solid rgba(217,176,112,0.5);
+    color: var(--gold-1); font-family: 'Playfair Display', serif;
+    font-size: 11px; letter-spacing: 0.42em; text-transform: uppercase;
+    padding: 16px 24px; cursor: pointer;
+    transition: border-color 0.2s, color 0.2s; margin-top: 20px;
+  }
+  .btn-prefs:hover { border-color: var(--gold-1); color: var(--gold-hi); }
+  .btn-prefs:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  @media (max-width: 480px) {
+    .row2 { grid-template-columns: 1fr; gap: 0; }
+    .nav { gap: 16px; font-size: 11px; }
+    .wishlist-grid { grid-template-columns: 1fr; }
+    .account-header { flex-direction: column; align-items: flex-start; }
+  }
+</style>
+</head>
+<body>
+<header class="topbar">
+  <a href="/" class="wordmark" aria-label="Maliki Atelier home"><img src="/assets/maliki-logo.svg" alt="Maliki Atelier"></a>
+  <nav class="nav">
+    <a href="/">Home</a>
+    <a href="/shop">Shop</a>
+    <a href="/about">About</a>
+    <a href="/contact">Contact</a>
+    <a href="/account" class="active">Account</a>
+    <a class="cart-btn" href="/cart">Cart <span class="count" id="cartCount">0</span></a>
+  </nav>
+  <button class="burger" id="burgerBtn" aria-label="Open menu" aria-expanded="false">
+    <span></span><span></span><span></span>
+  </button>
+</header>
+
+<div class="mobile-nav" id="mobileNav" role="dialog" aria-label="Navigation" aria-hidden="true">
+  <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+  <a href="/">Home</a>
+  <a href="/shop">Shop</a>
+  <a href="/about">About</a>
+  <a href="/contact">Contact</a>
+  <a href="/account">Account</a>
+  <a href="/cart">Cart</a>
+</div>
+
+<section class="hero">
+  <div class="eyebrow">Atelier</div>
+  <h1 class="h1">Your <em>Account</em></h1>
+</section>
+
+<div class="wrap">
+  <div id="root"><div class="loading">Loading…</div></div>
+</div>
+
+<footer class="footer">
+  <span>© Maliki Atelier</span>
+  <span>White-Glove Courier · Insured Worldwide</span>
+</footer>
+
+<script src="/assets/store.js"></script>
+<script>
+// Public Supabase keys (safe to embed — equivalent to Stripe publishable key)
+const SB_URL = 'https://yvjjtbejnicwckzmcadj.supabase.co';
+const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2amp0YmVqbmljd2Nrem1jYWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTYxNDAsImV4cCI6MjA5MzE3MjE0MH0.lADuHfTnozqMVXOdbc-MGEG6Em0C2eFcXAOfMbelnMc';
+
+const KEYS = {
+  token:   'maliki.auth_token',
+  refresh: 'maliki.auth_refresh',
+  expires: 'maliki.auth_expires',
+  user:    'maliki.auth_user',
+};
+
+const COUNTRIES = ['United Kingdom','Ireland','France','Italy','Spain','Germany','Switzerland','Austria','Netherlands','Belgium','Sweden','Norway','Denmark','Greece','Portugal','United States','Canada','Australia','New Zealand','Singapore','Japan','South Korea','Hong Kong','UAE','Nigeria','South Africa'];
+
+const root = document.getElementById('root');
+const esc = s => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+const fmtPrice = c => { try { return new Intl.NumberFormat('en-GB',{style:'currency',currency:'GBP',maximumFractionDigits:0}).format((c||0)/100); } catch { return `£${((c||0)/100).toFixed(0)}`; } };
+const fmtDate = s => { try { return new Date(s).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}); } catch { return s; } };
+
+// ── Loyalty tier helpers ───────────────────────────────────────────────────
+const TIERS = [
+  { name: 'Atelier',  min: 0,    max: 49900,  desc: 'Welcome to the atelier' },
+  { name: 'Maison',   min: 50000, max: 199900, desc: 'Priority service & exclusive previews' },
+  { name: 'Maître',   min: 200000, max: Infinity, desc: 'Dedicated concierge & complimentary resizing' },
+];
+
+function getTier(totalCents) {
+  for (let i = TIERS.length - 1; i >= 0; i--) {
+    if (totalCents >= TIERS[i].min) return { ...TIERS[i], index: i };
+  }
+  return { ...TIERS[0], index: 0 };
+}
+
+function loyaltyBadgeHTML(totalCents) {
+  const tier = getTier(totalCents);
+  const isTop = tier.index === TIERS.length - 1;
+  let progressHTML = '';
+  if (!isTop) {
+    const next = TIERS[tier.index + 1];
+    const range = next.min - tier.min;
+    const progress = Math.min(totalCents - tier.min, range);
+    const pct = Math.round((progress / range) * 100);
+    const spent = fmtPrice(totalCents);
+    const needed = fmtPrice(next.min);
+    progressHTML = `
+      <div class="loyalty-progress-label">Progress to ${esc(next.name)}</div>
+      <div class="loyalty-bar-track"><div class="loyalty-bar-fill" style="width:${pct}%"></div></div>
+      <div class="loyalty-progress-values"><span>${esc(spent)} spent</span><span>${esc(needed)}</span></div>`;
+  } else {
+    progressHTML = `<div class="loyalty-progress-label" style="color:var(--gold-1)">Highest tier achieved</div>`;
+  }
+
+  return `
+    <div class="loyalty-badge" id="loyaltyBadge">
+      <button class="loyalty-badge-btn" id="loyaltyBadgeBtn" aria-expanded="false" aria-controls="loyaltyPopover">
+        ${esc(tier.name)}
+      </button>
+      <div class="loyalty-popover" id="loyaltyPopover" role="tooltip">
+        <div class="loyalty-popover-tier">${esc(tier.name)}</div>
+        <div class="loyalty-popover-desc">${esc(tier.desc)}</div>
+        ${progressHTML}
+      </div>
+    </div>`;
+}
+
+// ── Session helpers ────────────────────────────────────────────────────────
+function getSession() {
+  return {
+    token:   localStorage.getItem(KEYS.token),
+    refresh: localStorage.getItem(KEYS.refresh),
+    expires: parseInt(localStorage.getItem(KEYS.expires) || '0', 10),
+  };
+}
+function saveSession(data) {
+  const exp = Date.now() + (data.expires_in || 3600) * 1000;
+  localStorage.setItem(KEYS.token,   data.access_token);
+  localStorage.setItem(KEYS.refresh, data.refresh_token);
+  localStorage.setItem(KEYS.expires, String(exp));
+  if (data.user) localStorage.setItem(KEYS.user, JSON.stringify(data.user));
+}
+function clearSession() {
+  Object.values(KEYS).forEach(k => localStorage.removeItem(k));
+}
+
+async function getValidToken() {
+  const { token, refresh, expires } = getSession();
+  if (!token) return null;
+  if (expires > Date.now() + 60000) return token;
+  if (!refresh) { clearSession(); return null; }
+  try {
+    const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`, {
+      method: 'POST',
+      headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ refresh_token: refresh }),
+    });
+    if (!r.ok) { clearSession(); return null; }
+    const data = await r.json();
+    saveSession(data);
+    return data.access_token;
+  } catch { clearSession(); return null; }
+}
+
+// ── Auth API calls (direct to Supabase Auth) ──────────────────────────────
+async function apiLogin(email, password) {
+  const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=password`, {
+    method: 'POST',
+    headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password }),
+  });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error_description || data.msg || 'Login failed. Check your email and password.');
+  saveSession(data);
+  return data;
+}
+
+async function apiSignup(name, email, password) {
+  const r = await fetch(`${SB_URL}/auth/v1/signup`, {
+    method: 'POST',
+    headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, password, data: { name } }),
+  });
+  const data = await r.json();
+  if (!r.ok) throw new Error(data.error_description || data.msg || 'Signup failed. Please try again.');
+  if (data.access_token) saveSession(data);
+  return data;
+}
+
+async function apiLogout() {
+  const { token } = getSession();
+  clearSession();
+  if (token) {
+    try {
+      await fetch(`${SB_URL}/auth/v1/logout`, {
+        method: 'POST',
+        headers: { apikey: SB_ANON, Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+      });
+    } catch {}
+  }
+}
+
+async function apiForgotPassword(email) {
+  const r = await fetch(`${SB_URL}/auth/v1/recover`, {
+    method: 'POST',
+    headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email }),
+  });
+  if (!r.ok) { const d = await r.json().catch(()=>({})); throw new Error(d.error_description || 'Failed to send reset email.'); }
+}
+
+// ── Our backend API calls ─────────────────────────────────────────────────
+async function apiGetProfile(token) {
+  const r = await fetch('/api/account/profile', { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) throw new Error('Could not load profile.');
+  return r.json();
+}
+async function apiSaveProfile(token, data) {
+  const r = await fetch('/api/account/profile', {
+    method: 'PATCH',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!r.ok) throw new Error('Could not save profile.');
+  return r.json();
+}
+async function apiGetOrders(token) {
+  const r = await fetch('/api/account/orders', { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) throw new Error('Could not load orders.');
+  return r.json();
+}
+async function apiGetWishlist(token) {
+  const r = await fetch('/api/account/wishlist', { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) return [];
+  const d = await r.json();
+  return Array.isArray(d) ? d : (d.wishlist || d.items || d.slugs || []);
+}
+async function apiRemoveWishlist(token, slug) {
+  await fetch('/api/account/wishlist', {
+    method: 'POST',
+    headers: { Authorization: `Bearer ${token}`, 'Content-Type': 'application/json' },
+    body: JSON.stringify({ slug, action: 'remove' }),
+  });
+}
+async function apiGetReferral(token) {
+  const r = await fetch('/api/account/referral', { headers: { Authorization: `Bearer ${token}` } });
+  if (!r.ok) return null;
+  return r.json();
+}
+
+// ── Views ─────────────────────────────────────────────────────────────────
+let activeTab = 'login';
+
+function renderAuth() {
+  root.innerHTML = `
+    <div class="tabs">
+      <button class="tab${activeTab==='login'?' active':''}" data-t="login">Sign In</button>
+      <button class="tab${activeTab==='register'?' active':''}" data-t="register">Create Account</button>
+    </div>
+
+    <div id="loginPanel" ${activeTab!=='login'?'style="display:none"':''}>
+      <label class="lbl" for="lEmail">Email</label>
+      <label class="field"><input id="lEmail" type="email" autocomplete="email" placeholder="your@email.com" /></label>
+      <label class="lbl" for="lPass">Password</label>
+      <label class="field"><input id="lPass" type="password" autocomplete="current-password" placeholder="••••••••" /></label>
+      <button class="btn-primary" id="loginBtn">Sign In</button>
+      <div class="feedback" id="loginFb"></div>
+      <div class="helper"><button id="forgotBtn">Forgot password?</button></div>
+    </div>
+
+    <div id="registerPanel" ${activeTab!=='register'?'style="display:none"':''}>
+      <label class="lbl" for="rName">Full name</label>
+      <label class="field"><input id="rName" type="text" autocomplete="name" placeholder="Your name" /></label>
+      <label class="lbl" for="rEmail">Email</label>
+      <label class="field"><input id="rEmail" type="email" autocomplete="email" placeholder="your@email.com" /></label>
+      <label class="lbl" for="rPass">Password <span style="letter-spacing:0;font-size:10px;opacity:0.6">(min 8 characters)</span></label>
+      <label class="field"><input id="rPass" type="password" autocomplete="new-password" placeholder="••••••••" /></label>
+      <button class="btn-primary" id="registerBtn">Create Account</button>
+      <div class="feedback" id="registerFb"></div>
+    </div>`;
+
+  // Tab switching
+  root.querySelectorAll('.tab').forEach(btn => {
+    btn.addEventListener('click', () => { activeTab = btn.dataset.t; renderAuth(); });
+  });
+
+  // Login
+  document.getElementById('loginBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('loginBtn');
+    const fb = document.getElementById('loginFb');
+    const email = document.getElementById('lEmail').value.trim();
+    const pass = document.getElementById('lPass').value;
+    fb.className = 'feedback'; fb.textContent = '';
+    if (!email || !pass) { fb.className = 'feedback err'; fb.textContent = 'Please enter your email and password.'; return; }
+    btn.disabled = true; btn.textContent = 'Signing in…';
+    try {
+      await apiLogin(email, pass);
+      renderAccount();
+    } catch (e) {
+      fb.className = 'feedback err'; fb.textContent = e.message;
+      btn.disabled = false; btn.textContent = 'Sign In';
+    }
+  });
+
+  // Enter key on login fields
+  ['lEmail','lPass'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('loginBtn')?.click();
+    });
+  });
+
+  // Register
+  document.getElementById('registerBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('registerBtn');
+    const fb = document.getElementById('registerFb');
+    const name = document.getElementById('rName').value.trim();
+    const email = document.getElementById('rEmail').value.trim();
+    const pass = document.getElementById('rPass').value;
+    fb.className = 'feedback'; fb.textContent = '';
+    if (!name) { fb.className = 'feedback err'; fb.textContent = 'Please enter your name.'; return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { fb.className = 'feedback err'; fb.textContent = 'Please enter a valid email address.'; return; }
+    if (pass.length < 8) { fb.className = 'feedback err'; fb.textContent = 'Password must be at least 8 characters.'; return; }
+    btn.disabled = true; btn.textContent = 'Creating account…';
+    try {
+      const data = await apiSignup(name, email, pass);
+      if (data.access_token) {
+        renderAccount();
+      } else {
+        // Email confirmation required
+        fb.className = 'feedback ok';
+        fb.textContent = 'Account created. Please check your email to confirm, then sign in.';
+        btn.disabled = false; btn.textContent = 'Create Account';
+      }
+    } catch (e) {
+      fb.className = 'feedback err'; fb.textContent = e.message;
+      btn.disabled = false; btn.textContent = 'Create Account';
+    }
+  });
+
+  // Enter key on register fields
+  ['rName','rEmail','rPass'].forEach(id => {
+    document.getElementById(id)?.addEventListener('keydown', e => {
+      if (e.key === 'Enter') document.getElementById('registerBtn')?.click();
+    });
+  });
+
+  // Forgot password
+  document.getElementById('forgotBtn').addEventListener('click', async () => {
+    const email = document.getElementById('lEmail').value.trim();
+    const fb = document.getElementById('loginFb');
+    if (!email) { fb.className = 'feedback err'; fb.textContent = 'Enter your email above first.'; return; }
+    try {
+      await apiForgotPassword(email);
+      fb.className = 'feedback ok'; fb.textContent = 'Password reset email sent. Check your inbox.';
+    } catch (e) {
+      fb.className = 'feedback err'; fb.textContent = e.message;
+    }
+  });
+}
+
+let accountTab = 'profile';
+
+async function renderAccount() {
+  root.innerHTML = '<div class="loading">Loading…</div>';
+  const token = await getValidToken();
+  if (!token) { clearSession(); activeTab = 'login'; renderAuth(); return; }
+
+  let profile, ordersData;
+  try {
+    [profile, ordersData] = await Promise.all([apiGetProfile(token), apiGetOrders(token)]);
+  } catch {
+    root.innerHTML = '<div class="feedback err" style="text-align:center;padding:40px 0">Could not load your account. Please try again.</div>';
+    return;
+  }
+
+  const orders = ordersData.orders || [];
+  const user = JSON.parse(localStorage.getItem(KEYS.user) || '{}');
+  const email = profile.email || user.email || '';
+
+  // Calculate loyalty tier from orders
+  const totalSpent = orders.reduce((s, o) => s + (o.total_cents || 0), 0);
+
+  // Read comms_prefs from profile (default all true if not set)
+  const commsPrefs = profile.comms_prefs || {};
+  const prefNewCollections = commsPrefs.new_collections !== false;
+  const prefRestock       = commsPrefs.restock_alerts   !== false;
+  const prefOrderUpdates  = commsPrefs.order_updates    !== false;
+
+  root.innerHTML = `
+    <div class="account-header">
+      <div class="account-header-left">
+        <div class="account-email">${esc(email)}</div>
+        ${loyaltyBadgeHTML(totalSpent)}
+      </div>
+      <button class="btn-ghost" id="signOutBtn">Sign out</button>
+    </div>
+
+    <div class="tabs">
+      <button class="tab${accountTab==='profile'?' active':''}" data-at="profile">Profile</button>
+      <button class="tab${accountTab==='orders'?' active':''}" data-at="orders">Orders${orders.length ? ` (${orders.length})` : ''}</button>
+      <button class="tab${accountTab==='wishlist'?' active':''}" data-at="wishlist">Wishlist</button>
+    </div>
+
+    <!-- Profile panel -->
+    <div id="profilePanel" ${accountTab!=='profile'?'style="display:none"':''}>
+      <div class="section-lbl">Saved Details</div>
+      <label class="lbl" for="pName">Full name</label>
+      <label class="field"><input id="pName" type="text" autocomplete="name" value="${esc(profile.name)}" placeholder="Your name" /></label>
+      <div class="section-lbl" style="margin-top:8px">Shipping Address</div>
+      <label class="lbl" for="pLine1">Street address</label>
+      <label class="field"><input id="pLine1" type="text" autocomplete="address-line1" value="${esc(profile.line1)}" placeholder="Street address" /></label>
+      <label class="lbl" for="pLine2">Apartment, suite, etc.</label>
+      <label class="field"><input id="pLine2" type="text" autocomplete="address-line2" value="${esc(profile.line2)}" placeholder="Optional" /></label>
+      <div class="row2">
+        <div>
+          <label class="lbl" for="pCity">City</label>
+          <label class="field"><input id="pCity" type="text" autocomplete="address-level2" value="${esc(profile.city)}" placeholder="City" /></label>
+        </div>
+        <div>
+          <label class="lbl" for="pPostal">Postcode / ZIP</label>
+          <label class="field"><input id="pPostal" type="text" autocomplete="postal-code" value="${esc(profile.postal)}" placeholder="Postcode" /></label>
+        </div>
+      </div>
+      <label class="lbl" for="pCountry">Country</label>
+      <label class="field">
+        <select id="pCountry" autocomplete="country-name">
+          <option value="">Select country</option>
+          ${COUNTRIES.map(c => `<option value="${esc(c)}"${profile.country===c?' selected':''}>${esc(c)}</option>`).join('')}
+        </select>
+      </label>
+      <button class="btn-primary" id="saveProfileBtn">Save Details</button>
+      <div class="feedback" id="profileFb"></div>
+
+      <!-- Referral section -->
+      <hr class="divider" />
+      <div class="referral-heading">Refer a friend</div>
+      <div class="referral-sub">Share your unique link and your friend gets 10% off their first order.</div>
+      <div class="referral-link-row">
+        <div class="referral-link-display" id="referralLinkDisplay">Loading…</div>
+        <button class="btn-copy" id="copyReferralBtn">Copy link</button>
+      </div>
+
+      <!-- Communication preferences -->
+      <hr class="divider" />
+      <div class="prefs-heading">Email Preferences</div>
+      <div class="pref-row">
+        <span class="pref-label">New collection announcements</span>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="prefNewCollections" ${prefNewCollections ? 'checked' : ''} />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="pref-row">
+        <span class="pref-label">Back-in-stock alerts</span>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="prefRestock" ${prefRestock ? 'checked' : ''} />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <div class="pref-row">
+        <span class="pref-label">Order updates</span>
+        <label class="toggle-wrap">
+          <input type="checkbox" id="prefOrderUpdates" ${prefOrderUpdates ? 'checked' : ''} />
+          <span class="toggle-track"></span>
+        </label>
+      </div>
+      <button class="btn-prefs" id="savePrefsBtn">Save Preferences</button>
+      <div class="feedback" id="prefsFb"></div>
+    </div>
+
+    <!-- Orders panel -->
+    <div id="ordersPanel" ${accountTab!=='orders'?'style="display:none"':''}>
+      <div class="section-lbl">Order History</div>
+      ${orders.length === 0
+        ? '<div class="empty">No orders yet</div>'
+        : orders.map(o => {
+            const itemNames = (o.items || []).map(i => i.title || i.product_title || '').filter(Boolean).join(', ');
+            const status = o.status || 'placed';
+            return `
+              <div class="order-card">
+                <div class="order-row">
+                  <span class="order-num">${esc(o.number || o.id)}</span>
+                  <span class="order-date">${esc(fmtDate(o.placed_at || o.created_at))}</span>
+                </div>
+                ${itemNames ? `<div class="order-items">${esc(itemNames)}</div>` : ''}
+                <div class="order-total">${esc(fmtPrice(o.total_cents))}</div>
+                <div class="order-status ${status==='fulfilled'?'fulfilled':status==='paid'||status==='complete'?'paid':''}">${esc(status)}</div>
+              </div>`;
+          }).join('')
+      }
+    </div>
+
+    <!-- Wishlist panel -->
+    <div id="wishlistPanel" ${accountTab!=='wishlist'?'style="display:none"':''}>
+      <div class="section-lbl">Saved Pieces</div>
+      <div id="wishlistContent"><div class="loading">Loading…</div></div>
+    </div>`;
+
+  // ── Loyalty badge popover toggle ───────────────────────────────────────
+  const loyaltyBtn = document.getElementById('loyaltyBadgeBtn');
+  const loyaltyPopover = document.getElementById('loyaltyPopover');
+  if (loyaltyBtn && loyaltyPopover) {
+    loyaltyBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isOpen = loyaltyPopover.classList.toggle('open');
+      loyaltyBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    });
+    document.addEventListener('click', function closePopover(e) {
+      if (!document.getElementById('loyaltyBadge')?.contains(e.target)) {
+        loyaltyPopover.classList.remove('open');
+        loyaltyBtn.setAttribute('aria-expanded', 'false');
+      }
+    }, { capture: true });
+  }
+
+  // ── Tab switching ──────────────────────────────────────────────────────
+  root.querySelectorAll('[data-at]').forEach(btn => {
+    btn.addEventListener('click', () => { accountTab = btn.dataset.at; renderAccount(); });
+  });
+
+  // ── Sign out ───────────────────────────────────────────────────────────
+  document.getElementById('signOutBtn').addEventListener('click', async () => {
+    await apiLogout();
+    activeTab = 'login';
+    renderAuth();
+  });
+
+  // ── Save profile ───────────────────────────────────────────────────────
+  document.getElementById('saveProfileBtn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('saveProfileBtn');
+    const fb = document.getElementById('profileFb');
+    const data = {
+      name:    document.getElementById('pName').value.trim(),
+      line1:   document.getElementById('pLine1').value.trim(),
+      line2:   document.getElementById('pLine2').value.trim(),
+      city:    document.getElementById('pCity').value.trim(),
+      postal:  document.getElementById('pPostal').value.trim(),
+      country: document.getElementById('pCountry').value,
+    };
+    fb.className = 'feedback'; fb.textContent = '';
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      const t = await getValidToken();
+      if (!t) throw new Error('Session expired. Please sign in again.');
+      await apiSaveProfile(t, data);
+      fb.className = 'feedback ok'; fb.textContent = 'Details saved.';
+    } catch (e) {
+      fb.className = 'feedback err'; fb.textContent = e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save Details';
+    }
+  });
+
+  // ── Referral link ──────────────────────────────────────────────────────
+  (async () => {
+    const display = document.getElementById('referralLinkDisplay');
+    const copyBtn = document.getElementById('copyReferralBtn');
+    if (!display || !copyBtn) return;
+    let referralUrl = '';
+    try {
+      const t = await getValidToken();
+      const ref = t ? await apiGetReferral(t) : null;
+      if (ref && ref.code) {
+        referralUrl = `https://malikiatelier.com/shop?ref=${encodeURIComponent(ref.code)}`;
+        display.textContent = referralUrl;
+      } else {
+        display.textContent = 'Unavailable — please try again later.';
+        copyBtn.disabled = true;
+      }
+    } catch {
+      display.textContent = 'Unavailable — please try again later.';
+      copyBtn.disabled = true;
+    }
+    copyBtn.addEventListener('click', async () => {
+      if (!referralUrl) return;
+      try {
+        await navigator.clipboard.writeText(referralUrl);
+        copyBtn.textContent = 'Copied ✓';
+        copyBtn.classList.add('copied');
+        setTimeout(() => { copyBtn.textContent = 'Copy link'; copyBtn.classList.remove('copied'); }, 2200);
+      } catch {
+        // Fallback for browsers that block clipboard
+        const ta = document.createElement('textarea');
+        ta.value = referralUrl; ta.style.position = 'fixed'; ta.style.opacity = '0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        copyBtn.textContent = 'Copied ✓';
+        copyBtn.classList.add('copied');
+        setTimeout(() => { copyBtn.textContent = 'Copy link'; copyBtn.classList.remove('copied'); }, 2200);
+      }
+    });
+  })();
+
+  // ── Save preferences ───────────────────────────────────────────────────
+  document.getElementById('savePrefsBtn')?.addEventListener('click', async () => {
+    const btn = document.getElementById('savePrefsBtn');
+    const fb = document.getElementById('prefsFb');
+    fb.className = 'feedback'; fb.textContent = '';
+    btn.disabled = true; btn.textContent = 'Saving…';
+    try {
+      const t = await getValidToken();
+      if (!t) throw new Error('Session expired. Please sign in again.');
+      const comms_prefs = {
+        new_collections: document.getElementById('prefNewCollections').checked,
+        restock_alerts:  document.getElementById('prefRestock').checked,
+        order_updates:   document.getElementById('prefOrderUpdates').checked,
+      };
+      await apiSaveProfile(t, { comms_prefs });
+      fb.className = 'feedback ok'; fb.textContent = 'Preferences saved.';
+    } catch (e) {
+      fb.className = 'feedback err'; fb.textContent = e.message;
+    } finally {
+      btn.disabled = false; btn.textContent = 'Save Preferences';
+    }
+  });
+
+  // ── Wishlist tab ───────────────────────────────────────────────────────
+  if (accountTab === 'wishlist') {
+    renderWishlist(token);
+  }
+}
+
+async function renderWishlist(token) {
+  const container = document.getElementById('wishlistContent');
+  if (!container) return;
+
+  let slugs;
+  try {
+    slugs = await apiGetWishlist(token);
+  } catch {
+    container.innerHTML = '<div class="feedback err" style="text-align:center;padding:24px 0">Could not load wishlist. Please try again.</div>';
+    return;
+  }
+
+  if (!slugs || slugs.length === 0) {
+    container.innerHTML = `<div class="empty">No saved pieces yet. <a href="/shop">Browse the collection &rarr;</a></div>`;
+    return;
+  }
+
+  // Fetch product details for each slug from the public products API (best-effort)
+  const products = await Promise.all(slugs.map(async slug => {
+    const s = typeof slug === 'string' ? slug : (slug.slug || '');
+    try {
+      const r = await fetch(`/api/products/${s}`);
+      if (r.ok) {
+        const d = await r.json();
+        return { slug: s, title: d.title || d.name || s, price: d.price_cents || d.price || null, image: d.image || d.images?.[0] || null };
+      }
+    } catch {}
+    return { slug: s, title: s, price: null, image: null };
+  }));
+
+  container.innerHTML = `
+    <div class="wishlist-grid" id="wishlistGrid">
+      ${products.map(p => `
+        <div class="wishlist-card" data-slug="${esc(p.slug)}">
+          ${p.image
+            ? `<img class="wishlist-card-img" src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy" />`
+            : `<div class="wishlist-card-img-placeholder">No image</div>`}
+          <div class="wishlist-card-body">
+            <div class="wishlist-card-title">${esc(p.title)}</div>
+            ${p.price != null ? `<div class="wishlist-card-price">${esc(fmtPrice(p.price))}</div>` : ''}
+            <div class="wishlist-card-actions">
+              <a class="wishlist-card-link" href="/shop/${esc(p.slug)}">Add to Cart</a>
+              <button class="wishlist-card-remove" data-slug="${esc(p.slug)}">Remove &times;</button>
+            </div>
+          </div>
+        </div>`).join('')}
+    </div>`;
+
+  // Remove buttons
+  container.querySelectorAll('.wishlist-card-remove').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const slug = btn.dataset.slug;
+      btn.disabled = true; btn.textContent = 'Removing…';
+      try {
+        const t = await getValidToken();
+        if (!t) throw new Error('Session expired.');
+        await apiRemoveWishlist(t, slug);
+        // Remove card from DOM
+        const card = container.querySelector(`.wishlist-card[data-slug="${CSS.escape(slug)}"]`);
+        if (card) card.remove();
+        // If grid is now empty, show empty state
+        const grid = document.getElementById('wishlistGrid');
+        if (grid && grid.children.length === 0) {
+          container.innerHTML = `<div class="empty">No saved pieces yet. <a href="/shop">Browse the collection &rarr;</a></div>`;
+        }
+      } catch (e) {
+        btn.disabled = false; btn.textContent = 'Remove ×';
+      }
+    });
+  });
+}
+
+// ── Bootstrap ─────────────────────────────────────────────────────────────
+(async () => {
+  // Update cart count
+  try {
+    const cart = Store.cart();
+    const count = cart.reduce((s, i) => s + (i.quantity || 1), 0);
+    const el = document.getElementById('cartCount');
+    if (el) el.textContent = count;
+  } catch {}
+
+  const token = await getValidToken();
+  if (token) {
+    renderAccount();
+  } else {
+    // Check if arriving from checkout with ?register hint
+    if (new URLSearchParams(location.search).has('register')) activeTab = 'register';
+    renderAuth();
+  }
+})();
+</script>
+<script>(function(){try{var k='maliki.vid',s='maliki.sid',v=localStorage.getItem(k);if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem(k,v);}var sid=sessionStorage.getItem(s);if(!sid){sid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(s,sid);}var u=new URLSearchParams(location.search);var d={path:location.pathname,referrer:document.referrer,visitor_id:v,session_id:sid,screen:innerWidth+'x'+innerHeight,utm_source:u.get('utm_source')||'',utm_medium:u.get('utm_medium')||'',utm_campaign:u.get('utm_campaign')||''};if(localStorage.getItem('maliki.cookies')==='accepted'){fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true});}}catch(e){}})();</script>
+<div id="cookie-banner" style="display:none;position:fixed;bottom:0;left:0;right:0;z-index:9999;background:rgba(20,19,17,0.97);border-top:1px solid rgba(217,176,112,0.28);padding:16px clamp(20px,5vw,56px);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:Lora,serif;font-size:13px;color:rgba(245,236,218,0.86)"><span>We use cookies to improve your experience. <a href="/page/?slug=privacy" style="color:#d9b070;text-underline-offset:3px;text-decoration:underline">Privacy policy</a></span><div style="display:flex;gap:10px;flex-shrink:0"><button onclick="setCookies(true)" style="background:linear-gradient(180deg,#d9b070,#b68a4e);border:0;color:#1a120a;font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Accept</button><button onclick="setCookies(false)" style="background:transparent;border:1px solid rgba(217,176,112,0.3);color:rgba(245,236,218,0.62);font-family:Playfair Display,serif;font-size:10px;letter-spacing:0.38em;text-transform:uppercase;padding:9px 18px;cursor:pointer">Decline</button></div></div><script>(function(){var b=document.getElementById("cookie-banner");if(!localStorage.getItem("maliki.cookies")&&b){b.style.display="flex";}window.setCookies=function(v){localStorage.setItem("maliki.cookies",v?"accepted":"declined");if(b)b.style.display="none";}})()</script>
+<script>
+  (function(){
+    var burger = document.getElementById('burgerBtn');
+    var nav = document.getElementById('mobileNav');
+    var closeBtn = document.getElementById('mobileNavClose');
+    if (!burger || !nav) return;
+    function openNav() { nav.classList.add('open'); burger.setAttribute('aria-expanded','true'); nav.setAttribute('aria-hidden','false'); document.body.style.overflow='hidden'; }
+    function closeNav() { nav.classList.remove('open'); burger.setAttribute('aria-expanded','false'); nav.setAttribute('aria-hidden','true'); document.body.style.overflow=''; }
+    burger.addEventListener('click', openNav);
+    closeBtn.addEventListener('click', closeNav);
+    nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
+  })();
+</script>
+<script src="/assets/animations.js" defer></script>
+</body>
+</html>
