@@ -657,20 +657,17 @@
     });
   </script>
   <script>
-  // Reveal Maliki script title only once Pinyon Script font is ready.
-  // The html.js-fonts class (set in <head>) keeps it visibility:hidden until then,
-  // preventing the system-serif fallback (with its dark drop-shadows) from flashing.
   (function(){
-    var link=document.querySelector('link[rel="preload"][as="style"]');
     var done=false;
     function show(){if(done)return;done=true;document.documentElement.classList.remove('js-fonts');}
-    function waitFonts(){
-      if(document.fonts&&document.fonts.ready){document.fonts.ready.then(show);}
-      else{show();}
+    setTimeout(show,4000);
+    function waitForPinyon(){
+      if(!document.fonts||!document.fonts.load){show();return;}
+      document.fonts.load('400 1em "Pinyon Script"').then(show).catch(show);
     }
-    if(link&&link.rel!=='stylesheet'){link.addEventListener('load',waitFonts,{once:true});}
-    else{waitFonts();}
-    setTimeout(show,1500);
+    var link=document.querySelector('link[rel="preload"][as="style"]');
+    if(!link||link.rel==='stylesheet'){waitForPinyon();}
+    else{link.addEventListener('load',waitForPinyon,{once:true});}
   })();
   </script>
   <script>
