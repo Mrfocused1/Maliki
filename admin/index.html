@@ -1000,6 +1000,8 @@ const renderLogin = (errMsg = '') => {
         <button type="submit" id="loginBtn">Enter</button>
         <div class="err" id="loginErr">${escape(errMsg)}</div>
         <div class="hint">Sign in with your Maliki Atelier admin account.</div>
+        <button type="button" id="forgotBtn" style="margin-top:14px;background:none;border:none;color:rgba(245,236,218,0.45);font-family:'Cormorant Garamond',serif;font-style:italic;font-size:13px;letter-spacing:0.06em;cursor:pointer;padding:0;transition:color 0.2s;" onmouseover="this.style.color='rgba(245,236,218,0.75)'" onmouseout="this.style.color='rgba(245,236,218,0.45)'">Forgot password?</button>
+        <div class="ok" id="resetOk" style="display:none;margin-top:10px;font-size:12px;color:#b5d39c;letter-spacing:0.1em;"></div>
       </form>
     </div>
   `;
@@ -1029,6 +1031,29 @@ const renderLogin = (errMsg = '') => {
     } catch {
       err.textContent = 'Sign-in failed.';
       btn.disabled = false; btn.textContent = 'Enter';
+    }
+  });
+
+  $('#forgotBtn').addEventListener('click', async () => {
+    const email = $('#em').value.trim();
+    const err = $('#loginErr');
+    const ok = $('#resetOk');
+    const btn = $('#forgotBtn');
+    if (!email) { err.textContent = 'Enter your email address first.'; return; }
+    err.textContent = '';
+    btn.disabled = true; btn.textContent = 'Sending…';
+    try {
+      await fetch('/api/admin/forgot-password', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      ok.style.display = 'block';
+      ok.textContent = 'Reset link sent — check your inbox.';
+      btn.textContent = 'Sent';
+    } catch {
+      err.textContent = 'Could not send reset email.';
+      btn.disabled = false; btn.textContent = 'Forgot password?';
     }
   });
 };

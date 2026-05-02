@@ -109,8 +109,8 @@
     <div id="stateSetup">
       <div class="logo"><img src="/assets/maliki-logo.svg" alt="Maliki Atelier" /></div>
       <p class="eyebrow">Admin</p>
-      <h1>Create your account</h1>
-      <p class="subtitle">Choose a secure password to get started.</p>
+      <h1 id="setupTitle">Create your account</h1>
+      <p class="subtitle" id="setupSubtitle">Choose a secure password to get started.</p>
       <div class="rule"></div>
 
       <form id="setupForm" novalidate>
@@ -121,7 +121,7 @@
           <input id="pw2" type="password" autocomplete="new-password" placeholder="Confirm password" required />
         </div>
         <div class="strength-bar" id="strengthBar"></div>
-        <button type="submit" class="btn" id="submitBtn">Create Account</button>
+        <button type="submit" class="btn" id="submitBtn">Set Password</button>
         <div class="msg err" id="errMsg"></div>
       </form>
 
@@ -162,7 +162,7 @@
   const accessToken = hash['access_token'];
   const tokenType   = hash['type'];
 
-  if (!accessToken || tokenType !== 'invite') {
+  if (!accessToken || (tokenType !== 'invite' && tokenType !== 'recovery')) {
     document.getElementById('stateSetup').style.display = 'none';
     document.getElementById('stateInvalid').style.display = 'block';
     return;
@@ -170,6 +170,11 @@
 
   // Clear hash from URL without reload
   history.replaceState(null, '', window.location.pathname);
+
+  if (tokenType === 'recovery') {
+    document.getElementById('setupTitle').textContent = 'Reset your password';
+    document.getElementById('setupSubtitle').textContent = 'Choose a new password for your account.';
+  }
 
   // Password strength indicator
   const pw = document.getElementById('pw');
