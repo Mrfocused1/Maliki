@@ -501,6 +501,7 @@
     burger.addEventListener('click', openNav);
     closeBtn.addEventListener('click', closeNav);
     nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
+    document.addEventListener('click', function(e) { if (nav.classList.contains('open') && !nav.contains(e.target) && !burger.contains(e.target)) closeNav(); });
   })();
 </script>
 <script src="/assets/animations.js" defer></script>

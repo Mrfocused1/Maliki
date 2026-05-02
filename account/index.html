@@ -797,7 +797,13 @@ async function renderAccount() {
 
   let profile, ordersData;
   try {
-    [profile, ordersData] = await Promise.all([apiGetProfile(token), apiGetOrders(token)]);
+    const [profileResult, ordersResult] = await Promise.allSettled([apiGetProfile(token), apiGetOrders(token)]);
+    if (profileResult.status === 'rejected') {
+      root.innerHTML = '<div class="feedback err" style="text-align:center;padding:40px 0">Could not load your profile. Please refresh and try again.</div>';
+      return;
+    }
+    profile = profileResult.value;
+    ordersData = ordersResult.status === 'fulfilled' ? ordersResult.value : { orders: [] };
   } catch {
     root.innerHTML = '<div class="feedback err" style="text-align:center;padding:40px 0">Could not load your account. Please try again.</div>';
     return;
@@ -1156,6 +1162,7 @@ async function renderWishlist(token) {
     burger.addEventListener('click', openNav);
     closeBtn.addEventListener('click', closeNav);
     nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
+    document.addEventListener('click', function(e) { if (nav.classList.contains('open') && !nav.contains(e.target) && !burger.contains(e.target)) closeNav(); });
   })();
 </script>
 <script src="/assets/animations.js" defer></script>

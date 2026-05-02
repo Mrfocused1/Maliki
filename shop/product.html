@@ -862,6 +862,7 @@
       document.getElementById('reviewForm').addEventListener('submit', async (e) => {
         e.preventDefault();
         const msg = document.getElementById('rfMsg');
+        const submitBtn = document.querySelector('#reviewForm .rf-submit');
         msg.className = 'rf-msg';
         const name = document.getElementById('rfName').value.trim();
         const email = document.getElementById('rfEmail').value.trim();
@@ -872,6 +873,7 @@
           msg.className = 'rf-msg err';
           return;
         }
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting…'; }
         try {
           const res = await fetch('/api/reviews', {
             method: 'POST',
@@ -884,12 +886,14 @@
             document.getElementById('reviewForm').reset();
             selectedRating = 0;
             document.querySelectorAll('#starSelector button').forEach(b => b.classList.remove('active'));
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit Review'; }
           } else {
             throw new Error();
           }
         } catch {
           msg.textContent = 'Could not submit — please try again.';
           msg.className = 'rf-msg err';
+          if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Submit Review'; }
         }
       });
     };
@@ -1138,11 +1142,12 @@
       const added = document.getElementById('added');
       if (!outOfStock) {
         addBtn.addEventListener('click', () => {
+          if (addBtn.disabled) return;
+          addBtn.disabled = true;
           const cartOpts = {};
           if (engravingText) cartOpts.engraving = engravingText;
           try {
             if (typeof Store.addToCart === 'function') {
-              // Pass engraving via third argument if supported, else use sessionStorage
               if (Store.addToCart.length >= 2) {
                 Store.addToCart(p.id, qty, cartOpts);
               } else {
@@ -1152,7 +1157,7 @@
             }
           } catch {}
           added.classList.add('show');
-          setTimeout(() => added.classList.remove('show'), 1800);
+          setTimeout(() => { added.classList.remove('show'); addBtn.disabled = false; }, 1800);
         });
       }
 
@@ -1290,6 +1295,7 @@
     burger.addEventListener('click', openNav);
     closeBtn.addEventListener('click', closeNav);
     nav.querySelectorAll('a').forEach(function(a){ a.addEventListener('click', closeNav); });
+    document.addEventListener('click', function(e) { if (nav.classList.contains('open') && !nav.contains(e.target) && !burger.contains(e.target)) closeNav(); });
   })();
 </script>
 <script src="/assets/animations.js" defer></script>

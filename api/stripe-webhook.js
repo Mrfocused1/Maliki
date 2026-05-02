@@ -242,25 +242,29 @@ module.exports = async (req, res) => {
         });
 
         // Decrement stock — batch fetch all products in one query
-        const items = await supabaseFetch(
-          `/order_items?order_id=eq.${encodeURIComponent(orderId)}&select=product_id,quantity`
-        );
-        const stockItems = (items || []).filter((i) => i.product_id);
-        if (stockItems.length) {
-          const ids = stockItems.map((i) => encodeURIComponent(i.product_id)).join(',');
-          const stockRows = await supabaseFetch(`/products?id=in.(${ids})&select=id,stock`).catch(() => []);
-          const stockMap = Object.fromEntries((stockRows || []).map((r) => [r.id, r.stock]));
-          await Promise.all(
-            stockItems.map((item) => {
-              const stock = stockMap[item.product_id];
-              if (typeof stock !== 'number') return;
-              return supabaseFetch(`/products?id=eq.${encodeURIComponent(item.product_id)}`, {
-                method: 'PATCH',
-                headers: { Prefer: 'return=minimal' },
-                body: JSON.stringify({ stock: Math.max(0, stock - item.quantity) }),
-              });
-            })
+        try {
+          const items = await supabaseFetch(
+            `/order_items?order_id=eq.${encodeURIComponent(orderId)}&select=product_id,quantity`
           );
+          const stockItems = (items || []).filter((i) => i.product_id);
+          if (stockItems.length) {
+            const ids = stockItems.map((i) => encodeURIComponent(i.product_id)).join(',');
+            const stockRows = await supabaseFetch(`/products?id=in.(${ids})&select=id,stock`).catch(() => []);
+            const stockMap = Object.fromEntries((stockRows || []).map((r) => [r.id, r.stock]));
+            await Promise.allSettled(
+              stockItems.map((item) => {
+                const stock = stockMap[item.product_id];
+                if (typeof stock !== 'number') return;
+                return supabaseFetch(`/products?id=eq.${encodeURIComponent(item.product_id)}`, {
+                  method: 'PATCH',
+                  headers: { Prefer: 'return=minimal' },
+                  body: JSON.stringify({ stock: Math.max(0, stock - item.quantity) }),
+                });
+              })
+            );
+          }
+        } catch (stockErr) {
+          console.error('stripe-webhook: stock decrement failed', stockErr.message);
         }
 
         // Fetch order for email + discount increment
