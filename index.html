@@ -14,7 +14,6 @@
       location.replace('/home/');
     }
   } catch (e) {}
-  document.documentElement.classList.add('js-fonts');
   // Slow path: fetch in background after page has painted; redirect if live
   fetch('/api/site-mode')
     .then(function (r) { return r.json(); })
@@ -491,10 +490,6 @@
     50%       { opacity: 0.86; }
   }
 
-  /* Pinyon Script must load before showing — prevents heavy system-serif fallback
-     from rendering with the dark drop-shadow designed for thin calligraphy strokes */
-  html.js-fonts .logo .maliki { visibility: hidden; }
-
   /* ---------- Responsive ---------- */
   @media (max-width: 520px) {
     .eyebrow::before,
@@ -527,10 +522,6 @@
     <header class="top-bar reveal r1"></header>
 
     <section class="center">
-      <h1 class="logo">
-        <span class="maliki reveal r3">Maliki</span>
-      </h1>
-
       <div class="flourish reveal r5" aria-hidden="true">
         <span class="line"></span>
         <span class="dot"></span>
@@ -655,20 +646,6 @@
         showError('Something went wrong. Please try again.');
       }
     });
-  </script>
-  <script>
-  (function(){
-    var done=false;
-    function show(){if(done)return;done=true;document.documentElement.classList.remove('js-fonts');}
-    setTimeout(show,4000);
-    function waitForPinyon(){
-      if(!document.fonts||!document.fonts.load){show();return;}
-      document.fonts.load('400 1em "Pinyon Script"').then(show).catch(show);
-    }
-    var link=document.querySelector('link[rel="preload"][as="style"]');
-    if(!link||link.rel==='stylesheet'){waitForPinyon();}
-    else{link.addEventListener('load',waitForPinyon,{once:true});}
-  })();
   </script>
   <script>
   // Defer tracking until after paint to avoid forced layout reflow
