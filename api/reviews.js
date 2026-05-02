@@ -63,7 +63,7 @@ module.exports = async (req, res) => {
 
     try {
       const existing = await supabaseFetch(
-        `/product_reviews?product_id=eq.${encodeURIComponent(product_id)}&email=eq.${encodeURIComponent(email)}&select=id&limit=1`
+        `/product_reviews?product_id=eq.${encodeURIComponent(product_id)}&customer_email=eq.${encodeURIComponent(email)}&select=id&limit=1`
       ).catch(() => []);
       if (existing?.length > 0) {
         return json(res, 409, { error: 'already_reviewed' });
@@ -75,8 +75,8 @@ module.exports = async (req, res) => {
         body: JSON.stringify({
           id,
           product_id,
-          name,
-          email,
+          customer_name: name,
+          customer_email: email,
           rating,
           title,
           body: reviewBody,

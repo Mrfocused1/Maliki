@@ -2854,8 +2854,8 @@ const renderReviews = () => {
                   <tr class="no-hover" data-rvid="${escape(rv.id)}">
                     <td style="color:#f5ecda;font-weight:500;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escape(rv.product_title || rv.product_id || '—')}</td>
                     <td>
-                      <div style="color:#f5ecda;font-weight:500">${escape(rv.reviewer_name || '—')}</div>
-                      <div style="color:var(--softer);font-size:11px">${escape(rv.reviewer_email || '')}</div>
+                      <div style="color:#f5ecda;font-weight:500">${escape(rv.customer_name || '—')}</div>
+                      <div style="color:var(--softer);font-size:11px">${escape(rv.customer_email || '')}</div>
                     </td>
                     <td>${renderStars(rv.rating)}</td>
                     <td style="color:var(--softer);max-width:240px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${escape((rv.body || rv.text || '').slice(0, 120))}</td>

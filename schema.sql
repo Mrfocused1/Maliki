@@ -92,7 +92,9 @@ create table if not exists discounts (
   usage_count integer not null default 0,
   usage_limit integer,
   description text default '',
-  created_at timestamptz not null default now()
+  metadata jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
 );
 
 -- Pages
@@ -102,6 +104,8 @@ create table if not exists pages (
   title text not null,
   body text default '',
   status text not null default 'published',
+  metadata jsonb,
+  created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
 
@@ -222,7 +226,7 @@ create index if not exists restock_alerts_product_idx on restock_alerts(product_
 
 create table if not exists referrals (
   id text primary key,
-  referrer_email text not null,
+  referral_code text not null,
   referee_email text not null,
   order_id text,
   created_at timestamptz not null default now()
