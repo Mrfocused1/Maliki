@@ -1,25 +1,23 @@
-const crypto = require('crypto');
 const { setSessionCookie, sameOrigin } = require('../_lib/auth');
+const { rateLimit } = require('../_lib/rate-limit');
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
+  res.setHeader('Cache-Control', 'no-store');
   res.send(JSON.stringify(body));
-};
-
-const constantEq = (a, b) => {
-  const ab = Buffer.from(a);
-  const bb = Buffer.from(b);
-  if (ab.length !== bb.length) return false;
-  return crypto.timingSafeEqual(ab, bb);
 };
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
   if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
 
-  const expected = process.env.ADMIN_PASSWORD;
-  if (!expected) {
-    console.error('login: ADMIN_PASSWORD not set');
+  if (rateLimit(req, { key: 'admin_login', max: 5, windowMs: 15 * 60 * 1000 })) {
+    return json(res, 429, { error: 'too_many_requests' });
+  }
+
+  const { SUPABASE_URL, SUPABASE_ANON_KEY } = process.env;
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    console.error('login: SUPABASE_URL or SUPABASE_ANON_KEY not set');
     return json(res, 500, { error: 'server_misconfigured' });
   }
 
@@ -27,12 +25,36 @@ module.exports = async (req, res) => {
   if (typeof body === 'string') {
     try { body = JSON.parse(body); } catch { body = {}; }
   }
+
+  const email = String((body || {}).email || '').trim().toLowerCase();
   const password = String((body || {}).password || '');
 
-  if (!password || !constantEq(password, expected)) {
+  if (!email || !password) {
     return json(res, 401, { error: 'invalid_credentials' });
   }
 
-  setSessionCookie(req, res);
-  return json(res, 200, { ok: true });
+  try {
+    const r = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        apikey: SUPABASE_ANON_KEY,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!r.ok) return json(res, 401, { error: 'invalid_credentials' });
+
+    const data = await r.json();
+
+    if (data.user?.user_metadata?.role !== 'admin') {
+      return json(res, 403, { error: 'not_admin' });
+    }
+
+    setSessionCookie(req, res);
+    return json(res, 200, { ok: true });
+  } catch (err) {
+    console.error('login:', err.message);
+    return json(res, 500, { error: 'login_failed' });
+  }
 };

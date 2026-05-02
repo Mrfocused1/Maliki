@@ -992,16 +992,20 @@ const renderLogin = (errMsg = '') => {
         <div class="logo"><img src="/assets/maliki-logo.svg" alt="Maliki Atelier"></div>
         <h1>Admin</h1>
         <div class="field">
-          <input id="pw" type="password" autocomplete="current-password" placeholder="Password" autofocus />
+          <input id="em" type="email" autocomplete="email" placeholder="Email address" autofocus />
+        </div>
+        <div class="field">
+          <input id="pw" type="password" autocomplete="current-password" placeholder="Password" />
         </div>
         <button type="submit" id="loginBtn">Enter</button>
         <div class="err" id="loginErr">${escape(errMsg)}</div>
-        <div class="hint">Use the administrator password configured for this deployment.</div>
+        <div class="hint">Sign in with your Maliki Atelier admin account.</div>
       </form>
     </div>
   `;
   $('#loginForm').addEventListener('submit', async (e) => {
     e.preventDefault();
+    const email = $('#em').value.trim();
     const password = $('#pw').value;
     const btn = $('#loginBtn');
     const err = $('#loginErr');
@@ -1010,10 +1014,13 @@ const renderLogin = (errMsg = '') => {
       const res = await fetch('/api/admin/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       });
       if (!res.ok) {
-        err.textContent = res.status === 401 ? 'Incorrect password.' : 'Sign-in failed.';
+        const msg = res.status === 429 ? 'Too many attempts. Try again later.'
+          : res.status === 403 ? 'Account does not have admin access.'
+          : 'Incorrect email or password.';
+        err.textContent = msg;
         btn.disabled = false; btn.textContent = 'Enter'; return;
       }
       state.authed = true;
