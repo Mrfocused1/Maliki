@@ -8,34 +8,24 @@
 <meta name="theme-color" content="#0a0908" />
 
 <script>
-  (function () {
-    // Fast path: this browser already knows the mode
-    try {
-      if (localStorage.getItem('maliki.site_mode') === 'live') {
+  // Fast path: localStorage hit — instant redirect, zero network cost
+  try {
+    if (localStorage.getItem('maliki.site_mode') === 'live') {
+      location.replace('/home/');
+    }
+  } catch (e) {}
+  // Slow path: fetch in background after page has painted; redirect if live
+  fetch('/api/site-mode')
+    .then(function (r) { return r.json(); })
+    .then(function (d) {
+      if (d.mode === 'live') {
+        try { localStorage.setItem('maliki.site_mode', 'live'); } catch (e) {}
         location.replace('/home/');
-        return;
+      } else {
+        try { localStorage.setItem('maliki.site_mode', 'coming_soon'); } catch (e) {}
       }
-    } catch (e) {}
-    // Hide until we know — prevents flash of coming-soon if site is live
-    document.documentElement.style.visibility = 'hidden';
-    var t = setTimeout(function () { document.documentElement.style.visibility = ''; }, 2000);
-    fetch('/api/site-mode')
-      .then(function (r) { return r.json(); })
-      .then(function (d) {
-        clearTimeout(t);
-        if (d.mode === 'live') {
-          try { localStorage.setItem('maliki.site_mode', 'live'); } catch (e) {}
-          location.replace('/home/');
-        } else {
-          try { localStorage.setItem('maliki.site_mode', 'coming_soon'); } catch (e) {}
-          document.documentElement.style.visibility = '';
-        }
-      })
-      .catch(function () {
-        clearTimeout(t);
-        document.documentElement.style.visibility = '';
-      });
-  })();
+    })
+    .catch(function () {});
 </script>
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
@@ -57,7 +47,9 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500&family=Playfair+Display:wght@400;500;600;700&family=Pinyon+Script&display=swap" rel="stylesheet" />
+<!-- Non-blocking font load: page paints with system fonts, web fonts swap in -->
+<link rel="preload" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Playfair+Display:wght@400;500;600;700&family=Pinyon+Script&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,400&family=Playfair+Display:wght@400;500;600;700&family=Pinyon+Script&display=swap"></noscript>
 <style>
   :root {
     --black: #0a0908;
@@ -486,16 +478,15 @@
     to { opacity: 1; transform: translateY(0); }
   }
 
-  /* Gentle gold shimmer drift on the script */
+  /* Gentle gold shimmer drift — composited opacity pulse avoids paint-layer thrash */
   .logo .maliki {
     background-size: 200% 200%;
-    background-position: 20% 30%;
-    animation: shimmer 14s ease-in-out infinite;
+    background-position: 45% 38%;
+    animation: shimmer 9s ease-in-out infinite;
   }
   @keyframes shimmer {
-    0%   { background-position: 20% 30%; }
-    50%  { background-position: 80% 70%; }
-    100% { background-position: 20% 30%; }
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.86; }
   }
 
   /* ---------- Responsive ---------- */
@@ -520,8 +511,8 @@
 </head>
 <body>
   <div class="stage" aria-hidden="true">
-    <video id="bg1" class="bg-video active" src="bg-1.mp4" poster="/og.jpg" muted playsinline preload="auto" autoplay></video>
-    <video id="bg2" class="bg-video"        src="bg-2.mp4" poster="/og.jpg" muted playsinline preload="metadata"></video>
+    <video id="bg1" class="bg-video active" src="bg-1.mp4" poster="/og.webp" muted playsinline preload="none" autoplay></video>
+    <video id="bg2" class="bg-video"        src="bg-2.mp4" poster="/og.webp" muted playsinline preload="none"></video>
     <div class="weave"></div>
     <div class="vignette"></div>
   </div>
@@ -581,9 +572,6 @@
         if (p && typeof p.catch === 'function') p.catch(() => {});
       };
 
-      // Begin playback; some browsers require a nudge after autoplay attribute
-      start(v1);
-
       const swap = () => {
         const current = clips[i];
         const next = clips[(i + 1) % clips.length];
@@ -594,12 +582,20 @@
         i = (i + 1) % clips.length;
       };
 
-      // When a clip ends, hand off to the other
       v1.addEventListener('ended', swap);
       v2.addEventListener('ended', swap);
 
-      // Defer bg-2 download until bg-1 is buffered, to keep first-paint light
-      v1.addEventListener('loadeddata', () => { v2.preload = 'auto'; v2.load(); }, { once: true });
+      // Defer video loading until after first paint — prevents 14MB blocking initial render
+      requestAnimationFrame(function () {
+        requestAnimationFrame(function () {
+          start(v1);
+          // Only fetch bg-2 once bg-1 has loaded its data
+          v1.addEventListener('loadeddata', function () {
+            v2.preload = 'auto';
+            v2.load();
+          }, { once: true });
+        });
+      });
     })();
 
     const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -654,6 +650,17 @@
       }
     });
   </script>
-  <script>(function(){try{var k='maliki.vid',s='maliki.sid',v=localStorage.getItem(k);if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem(k,v);}var sid=sessionStorage.getItem(s);if(!sid){sid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(s,sid);}var u=new URLSearchParams(location.search);var d={path:location.pathname,referrer:document.referrer,visitor_id:v,session_id:sid,screen:innerWidth+'x'+innerHeight,utm_source:u.get('utm_source')||'',utm_medium:u.get('utm_medium')||'',utm_campaign:u.get('utm_campaign')||''};fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true});}catch(e){}})();</script>
+  <script>
+  // Defer tracking until after paint to avoid forced layout reflow
+  (window.requestIdleCallback || window.setTimeout)(function(){try{
+    var k='maliki.vid',s='maliki.sid',v=localStorage.getItem(k);
+    if(!v){v=Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem(k,v);}
+    var sid=sessionStorage.getItem(s);
+    if(!sid){sid=Math.random().toString(36).slice(2)+Date.now().toString(36);sessionStorage.setItem(s,sid);}
+    var u=new URLSearchParams(location.search);
+    var d={path:location.pathname,referrer:document.referrer,visitor_id:v,session_id:sid,screen:screen.width+'x'+screen.height,utm_source:u.get('utm_source')||'',utm_medium:u.get('utm_medium')||'',utm_campaign:u.get('utm_campaign')||''};
+    fetch('/api/track',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(d),keepalive:true});
+  }catch(e){}});
+  </script>
 </body>
 </html>

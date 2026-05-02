@@ -2,7 +2,7 @@ const { supabaseFetch } = require('./_lib/supabase');
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
-  res.setHeader('Cache-Control', 's-maxage=30, stale-while-revalidate=60');
+  res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=600');
   res.send(JSON.stringify(body));
 };
 
