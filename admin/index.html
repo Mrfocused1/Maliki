@@ -1151,6 +1151,7 @@ const renderApp = () => {
   $$('.sidebar a.navlink').forEach((a) => a.addEventListener('click', closeSidebar));
 
   Store.on(() => render());
+  window.addEventListener('maliki:sync-error', (e) => toast(e.detail || 'Sync error', 'err'));
   render();
 };
 

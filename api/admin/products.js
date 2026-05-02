@@ -28,18 +28,22 @@ const productPayload = (data) => {
 };
 
 const syncImages = async (productId, images = [], title = '') => {
+  // Skip base64 data URIs — they're too large for Supabase and come from local uploads.
+  const urls = (images || []).filter((u) => u && !u.startsWith('data:'));
+
   await supabaseFetch(`/product_images?product_id=eq.${encodeURIComponent(productId)}`, {
     method: 'DELETE',
     headers: { Prefer: 'return=minimal' },
   });
 
-  const rows = images.filter(Boolean).slice(0, 8).map((url, position) => ({
+  if (!urls.length) return [];
+
+  const rows = urls.slice(0, 8).map((url, position) => ({
     product_id: productId,
     url,
     alt: title,
     position,
   }));
-  if (!rows.length) return [];
 
   return await supabaseFetch('/product_images', {
     method: 'POST',
@@ -77,7 +81,7 @@ module.exports = async (req, res) => {
     }
 
     if (req.method === 'DELETE') {
-      const id = String((req.body || {}).id || '');
+      const id = String(req.query?.id || (req.body || {}).id || '');
       if (!id) return json(res, 400, { error: 'id_required' });
       await supabaseFetch(`/products?id=eq.${encodeURIComponent(id)}`, {
         method: 'DELETE',

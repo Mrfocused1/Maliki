@@ -43,10 +43,25 @@
   };
 
   const syncProduct = async (method, payload) => {
-    const res = await fetch('/api/admin/products', {
+    // For DELETE, pass id as query param — Vercel does not reliably parse DELETE bodies.
+    // For POST/PATCH, strip base64 images so we don't blow the 4.5 MB body limit;
+    // image URLs that are already remote URLs are kept.
+    let url = '/api/admin/products';
+    let body;
+    if (method === 'DELETE') {
+      url += `?id=${encodeURIComponent(payload.id)}`;
+      body = undefined;
+    } else {
+      const clean = { ...payload };
+      if (Array.isArray(clean.images)) {
+        clean.images = clean.images.filter((u) => u && !u.startsWith('data:'));
+      }
+      body = JSON.stringify(clean);
+    }
+    const res = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
+      headers: body ? { 'Content-Type': 'application/json' } : {},
+      ...(body ? { body } : {}),
     });
     if (!res.ok) throw new Error('product_sync_failed');
     return await res.json().catch(() => ({}));
