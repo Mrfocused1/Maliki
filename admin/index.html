@@ -445,6 +445,8 @@
     font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--soft); font-weight: 500;
   }
   .form-row .hint { font-size: 11px; color: var(--softest); }
+  .tpl-chip { display:inline-block; background:rgba(217,176,112,0.12); color:var(--gold-1); border:1px solid rgba(217,176,112,0.25); border-radius:4px; padding:1px 7px; font-size:11px; font-family:monospace; cursor:pointer; user-select:none; }
+  .tpl-chip:hover { background:rgba(217,176,112,0.22); }
   .checkbox {
     display: inline-flex; align-items: center; gap: 10px; cursor: pointer; user-select: none;
   }
@@ -2460,6 +2462,12 @@ const TEMPLATE_META = {
 
 const SAMPLE_VARS = { name: 'Eleanor Whitfield', order_number: 'MA-1042', product: 'The Celestine' };
 
+// Friendly display labels for template variables
+const VAR_LABELS   = { name: 'Customer Name', order_number: 'Order Number', product: 'Product Name' };
+const LABEL_VARS   = Object.fromEntries(Object.entries(VAR_LABELS).map(([k, v]) => [v, k]));
+const toFriendly   = (t) => String(t || '').replace(/\{\{(\w+)\}\}/g, (_, k) => VAR_LABELS[k] ? `[${VAR_LABELS[k]}]` : `{{${k}}}`);
+const toTemplate   = (t) => String(t || '').replace(/\[([^\]]+)\]/g, (_, label) => LABEL_VARS[label] ? `{{${LABEL_VARS[label]}}}` : `[${label}]`);
+
 const renderEmails = () => {
   const templates = Store.emailTemplates();
   const log = Store.emails();
@@ -2727,12 +2735,13 @@ const openTemplateDrawer = (key) => {
     </div>
     <div class="form-row">
       <label for="t-subject">Subject line</label>
-      <input class="input" id="t-subject" value="${escape(t.subject)}" maxlength="200" />
-      <div class="hint">Placeholders: <code style="color:var(--gold-1)">{{name}}</code> <code style="color:var(--gold-1)">{{order_number}}</code> <code style="color:var(--gold-1)">{{product}}</code></div>
+      <input class="input" id="t-subject" value="${escape(toFriendly(t.subject))}" maxlength="200" />
+      <div class="hint">Insert dynamic values: <span class="tpl-chip" data-var="[Customer Name]">[Customer Name]</span> <span class="tpl-chip" data-var="[Order Number]">[Order Number]</span> <span class="tpl-chip" data-var="[Product Name]">[Product Name]</span></div>
     </div>
     <div class="form-row">
       <label for="t-body">Body</label>
-      <textarea class="textarea" id="t-body" rows="14" style="font-family:Georgia,serif;line-height:1.7" maxlength="50000">${escape(t.body)}</textarea>
+      <textarea class="textarea" id="t-body" rows="14" style="font-family:Georgia,serif;line-height:1.7" maxlength="50000">${escape(toFriendly(t.body))}</textarea>
+      <div class="hint">Insert dynamic values: <span class="tpl-chip" data-var="[Customer Name]">[Customer Name]</span> <span class="tpl-chip" data-var="[Order Number]">[Order Number]</span> <span class="tpl-chip" data-var="[Product Name]">[Product Name]</span></div>
     </div>
     <div class="form-row">
       <div class="lbl">Preview</div>
@@ -2747,8 +2756,12 @@ const openTemplateDrawer = (key) => {
   });
 
   const renderPreview = () => {
-    const subj = $('#t-subject').value.replace(/\{\{(\w+)\}\}/g, (_, k) => SAMPLE_VARS[k] || `{{${k}}}`);
-    const body = $('#t-body').value.replace(/\{\{(\w+)\}\}/g, (_, k) => SAMPLE_VARS[k] || `{{${k}}}`);
+    const friendlyToSample = (t) => t.replace(/\[([^\]]+)\]/g, (_, label) => {
+      const key = LABEL_VARS[label];
+      return key ? (SAMPLE_VARS[key] || label) : label;
+    }).replace(/\{\{(\w+)\}\}/g, (_, k) => SAMPLE_VARS[k] || `{{${k}}}`);
+    const subj = friendlyToSample($('#t-subject').value);
+    const body = friendlyToSample($('#t-body').value);
     $('#tplPreview').innerHTML = `
       <div class="ep-from">From: Maliki Atelier<br/>To: ${escape(SAMPLE_VARS.name)}</div>
       <div class="ep-subject">${escape(subj)}</div>
@@ -2758,6 +2771,21 @@ const openTemplateDrawer = (key) => {
   $('#t-subject').addEventListener('input', renderPreview);
   $('#t-body').addEventListener('input', renderPreview);
   renderPreview();
+
+  // Chip click — insert friendly placeholder at cursor
+  $('#drawerBody').addEventListener('click', (e) => {
+    const chip = e.target.closest('.tpl-chip');
+    if (!chip) return;
+    const val = chip.dataset.var;
+    const target = chip.closest('.form-row').querySelector('input, textarea');
+    if (!target) return;
+    const s = target.selectionStart ?? target.value.length;
+    const en = target.selectionEnd ?? s;
+    target.value = target.value.slice(0, s) + val + target.value.slice(en);
+    target.selectionStart = target.selectionEnd = s + val.length;
+    target.focus();
+    renderPreview();
+  });
 
   $('#tplCancel').addEventListener('click', closeDrawer);
   if (isBroadcast) {
@@ -2774,8 +2802,8 @@ const openTemplateDrawer = (key) => {
     btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Saving…';
     try {
       Store.updateTemplate(key, {
-        subject: $('#t-subject').value,
-        body: $('#t-body').value,
+        subject: toTemplate($('#t-subject').value),
+        body: toTemplate($('#t-body').value),
         enabled: $('#tplEnabled').checked,
       });
       toast('Template saved');
