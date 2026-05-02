@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
   if (req.method === 'GET') {
     try {
       const rows = await supabaseFetch(
-        `/customer_profiles?user_id=eq.${user.id}&select=wishlist&limit=1`
+        `/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}&select=wishlist&limit=1`
       );
       const wishlist = rows[0]?.wishlist || [];
       return json(res, 200, { wishlist });
@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
 
     try {
       const rows = await supabaseFetch(
-        `/customer_profiles?user_id=eq.${user.id}&select=wishlist&limit=1`
+        `/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}&select=wishlist&limit=1`
       );
       let wishlist = rows[0]?.wishlist || [];
 
@@ -61,7 +61,7 @@ module.exports = async (req, res) => {
       // Upsert the updated wishlist
       const existing = rows[0];
       if (existing) {
-        await supabaseFetch(`/customer_profiles?user_id=eq.${user.id}`, {
+        await supabaseFetch(`/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}`, {
           method: 'PATCH',
           headers: { Prefer: 'return=minimal' },
           body: JSON.stringify({ wishlist, updated_at: new Date().toISOString() }),

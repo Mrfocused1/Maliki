@@ -14,7 +14,7 @@ module.exports = async (req, res) => {
   if (!user) return;
 
   if (req.method === 'GET') {
-    const rows = await supabaseFetch(`/customer_profiles?user_id=eq.${user.id}&limit=1`);
+    const rows = await supabaseFetch(`/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}&limit=1`);
     const profile = rows[0] || {
       user_id: user.id,
       email: user.email,
@@ -31,10 +31,10 @@ module.exports = async (req, res) => {
       if (typeof body[f] === 'string') patch[f] = body[f].trim().slice(0, 300);
     }
 
-    const existing = await supabaseFetch(`/customer_profiles?user_id=eq.${user.id}&limit=1`);
+    const existing = await supabaseFetch(`/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}&limit=1`);
     let result;
     if (existing[0]) {
-      result = await supabaseFetch(`/customer_profiles?user_id=eq.${user.id}`, {
+      result = await supabaseFetch(`/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}`, {
         method: 'PATCH',
         body: JSON.stringify(patch),
       });

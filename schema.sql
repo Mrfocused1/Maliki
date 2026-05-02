@@ -246,6 +246,43 @@ alter table products add column if not exists engraving_enabled boolean default 
 alter table products add column if not exists engraving_label text default 'Add a personal engraving';
 alter table products add column if not exists engraving_max_chars integer default 20;
 
+-- Persistent rate limiting: tracks per-IP attempt counts across Vercel instances.
+-- Used by admin login and forgot-password via check_rate_limit() RPC.
+create table if not exists rate_limits (
+  key text primary key,
+  count integer not null default 0,
+  window_start timestamptz not null default now()
+);
+
+create or replace function check_rate_limit(p_key text, p_window_secs integer)
+returns integer
+language plpgsql
+security definer
+set search_path = public
+as $$
+declare v_count integer;
+begin
+  insert into rate_limits (key, count, window_start)
+  values (p_key, 1, now())
+  on conflict (key) do update
+  set
+    count = case
+      when extract(epoch from (now() - rate_limits.window_start)) > p_window_secs
+      then 1
+      else rate_limits.count + 1
+    end,
+    window_start = case
+      when extract(epoch from (now() - rate_limits.window_start)) > p_window_secs
+      then now()
+      else rate_limits.window_start
+    end
+  returning count into v_count;
+  return v_count;
+end;
+$$;
+
+grant execute on function check_rate_limit(text, integer) to anon, authenticated, service_role;
+
 -- Atomic counters: avoid read-modify-write races when concurrent webhooks
 -- decrement stock or increment discount usage_count for the same row.
 create or replace function decrement_stock(p_id text, p_qty integer)

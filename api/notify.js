@@ -182,61 +182,56 @@ module.exports = async (req, res) => {
     return json(res, 500, { error: 'server_misconfigured' });
   }
 
-  const audience = await resend(`/audiences/${RESEND_AUDIENCE_ID}/contacts`, {
-    email,
-    unsubscribed: false,
-  });
-
-  if (!audience.ok && audience.status !== 409) {
-    console.error('notify: audience add failed', audience.status, audience.data);
-    return json(res, 502, { error: 'signup_failed' });
-  }
-
-  const thankYouSubject = 'Maliki Atelier — Your Invitation Will Follow';
-  const thankYou = await resend('/emails', {
-    from: NOTIFY_FROM,
-    to: email,
-    subject: thankYouSubject,
-    html: thankYouHtml(email),
-    text: thankYouText(),
-    headers: {
-      'List-Unsubscribe': `<${unsubUrl(email)}>`,
-      'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
-    },
-  });
-  if (!thankYou.ok) {
-    console.error('notify: thank-you send failed', thankYou.status, thankYou.data);
-  }
-
-  logEmail({
-    template_key: 'waitlist_thank_you',
-    recipient_email: email,
-    recipient_name: '',
-    subject: thankYouSubject,
-    status: thankYou.ok ? 'sent' : 'failed',
-  });
-
-  if (NOTIFY_TO) {
-    const adminSubject = `New waitlist signup — ${email}`;
-    const notification = await resend('/emails', {
-      from: NOTIFY_FROM,
-      to: NOTIFY_TO,
-      reply_to: email.replace(/[^\x20-\x7E]/g, '').replace(/[\r\n\t]/g, ''),
-      subject: adminSubject,
-      html: notificationHtml(email),
+  // All Resend calls are fire-and-forget — signup acknowledged immediately
+  // regardless of Resend uptime
+  Promise.resolve().then(async () => {
+    const audience = await resend(`/audiences/${RESEND_AUDIENCE_ID}/contacts`, {
+      email, unsubscribed: false,
     });
-    if (!notification.ok) {
-      console.error('notify: notification send failed', notification.status, notification.data);
+    if (!audience.ok && audience.status !== 409) {
+      console.error('notify: audience add failed', audience.status, audience.data);
     }
 
-    logEmail({
-      template_key: 'waitlist_notification',
-      recipient_email: NOTIFY_TO,
-      recipient_name: 'Admin',
-      subject: adminSubject,
-      status: notification.ok ? 'sent' : 'failed',
+    const thankYouSubject = 'Maliki Atelier — Your Invitation Will Follow';
+    const thankYou = await resend('/emails', {
+      from: NOTIFY_FROM,
+      to: email,
+      subject: thankYouSubject,
+      html: thankYouHtml(email),
+      text: thankYouText(),
+      headers: {
+        'List-Unsubscribe': `<${unsubUrl(email)}>`,
+        'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+      },
     });
-  }
+    if (!thankYou.ok) console.error('notify: thank-you send failed', thankYou.status, thankYou.data);
+    logEmail({
+      template_key: 'waitlist_thank_you',
+      recipient_email: email,
+      recipient_name: '',
+      subject: thankYouSubject,
+      status: thankYou.ok ? 'sent' : 'failed',
+    });
+
+    if (NOTIFY_TO) {
+      const adminSubject = `New waitlist signup — ${email}`;
+      const notification = await resend('/emails', {
+        from: NOTIFY_FROM,
+        to: NOTIFY_TO,
+        reply_to: email.replace(/[^\x20-\x7E]/g, '').replace(/[\r\n\t]/g, ''),
+        subject: adminSubject,
+        html: notificationHtml(email),
+      });
+      if (!notification.ok) console.error('notify: notification send failed', notification.status, notification.data);
+      logEmail({
+        template_key: 'waitlist_notification',
+        recipient_email: NOTIFY_TO,
+        recipient_name: 'Admin',
+        subject: adminSubject,
+        status: notification.ok ? 'sent' : 'failed',
+      });
+    }
+  }).catch((e) => console.error('notify: background task failed', e.message));
 
   return json(res, 200, { ok: true });
 };

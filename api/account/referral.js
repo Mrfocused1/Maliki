@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
 
   try {
     const rows = await supabaseFetch(
-      `/customer_profiles?user_id=eq.${user.id}&select=referral_code&limit=1`
+      `/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}&select=referral_code&limit=1`
     );
     const profile = rows[0];
 
@@ -40,7 +40,7 @@ module.exports = async (req, res) => {
     const code = generateCode(user.email || '');
 
     if (profile) {
-      await supabaseFetch(`/customer_profiles?user_id=eq.${user.id}`, {
+      await supabaseFetch(`/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}`, {
         method: 'PATCH',
         headers: { Prefer: 'return=minimal' },
         body: JSON.stringify({ referral_code: code, updated_at: new Date().toISOString() }),
