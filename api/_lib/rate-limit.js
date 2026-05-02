@@ -1,6 +1,6 @@
 // Simple in-memory IP rate limiter. Per Vercel function instance.
 const buckets = new Map();
-const MAX_BUCKETS = 5000;
+const MAX_BUCKETS = 500;
 
 const sweep = () => {
   if (buckets.size <= MAX_BUCKETS) return;

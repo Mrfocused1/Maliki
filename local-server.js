@@ -21,7 +21,6 @@ const loadEnvFile = (name) => {
 loadEnvFile('.env');
 loadEnvFile('.env.local');
 
-process.env.ADMIN_PASSWORD ||= '12345';
 process.env.ADMIN_SECRET ||= 'local-preview-secret-change-before-production';
 process.env.SUPABASE_URL ||= 'https://yvjjtbejnicwckzmcadj.supabase.co';
 
@@ -160,5 +159,5 @@ http
   })
   .listen(port, '127.0.0.1', () => {
     console.log(`Serving Maliki at http://127.0.0.1:${port}`);
-    console.log(`Admin password: ${process.env.ADMIN_PASSWORD}`);
+    console.log('Admin login: use Supabase credentials configured in your environment.');
   });

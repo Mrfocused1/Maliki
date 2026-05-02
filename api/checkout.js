@@ -3,7 +3,7 @@ const { rateLimit } = require('./_lib/rate-limit');
 const { supabaseFetch } = require('./_lib/supabase');
 const { createPaymentIntent } = require('./_lib/stripe');
 
-const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_RX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
@@ -34,7 +34,7 @@ module.exports = async (req, res) => {
   const line2 = String(customerInput.line2 || '').trim().slice(0, 300);
   const city = String(customerInput.city || '').trim().slice(0, 120);
   const postal = String(customerInput.postal || '').trim().slice(0, 20);
-  const country = String(customerInput.country || '').trim().slice(0, 120);
+  const country = String(customerInput.country || '').trim().slice(0, 60);
   const discount_code_input = String(body.discount_code || '').trim().toUpperCase();
   const gift_wrap = body.gift_wrap === true;
   const gift_message = String(body.gift_message || '').trim().slice(0, 200);
@@ -46,6 +46,7 @@ module.exports = async (req, res) => {
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
   if (!line1) return json(res, 400, { error: 'address_required' });
   if (!country) return json(res, 400, { error: 'country_required' });
+  if (!/^[a-zA-Z\s\-'.]{2,60}$/.test(country)) return json(res, 400, { error: 'invalid_country' });
   if (!Array.isArray(body.items) || body.items.length === 0) return json(res, 400, { error: 'items_required' });
   if (body.items.length > 100) return json(res, 400, { error: 'too_many_items' });
 
@@ -92,12 +93,13 @@ module.exports = async (req, res) => {
     const subtotal = lineItems.reduce((sum, item) => sum + item.price_cents * item.quantity, 0);
 
     // Validate discount code
+    const cleanDiscount = /^[A-Z0-9\-]{1,40}$/.test(discount_code_input) ? discount_code_input : '';
     let discount_cents = 0;
     let validatedCode = '';
-    if (discount_code_input) {
+    if (cleanDiscount) {
       const now = new Date().toISOString();
       const dRows = await supabaseFetch(
-        `/discounts?code=eq.${encodeURIComponent(discount_code_input)}&status=eq.active&limit=1`
+        `/discounts?code=eq.${encodeURIComponent(cleanDiscount)}&status=eq.active&limit=1`
       ).catch(() => []);
       const discount = dRows?.[0];
       if (discount) {

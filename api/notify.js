@@ -3,7 +3,7 @@ const { supabaseFetch } = require('./_lib/supabase');
 
 const RESEND_BASE = 'https://api.resend.com';
 
-const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const EMAIL_RX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
 
 const uid = () => `em_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
@@ -208,7 +208,7 @@ module.exports = async (req, res) => {
     const notification = await resend('/emails', {
       from: NOTIFY_FROM,
       to: NOTIFY_TO,
-      reply_to: email.replace(/[\r\n]/g, ''),
+      reply_to: email.replace(/[^\x20-\x7E]/g, '').replace(/[\r\n\t]/g, ''),
       subject: adminSubject,
       html: notificationHtml(email),
     });
