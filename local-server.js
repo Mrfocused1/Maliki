@@ -22,6 +22,29 @@ loadEnvFile('.env');
 loadEnvFile('.env.local');
 
 process.env.ADMIN_SECRET ||= 'local-dev-only-not-for-production-use-set-env';
+
+// Auto-auth helpers (local dev only — never shipped to production)
+const { COOKIE_NAME, setSessionCookie, isAuthed } = require('./api/_lib/auth');
+const injectAdminAuth = (req) => {
+  if (!isAuthed(req)) {
+    const raw = req.headers.cookie || '';
+    const { issueToken } = (() => {
+      const crypto = require('crypto');
+      const b64url = (buf) =>
+        Buffer.from(buf).toString('base64').replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+      const sign = (p) =>
+        b64url(crypto.createHmac('sha256', process.env.ADMIN_SECRET).update(p).digest());
+      const issueToken = () => {
+        const p = b64url(JSON.stringify({ exp: Math.floor(Date.now() / 1000) + 43200 }));
+        return `${p}.${sign(p)}`;
+      };
+      return { issueToken };
+    })();
+    const token = issueToken();
+    const extra = `${COOKIE_NAME}=${token}`;
+    req.headers.cookie = raw ? `${raw}; ${extra}` : extra;
+  }
+};
 process.env.SUPABASE_URL ||= 'https://yvjjtbejnicwckzmcadj.supabase.co';
 
 const root = __dirname;
@@ -80,6 +103,8 @@ const types = {
 };
 
 const runApi = async (handler, req, res) => {
+  // Auto-authenticate all admin API calls locally
+  if (req.url && req.url.startsWith('/api/admin')) injectAdminAuth(req);
   const chunks = [];
   await new Promise((resolve, reject) => {
     req.on('data', (c) => chunks.push(c));
@@ -109,11 +134,18 @@ const sendFile = (req, res, filePath) => {
       return res.end('Not found');
     }
 
-    res.writeHead(200, {
+    const headers = {
       'Content-Type': types[path.extname(filePath).toLowerCase()] || 'application/octet-stream',
       'Content-Length': stat.size,
       'Cache-Control': req.url.startsWith('/admin') ? 'no-store' : 'no-cache',
-    });
+    };
+    // Set admin session cookie when serving admin pages locally
+    if (req.url && req.url.startsWith('/admin') && path.extname(filePath) === '.html') {
+      injectAdminAuth(req);
+      const tok = (req.headers.cookie || '').match(new RegExp(`${COOKIE_NAME}=([^;]+)`))?.[1];
+      if (tok) headers['Set-Cookie'] = `${COOKIE_NAME}=${tok}; Path=/; HttpOnly; SameSite=Strict; Max-Age=43200`;
+    }
+    res.writeHead(200, headers);
     if (req.method === 'HEAD') return res.end();
     fs.createReadStream(filePath).pipe(res);
   });
