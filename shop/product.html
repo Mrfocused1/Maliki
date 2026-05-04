@@ -310,55 +310,6 @@
   .notify-msg.ok { color: var(--ok); display: block; }
   .notify-msg.err { color: var(--warn); display: block; }
 
-  /* Size guide modal */
-  .modal-overlay {
-    display: none; position: fixed; inset: 0;
-    background: rgba(10, 9, 8, 0.85); z-index: 50;
-    align-items: center; justify-content: center;
-    backdrop-filter: blur(3px);
-  }
-  .modal-overlay.open { display: flex; }
-  .modal-box {
-    background: var(--bg-loft); border: 1px solid var(--line);
-    padding: clamp(24px, 4vw, 48px);
-    max-width: 520px; width: calc(100vw - 40px);
-    max-height: 90vh; overflow-y: auto;
-    position: relative;
-  }
-  .modal-title {
-    font-family: 'Playfair Display', serif;
-    font-size: clamp(18px, 2vw, 22px); letter-spacing: 0.22em;
-    text-transform: uppercase; color: #f5ecda; font-weight: 400;
-    margin-bottom: 20px;
-  }
-  .modal-close {
-    position: absolute; top: 16px; right: 16px;
-    background: transparent; border: none; color: var(--softer);
-    font-size: 22px; line-height: 1; padding: 4px 8px;
-    transition: color 0.2s ease;
-  }
-  .modal-close:hover { color: var(--gold-hi); }
-  .size-table {
-    width: 100%; border-collapse: collapse; margin-bottom: 20px;
-  }
-  .size-table th {
-    font-family: 'Playfair Display', serif; font-size: 10px;
-    letter-spacing: 0.38em; text-transform: uppercase; color: var(--softest);
-    padding: 8px 10px; text-align: left;
-    border-bottom: 1px solid var(--line);
-  }
-  .size-table td {
-    font-size: 14px; font-style: italic; letter-spacing: 0.04em;
-    padding: 9px 10px; color: var(--soft);
-    border-bottom: 1px solid rgba(217, 176, 112, 0.1);
-  }
-  .size-table tr:last-child td { border-bottom: none; }
-  .modal-measure {
-    font-size: 14px; color: var(--softer); line-height: 1.7;
-    letter-spacing: 0.03em; border-top: 1px solid var(--line); padding-top: 16px;
-  }
-  .modal-measure strong { color: var(--gold-1); font-style: normal; }
-
   .loading, .notfound {
     text-align: center; padding: 120px 20px;
     color: var(--softer); font-style: italic; letter-spacing: 0.14em;

@@ -1505,7 +1505,7 @@ const openProductDrawer = (productId) => {
     <div class="form-row">
       <label for="f-category">Category</label>
       <select class="input" id="f-category">
-        <option value="ring"${(p?.category || 'ring') === 'ring' ? ' selected' : ''}>Ring</option>
+        <option value="ring"${(p?.category || 'jewellery') === 'ring' ? ' selected' : ''}>Ring</option>
         <option value="necklace"${p?.category === 'necklace' ? ' selected' : ''}>Necklace</option>
         <option value="earring"${p?.category === 'earring' ? ' selected' : ''}>Earring</option>
         <option value="bracelet"${p?.category === 'bracelet' ? ' selected' : ''}>Bracelet</option>
