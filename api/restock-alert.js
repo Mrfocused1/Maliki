@@ -1,3 +1,4 @@
+const { sameOrigin } = require('./_lib/auth');
 const { supabaseFetch } = require('./_lib/supabase');
 const { rateLimit } = require('./_lib/rate-limit');
 const { EMAIL_RX } = require('./_lib/email');
@@ -19,6 +20,7 @@ const parseBody = (req) => {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
 
+  if (!sameOrigin(req)) return json(res, 403, { error: 'forbidden' });
   if (rateLimit(req, { key: 'restock-alert', max: 5, windowMs: 60000 })) {
     return json(res, 429, { error: 'too_many_requests' });
   }

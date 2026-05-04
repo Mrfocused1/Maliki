@@ -46,7 +46,7 @@ module.exports = async (req, res) => {
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
   if (!line1) return json(res, 400, { error: 'address_required' });
   if (!country) return json(res, 400, { error: 'country_required' });
-  if (!/^[a-zA-Z\s\-'.]{2,60}$/.test(country)) return json(res, 400, { error: 'invalid_country' });
+  if (!/^[\p{L}\s\-'.]{2,60}$/u.test(country)) return json(res, 400, { error: 'invalid_country' });
   if (!Array.isArray(body.items) || body.items.length === 0) return json(res, 400, { error: 'items_required' });
   if (body.items.length > 100) return json(res, 400, { error: 'too_many_items' });
 

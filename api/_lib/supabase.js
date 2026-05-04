@@ -18,7 +18,10 @@ const supabaseFetch = async (path, options = {}) => {
 
   const response = await fetch(url, { ...options, headers });
   const text = await response.text();
-  const data = text ? JSON.parse(text) : null;
+  let data = null;
+  if (text) {
+    try { data = JSON.parse(text); } catch { data = null; }
+  }
 
   if (!response.ok) {
     const error = new Error('supabase_request_failed');

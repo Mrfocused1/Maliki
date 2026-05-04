@@ -43,6 +43,9 @@ module.exports = async (req, res) => {
       });
 
     const discountValue = Number(discount.value);
+    if (!isFinite(discountValue) || discountValue < 0) {
+      return json(res, 500, { error: 'invalid_discount_configuration' });
+    }
     if (discount.type === 'percent' && discountValue > 100) {
       return json(res, 500, { error: 'invalid_discount_configuration' });
     }
@@ -50,13 +53,13 @@ module.exports = async (req, res) => {
     if (discount.type === 'percent') {
       discount_cents = Math.round(subtotal_cents * discountValue / 100);
     } else {
-      discount_cents = Math.min(discountValue, subtotal_cents);
+      discount_cents = Math.min(Math.round(discountValue), subtotal_cents);
     }
 
     const label =
       discount.type === 'percent'
-        ? `${Number(discount.value)}% off`
-        : `£${(Number(discount.value) / 100).toFixed(2).replace(/\.00$/, '')} off`;
+        ? `${discountValue}% off`
+        : `£${(discountValue / 100).toFixed(2).replace(/\.00$/, '')} off`;
 
     return json(res, 200, { valid: true, discount_cents, label, code: discount.code });
   } catch (err) {
