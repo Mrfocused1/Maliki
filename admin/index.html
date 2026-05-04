@@ -688,7 +688,11 @@
   .settings-layout {
     display: grid; grid-template-columns: 200px 1fr; gap: 28px;
   }
-  @media (max-width: 880px) { .settings-layout { grid-template-columns: 1fr; } }
+  @media (max-width: 880px) {
+    .settings-layout { grid-template-columns: 1fr; gap: 12px; }
+    .settings-nav { flex-direction: row; flex-wrap: wrap; border-bottom: 1px solid var(--line); padding-bottom: 6px; }
+    .settings-nav button { padding: 7px 12px; }
+  }
   .settings-nav {
     display: flex; flex-direction: column; gap: 2px;
   }
@@ -3495,7 +3499,7 @@ const renderContent = () => {
 
   const tabs = [['homepage', 'Homepage'], ['pages', 'Pages']];
   $('#content').innerHTML = `
-    <div class="settings-layout" style="grid-template-columns:140px 1fr">
+    <div class="settings-layout">
       <nav class="settings-nav">
         ${tabs.map(([k, lbl]) => `<button class="${state.contentTab === k ? 'active' : ''}" data-ct="${k}">${escape(lbl)}</button>`).join('')}
       </nav>
