@@ -146,6 +146,13 @@ const resolveStaticPath = (pathname, req) => {
 
   const filePath = path.normalize(path.join(root, requestPath));
   if (!filePath.startsWith(root)) return null;
+
+  // Serve directory index when path has no extension and directory exists
+  if (!path.extname(filePath)) {
+    const indexPath = path.join(filePath, 'index.html');
+    if (fs.existsSync(indexPath)) return indexPath;
+  }
+
   return filePath;
 };
 

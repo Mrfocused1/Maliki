@@ -1157,22 +1157,31 @@
     Store.on(() => updateCartCount());
 
     // ── Main init ───────────────────────────────────────────────────────
+    let productRendered = false;
+
+    const tryRenderProduct = () => {
+      if (productRendered) return;
+      const p = Store.productBySlug(slug);
+      if (!p || p.published === false) return;
+      productRendered = true;
+      updateRecentlyViewed(slug);
+      renderProduct(p).then(() => {
+        renderReviews(p);
+        renderRecentlyViewed(slug);
+        renderRelated(p);
+      });
+    };
+
     if (!slug) {
       renderNotFound();
     } else {
-      const p = Store.productBySlug(slug);
-      if (!p || p.published === false) {
-        renderNotFound();
-      } else {
-        // Update recently viewed before rendering
-        updateRecentlyViewed(slug);
-
-        renderProduct(p).then(() => {
-          // Render supplementary sections after product is in the DOM
-          renderReviews(p);
-          renderRecentlyViewed(slug);
-          renderRelated(p);
-        });
+      // Try immediately (catalog may already be in localStorage)
+      tryRenderProduct();
+      if (!productRendered) {
+        // Catalog still loading — wait for Store update then re-try
+        Store.on(tryRenderProduct);
+        // Fallback: if catalog loads but product genuinely doesn't exist, show not found after a tick
+        setTimeout(() => { if (!productRendered) renderNotFound(); }, 5000);
       }
     }
     updateCartCount();

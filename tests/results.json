@@ -1,0 +1,3488 @@
+{
+  "config": {
+    "configFile": "/Users/paulbridges/Desktop/Maliki/playwright.config.js",
+    "rootDir": "/Users/paulbridges/Desktop/Maliki/tests",
+    "forbidOnly": false,
+    "fullyParallel": false,
+    "globalSetup": null,
+    "globalTeardown": null,
+    "globalTimeout": 0,
+    "grep": {},
+    "grepInvert": null,
+    "maxFailures": 0,
+    "metadata": {
+      "actualWorkers": 1
+    },
+    "preserveOutput": "always",
+    "projects": [
+      {
+        "outputDir": "/Users/paulbridges/Desktop/Maliki/test-results",
+        "repeatEach": 1,
+        "retries": 0,
+        "metadata": {
+          "actualWorkers": 1
+        },
+        "id": "chromium",
+        "name": "chromium",
+        "testDir": "/Users/paulbridges/Desktop/Maliki/tests",
+        "testIgnore": [],
+        "testMatch": [
+          "**/*.@(spec|test).?(c|m)[jt]s?(x)"
+        ],
+        "timeout": 30000
+      }
+    ],
+    "quiet": false,
+    "reporter": [
+      [
+        "list",
+        null
+      ],
+      [
+        "json",
+        {
+          "outputFile": "tests/results.json"
+        }
+      ]
+    ],
+    "reportSlowTests": {
+      "max": 5,
+      "threshold": 300000
+    },
+    "shard": null,
+    "tags": [],
+    "updateSnapshots": "missing",
+    "updateSourceMethod": "patch",
+    "version": "1.59.1",
+    "workers": 1,
+    "webServer": null
+  },
+  "suites": [
+    {
+      "title": "01-navigation.spec.js",
+      "file": "01-navigation.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Navigation",
+          "file": "01-navigation.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "homepage loads with title and hero",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 0,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 9596,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#heroHeadline')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#heroHeadline')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#heroHeadline')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#heroHeadline')\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:10:49",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                          "column": 49,
+                          "line": 10
+                        },
+                        "snippet": "   8 |     await page.waitForLoadState('domcontentloaded');\n   9 |     await expect(page).toHaveTitle(/Maliki/i);\n> 10 |     await expect(page.locator('#heroHeadline')).toBeVisible();\n     |                                                 ^\n  11 |     await expect(page.locator('#heroCta')).toBeVisible();\n  12 |   });\n  13 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                            "column": 49,
+                            "line": 10
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#heroHeadline')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#heroHeadline')\u001b[22m\n\n\n   8 |     await page.waitForLoadState('domcontentloaded');\n   9 |     await expect(page).toHaveTitle(/Maliki/i);\n> 10 |     await expect(page.locator('#heroHeadline')).toBeVisible();\n     |                                                 ^\n  11 |     await expect(page.locator('#heroCta')).toBeVisible();\n  12 |   });\n  13 |\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:10:49"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:33:44.042Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-homepage-loads-with-title-and-hero-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-homepage-loads-with-title-and-hero-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                        "column": 49,
+                        "line": 10
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-601c283cce20eac90853",
+              "file": "01-navigation.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "header links navigate correctly",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 1,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30314,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                            "column": 16,
+                            "line": 19
+                          },
+                          "message": "Error: page.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('a[href=\"/shop\"]')\u001b[22m\n\n\n  17 |\n  18 |     // Shop link\n> 19 |     await page.click('a[href=\"/shop\"]');\n     |                ^\n  20 |     await page.waitForURL('**/shop**');\n  21 |     await expect(page).toHaveURL(/\\/shop/);\n  22 |\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:19:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:33:56.887Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-header-links-navigate-correctly-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-header-links-navigate-correctly-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-0a0346520b6f32add5c5",
+              "file": "01-navigation.spec.js",
+              "line": 14,
+              "column": 3
+            },
+            {
+              "title": "cart link navigates to cart",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 2,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30366,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                            "column": 16,
+                            "line": 32
+                          },
+                          "message": "Error: page.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('a.cart-btn')\u001b[22m\n\n\n  30 |     await page.goto('/');\n  31 |     await page.waitForLoadState('domcontentloaded');\n> 32 |     await page.click('a.cart-btn');\n     |                ^\n  33 |     await page.waitForURL('**/cart**');\n  34 |     await expect(page).toHaveURL(/\\/cart/);\n  35 |   });\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:32:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:34:27.705Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-cart-link-navigates-to-cart-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-cart-link-navigates-to-cart-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-e4434ae15036827f2247",
+              "file": "01-navigation.spec.js",
+              "line": 29,
+              "column": 3
+            },
+            {
+              "title": "mobile menu opens and closes",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 3,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30300,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                            "column": 18,
+                            "line": 43
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#burgerBtn')\u001b[22m\n\n\n  41 |\n  42 |     const burger = page.locator('#burgerBtn');\n> 43 |     await burger.click();\n     |                  ^\n  44 |     await expect(page.locator('#mobileNav')).toHaveAttribute('aria-hidden', 'false');\n  45 |\n  46 |     await page.locator('#mobileNavClose').click();\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:43:18"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:34:58.606Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-mobile-menu-opens-and-closes-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-mobile-menu-opens-and-closes-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-0c7c218a559126b75134",
+              "file": "01-navigation.spec.js",
+              "line": 37,
+              "column": 3
+            },
+            {
+              "title": "about page loads",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 4,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8120,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/Maliki/i\u001b[39m\nReceived string:  \u001b[31m\"\"\u001b[39m\nTimeout: 8000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 8000ms\u001b[22m\n\u001b[2m    12 × unexpected value \"\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/Maliki/i\u001b[39m\nReceived string:  \u001b[31m\"\"\u001b[39m\nTimeout: 8000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 8000ms\u001b[22m\n\u001b[2m    12 × unexpected value \"\"\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:53:24",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                          "column": 24,
+                          "line": 53
+                        },
+                        "snippet": "  51 |     await page.goto('/about');\n  52 |     await page.waitForLoadState('domcontentloaded');\n> 53 |     await expect(page).toHaveTitle(/Maliki/i);\n     |                        ^\n  54 |     await expect(page.locator('main, #main, body')).toBeVisible();\n  55 |   });\n  56 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                            "column": 24,
+                            "line": 53
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/Maliki/i\u001b[39m\nReceived string:  \u001b[31m\"\"\u001b[39m\nTimeout: 8000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 8000ms\u001b[22m\n\u001b[2m    12 × unexpected value \"\"\u001b[22m\n\n\n  51 |     await page.goto('/about');\n  52 |     await page.waitForLoadState('domcontentloaded');\n> 53 |     await expect(page).toHaveTitle(/Maliki/i);\n     |                        ^\n  54 |     await expect(page.locator('main, #main, body')).toBeVisible();\n  55 |   });\n  56 |\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:53:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:35:29.552Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-about-page-loads-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-about-page-loads-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                        "column": 24,
+                        "line": 53
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-f4cdab052be517396b4f",
+              "file": "01-navigation.spec.js",
+              "line": 50,
+              "column": 3
+            },
+            {
+              "title": "contact page loads",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 5,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8115,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#contactForm')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#contactForm')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#contactForm')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#contactForm')\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:60:48",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                          "column": 48,
+                          "line": 60
+                        },
+                        "snippet": "  58 |     await page.goto('/contact');\n  59 |     await page.waitForLoadState('domcontentloaded');\n> 60 |     await expect(page.locator('#contactForm')).toBeVisible();\n     |                                                ^\n  61 |   });\n  62 |\n  63 |   test('account page loads login form', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                            "column": 48,
+                            "line": 60
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#contactForm')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#contactForm')\u001b[22m\n\n\n  58 |     await page.goto('/contact');\n  59 |     await page.waitForLoadState('domcontentloaded');\n> 60 |     await expect(page.locator('#contactForm')).toBeVisible();\n     |                                                ^\n  61 |   });\n  62 |\n  63 |   test('account page loads login form', async ({ page }) => {\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:60:48"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:35:38.109Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-contact-page-loads-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-contact-page-loads-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                        "column": 48,
+                        "line": 60
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-af4d999b521ca1a3d34b",
+              "file": "01-navigation.spec.js",
+              "line": 57,
+              "column": 3
+            },
+            {
+              "title": "account page loads login form",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 6,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8129,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:66:41",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                          "column": 41,
+                          "line": 66
+                        },
+                        "snippet": "  64 |     await page.goto('/account');\n  65 |     await page.waitForLoadState('domcontentloaded');\n> 66 |     await expect(page.locator('#root')).toBeVisible();\n     |                                         ^\n  67 |     // should show login or account content\n  68 |     await expect(page.locator('body')).toContainText(/sign in|log in|your account/i);\n  69 |   });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                            "column": 41,
+                            "line": 66
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n\n\n  64 |     await page.goto('/account');\n  65 |     await page.waitForLoadState('domcontentloaded');\n> 66 |     await expect(page.locator('#root')).toBeVisible();\n     |                                         ^\n  67 |     // should show login or account content\n  68 |     await expect(page.locator('body')).toContainText(/sign in|log in|your account/i);\n  69 |   });\n    at /Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js:66:41"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:35:46.646Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-account-page-loads-login-form-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/01-navigation-Navigation-account-page-loads-login-form-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/01-navigation.spec.js",
+                        "column": 41,
+                        "line": 66
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-5622ba2360f35d2c432b",
+              "file": "01-navigation.spec.js",
+              "line": 63,
+              "column": 3
+            },
+            {
+              "title": "404 page returns not found",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 120,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:35:55.203Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-45bff22ca966d582024a",
+              "file": "01-navigation.spec.js",
+              "line": 71,
+              "column": 3
+            },
+            {
+              "title": "cookie banner accept sets localStorage",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 939,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:35:55.433Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-5bd815cfe3b6fccfc06d",
+              "file": "01-navigation.spec.js",
+              "line": 76,
+              "column": 3
+            },
+            {
+              "title": "cookie banner decline sets localStorage",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 490,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:35:56.382Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "02be17a2568d5257bc3a-422b5ca90225f241cc7d",
+              "file": "01-navigation.spec.js",
+              "line": 90,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "02-shop.spec.js",
+      "file": "02-shop.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Shop",
+          "file": "02-shop.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "shop page loads with search input",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 7,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8074,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/shop|collection|maliki/i\u001b[39m\nReceived string:  \u001b[31m\"\"\u001b[39m\nTimeout: 8000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 8000ms\u001b[22m\n\u001b[2m    12 × unexpected value \"\"\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/shop|collection|maliki/i\u001b[39m\nReceived string:  \u001b[31m\"\"\u001b[39m\nTimeout: 8000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 8000ms\u001b[22m\n\u001b[2m    12 × unexpected value \"\"\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js:9:24",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                          "column": 24,
+                          "line": 9
+                        },
+                        "snippet": "   7 |     await page.goto('/shop');\n   8 |     await page.waitForLoadState('domcontentloaded');\n>  9 |     await expect(page).toHaveTitle(/shop|collection|maliki/i);\n     |                        ^\n  10 |     await expect(page.locator('#searchInput')).toBeVisible();\n  11 |   });\n  12 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                            "column": 24,
+                            "line": 9
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mpage\u001b[39m\u001b[2m).\u001b[22mtoHaveTitle\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m)\u001b[22m failed\n\nExpected pattern: \u001b[32m/shop|collection|maliki/i\u001b[39m\nReceived string:  \u001b[31m\"\"\u001b[39m\nTimeout: 8000ms\n\nCall log:\n\u001b[2m  - Expect \"toHaveTitle\" with timeout 8000ms\u001b[22m\n\u001b[2m    12 × unexpected value \"\"\u001b[22m\n\n\n   7 |     await page.goto('/shop');\n   8 |     await page.waitForLoadState('domcontentloaded');\n>  9 |     await expect(page).toHaveTitle(/shop|collection|maliki/i);\n     |                        ^\n  10 |     await expect(page.locator('#searchInput')).toBeVisible();\n  11 |   });\n  12 |\n    at /Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js:9:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:35:56.881Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/02-shop-Shop-shop-page-loads-with-search-input-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/02-shop-Shop-shop-page-loads-with-search-input-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                        "column": 24,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ef12694605093344db2b-c4c977b721e8251b7b8c",
+              "file": "02-shop.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "shop grid renders after catalog loads",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 8,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8648,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#grid')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#grid')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#grid')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#grid')\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js:17:24",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                          "column": 24,
+                          "line": 17
+                        },
+                        "snippet": "  15 |     await page.waitForLoadState('networkidle');\n  16 |     const grid = page.locator('#grid');\n> 17 |     await expect(grid).toBeVisible();\n     |                        ^\n  18 |     // Either products are listed or empty state is shown\n  19 |     const gridContent = await grid.innerHTML();\n  20 |     expect(gridContent.length).toBeGreaterThan(0);"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                            "column": 24,
+                            "line": 17
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#grid')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#grid')\u001b[22m\n\n\n  15 |     await page.waitForLoadState('networkidle');\n  16 |     const grid = page.locator('#grid');\n> 17 |     await expect(grid).toBeVisible();\n     |                        ^\n  18 |     // Either products are listed or empty state is shown\n  19 |     const gridContent = await grid.innerHTML();\n  20 |     expect(gridContent.length).toBeGreaterThan(0);\n    at /Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js:17:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:05.344Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/02-shop-Shop-shop-grid-renders-after-catalog-loads-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/02-shop-Shop-shop-grid-renders-after-catalog-loads-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                        "column": 24,
+                        "line": 17
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ef12694605093344db2b-a6bdd14aff7952e7e89a",
+              "file": "02-shop.spec.js",
+              "line": 13,
+              "column": 3
+            },
+            {
+              "title": "search input filters products",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 9,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30057,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                            "column": 23,
+                            "line": 29
+                          },
+                          "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#searchInput')\u001b[22m\n\n\n  27 |\n  28 |     const searchInput = page.locator('#searchInput');\n> 29 |     await searchInput.fill('zzz_no_match_query');\n     |                       ^\n  30 |     await page.waitForTimeout(400);\n  31 |\n  32 |     if (products.length > 0) {\n    at /Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js:29:23"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:14.439Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/02-shop-Shop-search-input-filters-products-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/02-shop-Shop-search-input-filters-products-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "ef12694605093344db2b-1ce6852e10ae03605892",
+              "file": "02-shop.spec.js",
+              "line": 23,
+              "column": 3
+            },
+            {
+              "title": "product cards link to product detail",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                        "line": 43,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 156,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:44.944Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/02-shop.spec.js",
+                            "line": 43,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "ef12694605093344db2b-f4d81456a911b073c918",
+              "file": "02-shop.spec.js",
+              "line": 40,
+              "column": 3
+            },
+            {
+              "title": "recently viewed section initialises",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 112,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:45.216Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "ef12694605093344db2b-8e113683408a8498c4ba",
+              "file": "02-shop.spec.js",
+              "line": 56,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "03-product-detail.spec.js",
+      "file": "03-product-detail.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Product Detail",
+          "file": "03-product-detail.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "product page loads title and price",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                        "line": 9,
+                        "column": 37
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 100,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:45.339Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                            "line": 9,
+                            "column": 37
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f3a335b83a32d9b170d2-23b3286ef97271c7cb95",
+              "file": "03-product-detail.spec.js",
+              "line": 12,
+              "column": 3
+            },
+            {
+              "title": "add to cart button exists and can be clicked",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                        "line": 9,
+                        "column": 37
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 91,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:45.448Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                            "line": 9,
+                            "column": 37
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f3a335b83a32d9b170d2-cd95b1d13ea7752810d6",
+              "file": "03-product-detail.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "adding to cart increments cart count",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                        "line": 9,
+                        "column": 37
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 106,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:45.549Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                            "line": 9,
+                            "column": 37
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f3a335b83a32d9b170d2-858a6957d39efe71f4c2",
+              "file": "03-product-detail.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "product images load",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                        "line": 9,
+                        "column": 37
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 210,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:45.663Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                            "line": 9,
+                            "column": 37
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f3a335b83a32d9b170d2-90ba12a2f937e1b13060",
+              "file": "03-product-detail.spec.js",
+              "line": 69,
+              "column": 3
+            },
+            {
+              "title": "product detail page does not show JS errors in console",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                        "line": 9,
+                        "column": 37
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 90,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:45.882Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/03-product-detail.spec.js",
+                            "line": 9,
+                            "column": 37
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "f3a335b83a32d9b170d2-7220d404714c7b621b00",
+              "file": "03-product-detail.spec.js",
+              "line": 84,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "04-cart.spec.js",
+      "file": "04-cart.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Cart",
+          "file": "04-cart.spec.js",
+          "line": 19,
+          "column": 6,
+          "specs": [
+            {
+              "title": "empty cart shows empty state",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 10,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8117,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js:28:41",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                          "column": 41,
+                          "line": 28
+                        },
+                        "snippet": "  26 |     });\n  27 |     await page.reload({ waitUntil: 'domcontentloaded' });\n> 28 |     await expect(page.locator('#root')).toBeVisible();\n     |                                         ^\n  29 |     // Empty cart should show something useful, not crash\n  30 |     const content = await page.locator('#root').textContent();\n  31 |     expect(content).toBeDefined();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                            "column": 41,
+                            "line": 28
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#root')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#root')\u001b[22m\n\n\n  26 |     });\n  27 |     await page.reload({ waitUntil: 'domcontentloaded' });\n> 28 |     await expect(page.locator('#root')).toBeVisible();\n     |                                         ^\n  29 |     // Empty cart should show something useful, not crash\n  30 |     const content = await page.locator('#root').textContent();\n  31 |     expect(content).toBeDefined();\n    at /Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js:28:41"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:45.982Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/04-cart-Cart-empty-cart-shows-empty-state-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/04-cart-Cart-empty-cart-shows-empty-state-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                        "column": 41,
+                        "line": 28
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "80112cd6be4c0cd1b711-f54e72268c6f42b72392",
+              "file": "04-cart.spec.js",
+              "line": 20,
+              "column": 3
+            },
+            {
+              "title": "cart renders seeded item",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                        "line": 37,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 214,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:54.486Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                            "line": 37,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "80112cd6be4c0cd1b711-3dff85ccc8bc15a8d2c3",
+              "file": "04-cart.spec.js",
+              "line": 34,
+              "column": 3
+            },
+            {
+              "title": "checkout form shows with item in cart",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                        "line": 53,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 88,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:54.853Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                            "line": 53,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "80112cd6be4c0cd1b711-814bae20fb2d45b77b27",
+              "file": "04-cart.spec.js",
+              "line": 50,
+              "column": 3
+            },
+            {
+              "title": "checkout form validates required fields",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                        "line": 70,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 77,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:54.946Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                            "line": 70,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "80112cd6be4c0cd1b711-3b198903d526ad142baa",
+              "file": "04-cart.spec.js",
+              "line": 67,
+              "column": 3
+            },
+            {
+              "title": "discount code input is accessible",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                        "line": 92,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 95,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:55.029Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                            "line": 92,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "80112cd6be4c0cd1b711-c1422bc2c4029ca2a0d9",
+              "file": "04-cart.spec.js",
+              "line": 89,
+              "column": 3
+            },
+            {
+              "title": "gift wrap checkbox toggles message box",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [
+                    {
+                      "type": "skip",
+                      "location": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                        "line": 110,
+                        "column": 12
+                      }
+                    }
+                  ],
+                  "expectedStatus": "skipped",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "skipped",
+                      "duration": 77,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:55.130Z",
+                      "annotations": [
+                        {
+                          "type": "skip",
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/04-cart.spec.js",
+                            "line": 110,
+                            "column": 12
+                          }
+                        }
+                      ],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "skipped"
+                }
+              ],
+              "id": "80112cd6be4c0cd1b711-88495cc8dad81bc791d2",
+              "file": "04-cart.spec.js",
+              "line": 107,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "05-contact-newsletter.spec.js",
+      "file": "05-contact-newsletter.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Contact Form",
+          "file": "05-contact-newsletter.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "contact form shows all fields",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 11,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8077,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#cName')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#cName')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#cName')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#cName')\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:9:42",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                          "column": 42,
+                          "line": 9
+                        },
+                        "snippet": "   7 |     await page.goto('/contact');\n   8 |     await page.waitForLoadState('domcontentloaded');\n>  9 |     await expect(page.locator('#cName')).toBeVisible();\n     |                                          ^\n  10 |     await expect(page.locator('#cEmail')).toBeVisible();\n  11 |     await expect(page.locator('#cMessage')).toBeVisible();\n  12 |     await expect(page.locator('#contactSubmit')).toBeVisible();"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                            "column": 42,
+                            "line": 9
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#cName')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#cName')\u001b[22m\n\n\n   7 |     await page.goto('/contact');\n   8 |     await page.waitForLoadState('domcontentloaded');\n>  9 |     await expect(page.locator('#cName')).toBeVisible();\n     |                                          ^\n  10 |     await expect(page.locator('#cEmail')).toBeVisible();\n  11 |     await expect(page.locator('#cMessage')).toBeVisible();\n  12 |     await expect(page.locator('#contactSubmit')).toBeVisible();\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:9:42"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:36:55.214Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-Cont-d32ed-ntact-form-shows-all-fields-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-Cont-d32ed-ntact-form-shows-all-fields-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                        "column": 42,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "fc8e880f9fc69a41cd1d-c2207c06871e1e059723",
+              "file": "05-contact-newsletter.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "contact form validates required fields",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 12,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30031,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                            "column": 42,
+                            "line": 19
+                          },
+                          "message": "Error: locator.click: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#contactSubmit')\u001b[22m\n\n\n  17 |     await page.waitForLoadState('domcontentloaded');\n  18 |\n> 19 |     await page.locator('#contactSubmit').click();\n     |                                          ^\n  20 |     const nameValid = await page.locator('#cName').evaluate((el) => (el).validity.valid);\n  21 |     expect(nameValid).toBe(false);\n  22 |   });\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:19:42"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:37:03.650Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-Cont-2395f-m-validates-required-fields-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-Cont-2395f-m-validates-required-fields-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "fc8e880f9fc69a41cd1d-f1aa1571e923e2f83c83",
+              "file": "05-contact-newsletter.spec.js",
+              "line": 15,
+              "column": 3
+            },
+            {
+              "title": "contact form submits with valid data",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 13,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30040,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                            "column": 34,
+                            "line": 28
+                          },
+                          "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#cName')\u001b[22m\n\n\n  26 |     await page.waitForLoadState('domcontentloaded');\n  27 |\n> 28 |     await page.locator('#cName').fill('E2E Test');\n     |                                  ^\n  29 |     await page.locator('#cEmail').fill(TEST_EMAIL);\n  30 |     await page.locator('#cMessage').fill('Automated E2E test message — please ignore.');\n  31 |\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:28:34"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:37:34.130Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-Cont-7ee0c-orm-submits-with-valid-data-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-Cont-7ee0c-orm-submits-with-valid-data-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "fc8e880f9fc69a41cd1d-cf5a71469e6cee6d8d68",
+              "file": "05-contact-newsletter.spec.js",
+              "line": 24,
+              "column": 3
+            },
+            {
+              "title": "contact form shows feedback after submission",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 14,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30140,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                            "column": 34,
+                            "line": 45
+                          },
+                          "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#cName')\u001b[22m\n\n\n  43 |     await page.waitForLoadState('domcontentloaded');\n  44 |\n> 45 |     await page.locator('#cName').fill('E2E Test');\n     |                                  ^\n  46 |     await page.locator('#cEmail').fill(TEST_EMAIL);\n  47 |     await page.locator('#cMessage').fill('Automated test.');\n  48 |\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:45:34"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:38:04.667Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-Cont-0aca6-s-feedback-after-submission-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-Cont-0aca6-s-feedback-after-submission-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "fc8e880f9fc69a41cd1d-bc3265932554bade8026",
+              "file": "05-contact-newsletter.spec.js",
+              "line": 41,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Newsletter Signup",
+          "file": "05-contact-newsletter.spec.js",
+          "line": 56,
+          "column": 6,
+          "specs": [
+            {
+              "title": "newsletter API rejects invalid email",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 15,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 1190,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m400\u001b[39m\nReceived: \u001b[31m405\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m400\u001b[39m\nReceived: \u001b[31m405\u001b[39m\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:69:27",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                          "column": 27,
+                          "line": 69
+                        },
+                        "snippet": "  67 |       },\n  68 |     });\n> 69 |     expect(resp.status()).toBe(400);\n     |                           ^\n  70 |     const body = await resp.json();\n  71 |     expect(body.error).toBe('invalid_email');\n  72 |   });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                            "column": 27,
+                            "line": 69
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m400\u001b[39m\nReceived: \u001b[31m405\u001b[39m\n\n  67 |       },\n  68 |     });\n> 69 |     expect(resp.status()).toBe(400);\n     |                           ^\n  70 |     const body = await resp.json();\n  71 |     expect(body.error).toBe('invalid_email');\n  72 |   });\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:69:27"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:38:35.522Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-News-9e6a3-r-API-rejects-invalid-email-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-News-9e6a3-r-API-rejects-invalid-email-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                        "column": 27,
+                        "line": 69
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "fc8e880f9fc69a41cd1d-db3b449c5231dbc6e384",
+              "file": "05-contact-newsletter.spec.js",
+              "line": 57,
+              "column": 3
+            },
+            {
+              "title": "newsletter API accepts valid test email",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 16,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 798,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m405\u001b[39m\nReceived array: \u001b[31m[200, 500]\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m405\u001b[39m\nReceived array: \u001b[31m[200, 500]\u001b[39m\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:87:24",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                          "column": 24,
+                          "line": 87
+                        },
+                        "snippet": "  85 |     });\n  86 |     // 200 ok, or 500 if Supabase not reachable locally\n> 87 |     expect([200, 500]).toContain(resp.status());\n     |                        ^\n  88 |   });\n  89 |\n  90 |   test('newsletter API enforces same-origin', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                            "column": 24,
+                            "line": 87
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoContain\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // indexOf\u001b[22m\n\nExpected value: \u001b[32m405\u001b[39m\nReceived array: \u001b[31m[200, 500]\u001b[39m\n\n  85 |     });\n  86 |     // 200 ok, or 500 if Supabase not reachable locally\n> 87 |     expect([200, 500]).toContain(resp.status());\n     |                        ^\n  88 |   });\n  89 |\n  90 |   test('newsletter API enforces same-origin', async ({ page }) => {\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:87:24"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:38:37.548Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-News-d0314-PI-accepts-valid-test-email-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-News-d0314-PI-accepts-valid-test-email-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                        "column": 24,
+                        "line": 87
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "fc8e880f9fc69a41cd1d-c273a7ee3459df6ddb21",
+              "file": "05-contact-newsletter.spec.js",
+              "line": 74,
+              "column": 3
+            },
+            {
+              "title": "newsletter API enforces same-origin",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 17,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 133,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m403\u001b[39m\nReceived: \u001b[31m405\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m403\u001b[39m\nReceived: \u001b[31m405\u001b[39m\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:98:27",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                          "column": 27,
+                          "line": 98
+                        },
+                        "snippet": "   96 |       },\n   97 |     });\n>  98 |     expect(resp.status()).toBe(403);\n      |                           ^\n   99 |   });\n  100 | });\n  101 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                            "column": 27,
+                            "line": 98
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m403\u001b[39m\nReceived: \u001b[31m405\u001b[39m\n\n   96 |       },\n   97 |     });\n>  98 |     expect(resp.status()).toBe(403);\n      |                           ^\n   99 |   });\n  100 | });\n  101 |\n    at /Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js:98:27"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:38:38.838Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-News-5ef4b-er-API-enforces-same-origin-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/05-contact-newsletter-News-5ef4b-er-API-enforces-same-origin-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/05-contact-newsletter.spec.js",
+                        "column": 27,
+                        "line": 98
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "fc8e880f9fc69a41cd1d-c1cbd80618fa4a610ed7",
+              "file": "05-contact-newsletter.spec.js",
+              "line": 90,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "06-account.spec.js",
+      "file": "06-account.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Account Page",
+          "file": "06-account.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "account page loads without error",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 601,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:38:39.389Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f0d578745c972c15320a-a85550556c0f9d9f768e",
+              "file": "06-account.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "login panel is visible when not authenticated",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 18,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8607,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#loginPanel, #loginForm, [id*=\"login\"]').first()\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#loginPanel, #loginForm, [id*=\"login\"]').first()\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#loginPanel, #loginForm, [id*=\"login\"]').first()\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#loginPanel, #loginForm, [id*=\"login\"]').first()\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js:21:82",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js",
+                          "column": 82,
+                          "line": 21
+                        },
+                        "snippet": "  19 |     await page.waitForLoadState('networkidle');\n  20 |\n> 21 |     await expect(page.locator('#loginPanel, #loginForm, [id*=\"login\"]').first()).toBeVisible({ timeout: 8000 });\n     |                                                                                  ^\n  22 |     await expect(page.locator('#lEmail')).toBeVisible();\n  23 |     await expect(page.locator('#lPass')).toBeVisible();\n  24 |   });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js",
+                            "column": 82,
+                            "line": 21
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#loginPanel, #loginForm, [id*=\"login\"]').first()\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#loginPanel, #loginForm, [id*=\"login\"]').first()\u001b[22m\n\n\n  19 |     await page.waitForLoadState('networkidle');\n  20 |\n> 21 |     await expect(page.locator('#loginPanel, #loginForm, [id*=\"login\"]').first()).toBeVisible({ timeout: 8000 });\n     |                                                                                  ^\n  22 |     await expect(page.locator('#lEmail')).toBeVisible();\n  23 |     await expect(page.locator('#lPass')).toBeVisible();\n  24 |   });\n    at /Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js:21:82"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:38:40.094Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/06-account-Account-Page-lo-cace1-ible-when-not-authenticated-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/06-account-Account-Page-lo-cace1-ible-when-not-authenticated-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js",
+                        "column": 82,
+                        "line": 21
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "f0d578745c972c15320a-551afafc41fff2bd868d",
+              "file": "06-account.spec.js",
+              "line": 17,
+              "column": 3
+            },
+            {
+              "title": "login with invalid credentials shows error",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 19,
+                      "parallelIndex": 0,
+                      "status": "timedOut",
+                      "duration": 30054,
+                      "error": {
+                        "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m",
+                        "stack": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                      },
+                      "errors": [
+                        {
+                          "message": "\u001b[31mTest timeout of 30000ms exceeded.\u001b[39m"
+                        },
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js",
+                            "column": 35,
+                            "line": 30
+                          },
+                          "message": "Error: locator.fill: Test timeout of 30000ms exceeded.\nCall log:\n\u001b[2m  - waiting for locator('#lEmail')\u001b[22m\n\n\n  28 |     await page.waitForLoadState('networkidle');\n  29 |\n> 30 |     await page.locator('#lEmail').fill(TEST_EMAIL);\n     |                                   ^\n  31 |     await page.locator('#lPass').fill('wrong-password-e2e');\n  32 |\n  33 |     await page.locator('#loginBtn').click();\n    at /Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js:30:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:38:49.033Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/06-account-Account-Page-lo-2bfbb-lid-credentials-shows-error-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/06-account-Account-Page-lo-2bfbb-lid-credentials-shows-error-chromium/error-context.md"
+                        }
+                      ]
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "f0d578745c972c15320a-e425055bfe465f9bfc06",
+              "file": "06-account.spec.js",
+              "line": 26,
+              "column": 3
+            },
+            {
+              "title": "register panel switches on tab click",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 612,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:19.516Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f0d578745c972c15320a-070b50583c6401fd2864",
+              "file": "06-account.spec.js",
+              "line": 40,
+              "column": 3
+            },
+            {
+              "title": "forgot password button is present",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 20,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8585,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#forgotBtn')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#forgotBtn')\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#forgotBtn')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#forgotBtn')\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js:56:46",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js",
+                          "column": 46,
+                          "line": 56
+                        },
+                        "snippet": "  54 |     await page.waitForLoadState('networkidle');\n  55 |\n> 56 |     await expect(page.locator('#forgotBtn')).toBeVisible();\n     |                                              ^\n  57 |   });\n  58 |\n  59 |   test('register form validates email format', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js",
+                            "column": 46,
+                            "line": 56
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#forgotBtn')\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#forgotBtn')\u001b[22m\n\n\n  54 |     await page.waitForLoadState('networkidle');\n  55 |\n> 56 |     await expect(page.locator('#forgotBtn')).toBeVisible();\n     |                                              ^\n  57 |   });\n  58 |\n  59 |   test('register form validates email format', async ({ page }) => {\n    at /Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js:56:46"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:20.238Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/06-account-Account-Page-forgot-password-button-is-present-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/06-account-Account-Page-forgot-password-button-is-present-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/06-account.spec.js",
+                        "column": 46,
+                        "line": 56
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "f0d578745c972c15320a-bee0fd63a7a5242089af",
+              "file": "06-account.spec.js",
+              "line": 52,
+              "column": 3
+            },
+            {
+              "title": "register form validates email format",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 617,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:29.149Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "f0d578745c972c15320a-8cd90c59fb6d57df5523",
+              "file": "06-account.spec.js",
+              "line": 59,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "07-admin.spec.js",
+      "file": "07-admin.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Admin — Unauthenticated",
+          "file": "07-admin.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "admin page shows login form when not logged in",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 21,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 8091,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#loginForm, #em, #pw').first()\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#loginForm, #em, #pw').first()\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#loginForm, #em, #pw').first()\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#loginForm, #em, #pw').first()\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:9:64",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                          "column": 64,
+                          "line": 9
+                        },
+                        "snippet": "   7 |     await page.goto('/admin');\n   8 |     await page.waitForLoadState('domcontentloaded');\n>  9 |     await expect(page.locator('#loginForm, #em, #pw').first()).toBeVisible({ timeout: 8000 });\n     |                                                                ^\n  10 |   });\n  11 |\n  12 |   test('admin API endpoints return 401 without cookie', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                            "column": 64,
+                            "line": 9
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#loginForm, #em, #pw').first()\nExpected: visible\nTimeout: 8000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 8000ms\u001b[22m\n\u001b[2m  - waiting for locator('#loginForm, #em, #pw').first()\u001b[22m\n\n\n   7 |     await page.goto('/admin');\n   8 |     await page.waitForLoadState('domcontentloaded');\n>  9 |     await expect(page.locator('#loginForm, #em, #pw').first()).toBeVisible({ timeout: 8000 });\n     |                                                                ^\n  10 |   });\n  11 |\n  12 |   test('admin API endpoints return 401 without cookie', async ({ page }) => {\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:9:64"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:29.907Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Unauthent-868c5-gin-form-when-not-logged-in-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Unauthent-868c5-gin-form-when-not-logged-in-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                        "column": 64,
+                        "line": 9
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-8158b7f1c9742f21eb31",
+              "file": "07-admin.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "admin API endpoints return 401 without cookie",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 111,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:38.326Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-8966c15b1704f7ddcec6",
+              "file": "07-admin.spec.js",
+              "line": 12,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Admin — Authenticated",
+          "file": "07-admin.spec.js",
+          "line": 20,
+          "column": 6,
+          "specs": [
+            {
+              "title": "admin dashboard loads after cookie set",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 22,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 10616,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#app, #root, .dashboard, nav, [class*=\"nav\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('#app, #root, .dashboard, nav, [class*=\"nav\"]').first()\u001b[22m\n",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#app, #root, .dashboard, nav, [class*=\"nav\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('#app, #root, .dashboard, nav, [class*=\"nav\"]').first()\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:35:88",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                          "column": 88,
+                          "line": 35
+                        },
+                        "snippet": "  33 |\n  34 |     // Should show main admin UI\n> 35 |     await expect(page.locator('#app, #root, .dashboard, nav, [class*=\"nav\"]').first()).toBeVisible({ timeout: 10000 });\n     |                                                                                        ^\n  36 |   });\n  37 |\n  38 |   test('admin/data API returns data with valid cookie', async ({ context, page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                            "column": 88,
+                            "line": 35
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mlocator\u001b[39m\u001b[2m).\u001b[22mtoBeVisible\u001b[2m(\u001b[22m\u001b[2m)\u001b[22m failed\n\nLocator: locator('#app, #root, .dashboard, nav, [class*=\"nav\"]').first()\nExpected: visible\nTimeout: 10000ms\nError: element(s) not found\n\nCall log:\n\u001b[2m  - Expect \"toBeVisible\" with timeout 10000ms\u001b[22m\n\u001b[2m  - waiting for locator('#app, #root, .dashboard, nav, [class*=\"nav\"]').first()\u001b[22m\n\n\n  33 |\n  34 |     // Should show main admin UI\n> 35 |     await expect(page.locator('#app, #root, .dashboard, nav, [class*=\"nav\"]').first()).toBeVisible({ timeout: 10000 });\n     |                                                                                        ^\n  36 |   });\n  37 |\n  38 |   test('admin/data API returns data with valid cookie', async ({ context, page }) => {\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:35:88"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:38.551Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Authentic-914c1-oard-loads-after-cookie-set-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Authentic-914c1-oard-loads-after-cookie-set-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                        "column": 88,
+                        "line": 35
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-0288de892e5ec6cb0703",
+              "file": "07-admin.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "admin/data API returns data with valid cookie",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 23,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 144,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m401\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m401\u001b[39m\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:43:27",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                          "column": 27,
+                          "line": 43
+                        },
+                        "snippet": "  41 |       headers: { Accept: 'application/json' },\n  42 |     });\n> 43 |     expect(resp.status()).toBe(200);\n     |                           ^\n  44 |     const data = await resp.json();\n  45 |     expect(data).toHaveProperty('products');\n  46 |     expect(data).toHaveProperty('orders');"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                            "column": 27,
+                            "line": 43
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m401\u001b[39m\n\n  41 |       headers: { Accept: 'application/json' },\n  42 |     });\n> 43 |     expect(resp.status()).toBe(200);\n     |                           ^\n  44 |     const data = await resp.json();\n  45 |     expect(data).toHaveProperty('products');\n  46 |     expect(data).toHaveProperty('orders');\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:43:27"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:49.596Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Authentic-ebe65-urns-data-with-valid-cookie-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Authentic-ebe65-urns-data-with-valid-cookie-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                        "column": 27,
+                        "line": 43
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-eee730862d66543ae518",
+              "file": "07-admin.spec.js",
+              "line": 38,
+              "column": 3
+            },
+            {
+              "title": "admin products section renders",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 624,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:50.204Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-38de820590258b7f27e1",
+              "file": "07-admin.spec.js",
+              "line": 49,
+              "column": 3
+            },
+            {
+              "title": "admin orders section renders",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 586,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:50.938Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-214aa5c7403ece02cef3",
+              "file": "07-admin.spec.js",
+              "line": 62,
+              "column": 3
+            },
+            {
+              "title": "admin email templates tab renders",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 576,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:51.532Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-8e0bce8c345931ab3579",
+              "file": "07-admin.spec.js",
+              "line": 74,
+              "column": 3
+            },
+            {
+              "title": "admin content tab shows homepage editor",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 598,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:52.113Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-1a50a61de53a479805a0",
+              "file": "07-admin.spec.js",
+              "line": 86,
+              "column": 3
+            },
+            {
+              "title": "admin settings section renders",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 593,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:52.717Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-5fff77f4c06235891248",
+              "file": "07-admin.spec.js",
+              "line": 98,
+              "column": 3
+            },
+            {
+              "title": "admin subscribers section renders",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 572,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:53.319Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-930d806fb6572c4dbb63",
+              "file": "07-admin.spec.js",
+              "line": 110,
+              "column": 3
+            },
+            {
+              "title": "admin logout clears session",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 580,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:53.896Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-691dbcb7b392e39eaa0b",
+              "file": "07-admin.spec.js",
+              "line": 122,
+              "column": 3
+            },
+            {
+              "title": "admin API /session endpoint returns authed:true with cookie",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 24,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 104,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:142:25",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                          "column": 25,
+                          "line": 142
+                        },
+                        "snippet": "  140 |     expect(resp.status()).toBe(200);\n  141 |     const data = await resp.json();\n> 142 |     expect(data.authed).toBe(true);\n      |                         ^\n  143 |   });\n  144 |\n  145 |   test('admin page has no critical JS errors', async ({ page }) => {"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                            "column": 25,
+                            "line": 142
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  140 |     expect(resp.status()).toBe(200);\n  141 |     const data = await resp.json();\n> 142 |     expect(data.authed).toBe(true);\n      |                         ^\n  143 |   });\n  144 |\n  145 |   test('admin page has no critical JS errors', async ({ page }) => {\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:142:25"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:54.483Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Authentic-427e5-rns-authed-true-with-cookie-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Authentic-427e5-rns-authed-true-with-cookie-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                        "column": 25,
+                        "line": 142
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-35e31b11b201462029c9",
+              "file": "07-admin.spec.js",
+              "line": 135,
+              "column": 3
+            },
+            {
+              "title": "admin page has no critical JS errors",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 25,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 155,
+                      "error": {
+                        "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8000/admin\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:8000/admin\", waiting until \"load\"\u001b[22m\n",
+                        "stack": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8000/admin\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:8000/admin\", waiting until \"load\"\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:149:16",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                          "column": 16,
+                          "line": 149
+                        },
+                        "snippet": "  147 |     page.on('pageerror', (e) => errors.push(e.message));\n  148 |\n> 149 |     await page.goto('/admin');\n      |                ^\n  150 |     await page.waitForLoadState('networkidle');\n  151 |\n  152 |     const critical = errors.filter((e) => !e.includes('net::ERR') && !e.includes('favicon'));"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                            "column": 16,
+                            "line": 149
+                          },
+                          "message": "Error: page.goto: net::ERR_CONNECTION_REFUSED at http://127.0.0.1:8000/admin\nCall log:\n\u001b[2m  - navigating to \"http://127.0.0.1:8000/admin\", waiting until \"load\"\u001b[22m\n\n\n  147 |     page.on('pageerror', (e) => errors.push(e.message));\n  148 |\n> 149 |     await page.goto('/admin');\n      |                ^\n  150 |     await page.waitForLoadState('networkidle');\n  151 |\n  152 |     const critical = errors.filter((e) => !e.includes('net::ERR') && !e.includes('favicon'));\n    at /Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js:149:16"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:54.925Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Authentic-7e2f4-e-has-no-critical-JS-errors-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/07-admin-Admin-—-Authentic-7e2f4-e-has-no-critical-JS-errors-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/07-admin.spec.js",
+                        "column": 16,
+                        "line": 149
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "4faed2d20f602498f091-d7323312b6f35687576a",
+              "file": "07-admin.spec.js",
+              "line": 145,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "title": "08-api.spec.js",
+      "file": "08-api.spec.js",
+      "column": 0,
+      "line": 0,
+      "specs": [],
+      "suites": [
+        {
+          "title": "Public API Endpoints",
+          "file": "08-api.spec.js",
+          "line": 5,
+          "column": 6,
+          "specs": [
+            {
+              "title": "GET /api/catalog returns products array",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 26,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 126,
+                      "error": {
+                        "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:8000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:8000/api/catalog\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n",
+                        "stack": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:8000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:8000/api/catalog\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n    at /Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js:7:37",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                          "column": 37,
+                          "line": 7
+                        },
+                        "snippet": "   5 | test.describe('Public API Endpoints', () => {\n   6 |   test('GET /api/catalog returns products array', async ({ page }) => {\n>  7 |     const resp = await page.request.get('/api/catalog', {\n     |                                     ^\n   8 |       headers: { Accept: 'application/json' },\n   9 |     });\n  10 |     expect(resp.status()).toBe(200);"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                            "column": 37,
+                            "line": 7
+                          },
+                          "message": "Error: apiRequestContext.get: connect ECONNREFUSED 127.0.0.1:8000\nCall log:\n\u001b[2m  - → GET http://127.0.0.1:8000/api/catalog\u001b[22m\n\u001b[2m    - user-agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/147.0.7727.15 Safari/537.36\u001b[22m\n\u001b[2m    - accept: application/json\u001b[22m\n\u001b[2m    - accept-encoding: gzip,deflate,br\u001b[22m\n\n\n   5 | test.describe('Public API Endpoints', () => {\n   6 |   test('GET /api/catalog returns products array', async ({ page }) => {\n>  7 |     const resp = await page.request.get('/api/catalog', {\n     |                                     ^\n   8 |       headers: { Accept: 'application/json' },\n   9 |     });\n  10 |     expect(resp.status()).toBe(200);\n    at /Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js:7:37"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:55.518Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/08-api-Public-API-Endpoint-4d4ae-alog-returns-products-array-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/08-api-Public-API-Endpoint-4d4ae-alog-returns-products-array-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                        "column": 37,
+                        "line": 7
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-0c2c7d2bedc2dfaedab4",
+              "file": "08-api.spec.js",
+              "line": 6,
+              "column": 3
+            },
+            {
+              "title": "GET /api/config returns publishable key field",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 27,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 116,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n    at /Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js:20:27",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                          "column": 27,
+                          "line": 20
+                        },
+                        "snippet": "  18 |       headers: { Accept: 'application/json' },\n  19 |     });\n> 20 |     expect(resp.status()).toBe(200);\n     |                           ^\n  21 |     const data = await resp.json();\n  22 |     expect(data).toHaveProperty('stripePublishableKey');\n  23 |   });"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                            "column": 27,
+                            "line": 20
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32m200\u001b[39m\nReceived: \u001b[31m500\u001b[39m\n\n  18 |       headers: { Accept: 'application/json' },\n  19 |     });\n> 20 |     expect(resp.status()).toBe(200);\n     |                           ^\n  21 |     const data = await resp.json();\n  22 |     expect(data).toHaveProperty('stripePublishableKey');\n  23 |   });\n    at /Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js:20:27"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:56.063Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/08-api-Public-API-Endpoint-de80b-turns-publishable-key-field-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/08-api-Public-API-Endpoint-de80b-turns-publishable-key-field-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                        "column": 27,
+                        "line": 20
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-c7ac10f16319afdd8d3b",
+              "file": "08-api.spec.js",
+              "line": 16,
+              "column": 3
+            },
+            {
+              "title": "GET /api/pages returns pages array",
+              "ok": false,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 28,
+                      "parallelIndex": 0,
+                      "status": "failed",
+                      "duration": 267,
+                      "error": {
+                        "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m",
+                        "stack": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n    at /Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js:32:35",
+                        "location": {
+                          "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                          "column": 35,
+                          "line": 32
+                        },
+                        "snippet": "  30 |     if (resp.status() === 200) {\n  31 |       const data = await resp.json();\n> 32 |       expect(Array.isArray(data)).toBe(true);\n     |                                   ^\n  33 |     }\n  34 |   });\n  35 |"
+                      },
+                      "errors": [
+                        {
+                          "location": {
+                            "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                            "column": 35,
+                            "line": 32
+                          },
+                          "message": "Error: \u001b[2mexpect(\u001b[22m\u001b[31mreceived\u001b[39m\u001b[2m).\u001b[22mtoBe\u001b[2m(\u001b[22m\u001b[32mexpected\u001b[39m\u001b[2m) // Object.is equality\u001b[22m\n\nExpected: \u001b[32mtrue\u001b[39m\nReceived: \u001b[31mfalse\u001b[39m\n\n  30 |     if (resp.status() === 200) {\n  31 |       const data = await resp.json();\n> 32 |       expect(Array.isArray(data)).toBe(true);\n     |                                   ^\n  33 |     }\n  34 |   });\n  35 |\n    at /Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js:32:35"
+                        }
+                      ],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:56.609Z",
+                      "annotations": [],
+                      "attachments": [
+                        {
+                          "name": "screenshot",
+                          "contentType": "image/png",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/08-api-Public-API-Endpoint-458a7-i-pages-returns-pages-array-chromium/test-failed-1.png"
+                        },
+                        {
+                          "name": "error-context",
+                          "contentType": "text/markdown",
+                          "path": "/Users/paulbridges/Desktop/Maliki/test-results/08-api-Public-API-Endpoint-458a7-i-pages-returns-pages-array-chromium/error-context.md"
+                        }
+                      ],
+                      "errorLocation": {
+                        "file": "/Users/paulbridges/Desktop/Maliki/tests/08-api.spec.js",
+                        "column": 35,
+                        "line": 32
+                      }
+                    }
+                  ],
+                  "status": "unexpected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-90b244ee6f16a17253fa",
+              "file": "08-api.spec.js",
+              "line": 25,
+              "column": 3
+            },
+            {
+              "title": "POST /api/contact rejects cross-origin",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 757,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:57.309Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-7b785d18e4d2d1b9a2a4",
+              "file": "08-api.spec.js",
+              "line": 36,
+              "column": 3
+            },
+            {
+              "title": "POST /api/checkout rejects GET method",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 71,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:58.177Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-57124d3629858237e2d4",
+              "file": "08-api.spec.js",
+              "line": 48,
+              "column": 3
+            },
+            {
+              "title": "GET /api/robots returns text",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 75,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:58.264Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-bd85b1f93b3aab79f561",
+              "file": "08-api.spec.js",
+              "line": 53,
+              "column": 3
+            }
+          ]
+        },
+        {
+          "title": "Admin API Endpoints",
+          "file": "08-api.spec.js",
+          "line": 60,
+          "column": 6,
+          "specs": [
+            {
+              "title": "GET /api/admin/session returns authed:false without cookie",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 59,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:58.346Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-1bda2c6e177432f586ce",
+              "file": "08-api.spec.js",
+              "line": 61,
+              "column": 3
+            },
+            {
+              "title": "GET /api/admin/analytics returns 401 without cookie",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 59,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:58.413Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-07e3d3d5a21cdad83924",
+              "file": "08-api.spec.js",
+              "line": 70,
+              "column": 3
+            },
+            {
+              "title": "PATCH /api/admin/orders rejects without cookie",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 61,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:58.478Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-10b68a3a97047b6302d5",
+              "file": "08-api.spec.js",
+              "line": 77,
+              "column": 3
+            },
+            {
+              "title": "GET /api/admin/analytics returns data with cookie",
+              "ok": true,
+              "tags": [],
+              "tests": [
+                {
+                  "timeout": 30000,
+                  "annotations": [],
+                  "expectedStatus": "passed",
+                  "projectId": "chromium",
+                  "projectName": "chromium",
+                  "results": [
+                    {
+                      "workerIndex": 29,
+                      "parallelIndex": 0,
+                      "status": "passed",
+                      "duration": 387,
+                      "errors": [],
+                      "stdout": [],
+                      "stderr": [],
+                      "retry": 0,
+                      "startTime": "2026-05-04T06:39:58.545Z",
+                      "annotations": [],
+                      "attachments": []
+                    }
+                  ],
+                  "status": "expected"
+                }
+              ],
+              "id": "9ce5a7d64b5cca4dc646-73e8bc5a7bd403d8e90d",
+              "file": "08-api.spec.js",
+              "line": 85,
+              "column": 3
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "errors": [],
+  "stats": {
+    "startTime": "2026-05-04T06:33:43.650Z",
+    "duration": 375310.973,
+    "expected": 22,
+    "skipped": 11,
+    "unexpected": 29,
+    "flaky": 0
+  }
+}

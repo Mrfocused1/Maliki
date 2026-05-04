@@ -4,7 +4,9 @@
   "description": "",
   "main": "local-server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npx playwright test",
+    "test:ui": "npx playwright test --ui",
+    "start": "node local-server.js"
   },
   "repository": {
     "type": "git",
@@ -17,5 +19,7 @@
     "url": "https://github.com/Mrfocused1/Maliki/issues"
   },
   "homepage": "https://github.com/Mrfocused1/Maliki#readme",
-  "dependencies": {}
+  "devDependencies": {
+    "@playwright/test": "^1.59.1"
+  }
 }
