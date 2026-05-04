@@ -66,6 +66,7 @@ const api = {
   '/api/admin/reviews': require('./api/admin/reviews'),
   '/api/admin/session': require('./api/admin/session'),
   '/api/admin/settings': require('./api/admin/settings'),
+  '/api/admin/upload': require('./api/admin/upload'),
   '/api/account/orders': require('./api/account/orders'),
   '/api/account/profile': require('./api/account/profile'),
   '/api/account/referral': require('./api/account/referral'),

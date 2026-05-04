@@ -1,4 +1,9 @@
 {
+  "functions": {
+    "api/admin/upload.js": {
+      "maxDuration": 30
+    }
+  },
   "crons": [
     {
       "path": "/api/cron/analytics-digest",
