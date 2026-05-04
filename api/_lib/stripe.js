@@ -25,7 +25,7 @@ const stripeFetch = async (path, options = {}) => {
       ...(options.headers || {}),
     },
   });
-  const data = await res.json();
+  const data = await res.json().catch(() => ({}));
   if (!res.ok) throw Object.assign(new Error(data.error?.message || 'stripe_error'), { status: res.status, data });
   return data;
 };

@@ -26,7 +26,8 @@ module.exports = async (req, res) => {
       const rows = await supabaseFetch(
         `/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}&select=wishlist&limit=1`
       );
-      const wishlist = rows[0]?.wishlist || [];
+      const raw = rows[0]?.wishlist;
+      const wishlist = Array.isArray(raw) ? raw : [];
       return json(res, 200, { wishlist });
     } catch (err) {
       console.error('wishlist GET:', err.message);
@@ -48,7 +49,8 @@ module.exports = async (req, res) => {
       const rows = await supabaseFetch(
         `/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}&select=wishlist&limit=1`
       );
-      let wishlist = rows[0]?.wishlist || [];
+      const rawList = rows[0]?.wishlist;
+      let wishlist = Array.isArray(rawList) ? rawList : [];
 
       if (action === 'add') {
         if (!wishlist.includes(slug)) {

@@ -301,8 +301,12 @@ const buildText = (cur, prev) => {
 };
 
 module.exports = async (req, res) => {
-  // Vercel automatically adds Authorization: Bearer <CRON_SECRET> for cron invocations
+  // Vercel automatically adds Authorization: Bearer <CRON_SECRET> for cron invocations.
+  // CRON_SECRET must be set in production — an unset secret leaves the endpoint public.
   const secret = process.env.CRON_SECRET;
+  if (!secret) {
+    console.error('analytics-digest: CRON_SECRET is not set — endpoint is unprotected');
+  }
   if (secret) {
     const auth = req.headers.authorization || '';
     if (auth !== `Bearer ${secret}`) {
