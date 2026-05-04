@@ -18,10 +18,14 @@ function issueAdminToken() {
 }
 
 async function setAdminCookie(context) {
+  const vercelUrl = process.env.VERCEL_URL;
+  const domain = vercelUrl
+    ? new URL(vercelUrl).hostname
+    : '127.0.0.1';
   await context.addCookies([{
     name: 'mk_admin',
     value: issueAdminToken(),
-    domain: '127.0.0.1',
+    domain,
     path: '/',
     httpOnly: true,
     sameSite: 'Strict',

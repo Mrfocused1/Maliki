@@ -2133,6 +2133,24 @@ const openCustomerDrawer = (customerId) => {
           <div class="what"><span class="pill ${escape(o.status)}">${escape(o.status)}</span></div>
         </div>
       `).join('')}
+
+    <div class="lbl" style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--softest);margin:20px 0 8px">Email history</div>
+    ${(() => {
+      const sentEmails = Store.emails().filter((e) => e.to === c.email).sort((a, b) => new Date(b.sent_at) - new Date(a.sent_at));
+      if (sentEmails.length === 0) return '<div class="empty">No emails sent yet.</div>';
+      return sentEmails.map((e) => `
+        <div class="list-item">
+          <div class="who">${escape(e.subject || e.template_key || 'Email')}</div>
+          <div class="right">
+            <div class="when">${escape(fmtDate(e.sent_at, { dateStyle: 'medium', timeStyle: 'short' }))}</div>
+          </div>
+          <div class="what">
+            <span class="pill ${escape(e.status || 'sent')}">${escape(e.status || 'sent')}</span>
+            <span style="color:var(--softest);font-size:11px;margin-left:6px">${escape((e.template_key || '').replace(/_/g, ' '))}</span>
+          </div>
+        </div>
+      `).join('');
+    })()}
   `;
 
   $('#custClose').addEventListener('click', closeDrawer);
