@@ -501,6 +501,18 @@
     font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase; font-weight: 600;
     padding: 2px 6px; border-radius: 2px;
   }
+  .img-tile.img-loading { display: flex; align-items: center; justify-content: center; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .img-spinner {
+    width: 20px; height: 20px;
+    border: 2px solid var(--line);
+    border-top-color: var(--gold-1);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+  .img-picker-preview { margin-bottom: 8px; }
+  .img-picker-preview .img-tile { max-width: 280px; width: 100%; aspect-ratio: 3 / 2; }
+  .img-picker-preview .img-tile img { object-fit: cover; }
 
   /* ---------- Order detail / customer detail ---------- */
   .detail-meta {
@@ -1655,20 +1667,88 @@ const openProductDrawer = (productId) => {
   openDrawer();
 };
 
+// ---------- Shared image upload helpers ----------
+const uploadToStorage = async (dataUrl, mimeType) => {
+  const res = await fetch('/api/admin/upload', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ data: dataUrl, contentType: mimeType }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || 'upload_failed');
+  }
+  return (await res.json()).url;
+};
+
+// Binds a single-image picker UI.
+// Expects elements: #{id}-dz, #{id}-file, #{id}-preview, #{id}-img, #{id}-url, #{id}-rm, #{id}-dz-label
+const bindImagePicker = (id) => {
+  const dz       = document.getElementById(`${id}-dz`);
+  const fi       = document.getElementById(`${id}-file`);
+  const preview  = document.getElementById(`${id}-preview`);
+  const img      = document.getElementById(`${id}-img`);
+  const urlInput = document.getElementById(`${id}-url`);
+  const rm       = document.getElementById(`${id}-rm`);
+  const lbl      = document.getElementById(`${id}-dz-label`);
+  if (!dz) return;
+
+  const setLoading = (on) => {
+    if (lbl) lbl.innerHTML = on
+      ? '<span class="img-spinner" style="display:inline-block;vertical-align:middle;width:14px;height:14px;border-width:1.5px"></span> Uploading…'
+      : 'Drop image here, or <span style="color:var(--gold-1);text-decoration:underline">choose</span>';
+    dz.style.pointerEvents = on ? 'none' : '';
+  };
+
+  const handlePick = async (fileList) => {
+    const f = Array.from(fileList || [])[0];
+    if (!f) return;
+    setLoading(true);
+    try {
+      const mimeType = f.type === 'image/svg+xml' ? 'image/svg+xml' : 'image/jpeg';
+      const dataUrl = await ImageUpload.resizeToJpeg(f);
+      const url = await uploadToStorage(dataUrl, mimeType);
+      urlInput.value = url;
+      img.src = url;
+      if (preview) preview.style.display = '';
+    } catch (e) {
+      toast('Image upload failed. Try again.', 'err');
+    } finally {
+      setLoading(false);
+      fi.value = '';
+    }
+  };
+
+  dz.addEventListener('click', () => fi.click());
+  dz.addEventListener('dragover', (e) => { e.preventDefault(); dz.classList.add('over'); });
+  dz.addEventListener('dragleave', () => dz.classList.remove('over'));
+  dz.addEventListener('drop', (e) => { e.preventDefault(); dz.classList.remove('over'); handlePick(e.dataTransfer.files); });
+  fi.addEventListener('change', () => handlePick(fi.files));
+
+  if (rm) rm.addEventListener('click', () => {
+    urlInput.value = '';
+    img.src = '';
+    if (preview) preview.style.display = 'none';
+  });
+};
+
 const renderDraftImages = () => {
   const grid = $('#imgGrid');
   if (!grid) return;
-  grid.innerHTML = state.draftImages.map((src, i) => `
-    <div class="img-tile">
-      <img src="${escape(src)}" alt="" onerror="this.onerror=null;this.style.opacity='0'">
-      ${i === 0 ? '<div class="cover-tag">Cover</div>' : ''}
-      <button class="rm" data-i="${i}" title="Remove">×</button>
-    </div>
-  `).join('');
+  grid.innerHTML = state.draftImages.map((src, i) => src === null
+    ? '<div class="img-tile img-loading"><div class="img-spinner"></div></div>'
+    : `
+      <div class="img-tile">
+        <img src="${escape(src)}" alt="" onerror="this.onerror=null;this.style.opacity='0'">
+        ${i === 0 ? '<div class="cover-tag">Cover</div>' : ''}
+        <button class="rm" data-i="${i}" title="Remove">×</button>
+      </div>
+    `).join('');
   grid.querySelectorAll('.rm').forEach((b) =>
     b.addEventListener('click', (e) => {
       e.stopPropagation();
       const i = Number(b.dataset.i);
+      if (state.draftImages[i] === null) return; // still uploading
       state.draftImages.splice(i, 1);
       renderDraftImages();
     })
@@ -1681,8 +1761,18 @@ const handleFiles = async (fileList) => {
   if (remaining <= 0) { toast('Up to 8 images per product', 'err'); return; }
   for (const f of files.slice(0, remaining)) {
     try {
+      const mimeType = f.type === 'image/svg+xml' ? 'image/svg+xml' : 'image/jpeg';
       const dataUrl = await ImageUpload.resizeToJpeg(f);
-      state.draftImages.push(dataUrl);
+      const idx = state.draftImages.length;
+      state.draftImages.push(null); // placeholder while uploading
+      renderDraftImages();
+      try {
+        const url = await uploadToStorage(dataUrl, mimeType);
+        state.draftImages[idx] = url;
+      } catch {
+        state.draftImages.splice(idx, 1);
+        toast(`Upload failed for ${f.name}`, 'err');
+      }
       renderDraftImages();
     } catch (e) {
       toast(`Couldn't read ${f.name}`, 'err');
@@ -3573,6 +3663,21 @@ const renderHomepageTab = () => {
             <div class="form-row" style="margin:0"><label>CTA button text</label><input class="input" id="hp-hero-cta-text" value="${escape(h.cta_text || 'Discover the collection')}" maxlength="80"/></div>
             <div class="form-row" style="margin:0"><label>CTA button URL</label><input class="input" id="hp-hero-cta-url" value="${escape(h.cta_url || '/shop')}" maxlength="200"/></div>
           </div>
+          <div class="form-row">
+            <label>Hero image</label>
+            <div id="hp-hero-preview" class="img-picker-preview" style="${h.image_url ? '' : 'display:none'}">
+              <div class="img-tile" style="max-width:280px;width:100%;aspect-ratio:3/2">
+                <img id="hp-hero-img" src="${escape(h.image_url || '')}" alt="">
+                <button class="rm" id="hp-hero-rm" title="Remove image">×</button>
+              </div>
+            </div>
+            <div class="dropzone" id="hp-hero-dz">
+              <input id="hp-hero-file" type="file" accept="image/*" style="display:none" />
+              <div class="dz-title"><span id="hp-hero-dz-label">Drop image here, or <span style="color:var(--gold-1);text-decoration:underline">choose</span></span></div>
+              <div class="dz-sub">PNG, JPG, WebP — auto-resized</div>
+            </div>
+            <input type="hidden" id="hp-hero-url" value="${escape(h.image_url || '')}" />
+          </div>
           <div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn" id="saveHero">Save hero</button></div>
         </div>
       </div>
@@ -3583,6 +3688,21 @@ const renderHomepageTab = () => {
           <div class="form-row"><label>Eyebrow text</label><input class="input" id="hp-story-eyebrow" value="${escape(s.eyebrow || 'The Atelier')}" maxlength="80"/></div>
           <div class="form-row"><label>Heading</label><input class="input" id="hp-story-heading" value="${escape(s.heading || 'A quieter standard.')}" maxlength="120"/></div>
           <div class="form-row"><label>Body text</label><textarea class="textarea" id="hp-story-body" rows="5">${escape(s.body || 'Maliki Atelier was founded as a considered response to the noise of the modern jewellery industry — a return to the practice of making one piece at a time, by hand, for a person whose name we know. Each piece is hand-finished in our London workshop, in metals we cast ourselves from recycled gold and platinum, and stones sourced through long-standing relationships in Antwerp, Bogotá, and Yangon.')}</textarea></div>
+          <div class="form-row">
+            <label>Story image</label>
+            <div id="hp-story-preview" class="img-picker-preview" style="${s.image_url ? '' : 'display:none'}">
+              <div class="img-tile" style="max-width:280px;width:100%;aspect-ratio:3/2">
+                <img id="hp-story-img" src="${escape(s.image_url || '')}" alt="">
+                <button class="rm" id="hp-story-rm" title="Remove image">×</button>
+              </div>
+            </div>
+            <div class="dropzone" id="hp-story-dz">
+              <input id="hp-story-file" type="file" accept="image/*" style="display:none" />
+              <div class="dz-title"><span id="hp-story-dz-label">Drop image here, or <span style="color:var(--gold-1);text-decoration:underline">choose</span></span></div>
+              <div class="dz-sub">PNG, JPG, WebP — auto-resized</div>
+            </div>
+            <input type="hidden" id="hp-story-url" value="${escape(s.image_url || '')}" />
+          </div>
           <div style="display:flex;justify-content:flex-end;margin-top:8px"><button class="btn" id="saveStory">Save story</button></div>
         </div>
       </div>
@@ -3638,23 +3758,34 @@ const renderHomepageTab = () => {
     });
   };
 
-  saveSection('saveHero', () => ({
-    hero: {
-      eyebrow: document.getElementById('hp-hero-eyebrow').value.trim(),
-      headline: document.getElementById('hp-hero-headline').value.trim(),
-      subheadline: document.getElementById('hp-hero-sub').value.trim(),
-      cta_text: document.getElementById('hp-hero-cta-text').value.trim(),
-      cta_url: document.getElementById('hp-hero-cta-url').value.trim(),
-    },
-  }));
+  bindImagePicker('hp-hero');
+  bindImagePicker('hp-story');
 
-  saveSection('saveStory', () => ({
-    story: {
-      eyebrow: document.getElementById('hp-story-eyebrow').value.trim(),
-      heading: document.getElementById('hp-story-heading').value.trim(),
-      body: document.getElementById('hp-story-body').value.trim(),
-    },
-  }));
+  saveSection('saveHero', () => {
+    const imageUrl = document.getElementById('hp-hero-url').value.trim();
+    return {
+      hero: {
+        eyebrow: document.getElementById('hp-hero-eyebrow').value.trim(),
+        headline: document.getElementById('hp-hero-headline').value.trim(),
+        subheadline: document.getElementById('hp-hero-sub').value.trim(),
+        cta_text: document.getElementById('hp-hero-cta-text').value.trim(),
+        cta_url: document.getElementById('hp-hero-cta-url').value.trim(),
+        ...(imageUrl ? { image_url: imageUrl } : {}),
+      },
+    };
+  });
+
+  saveSection('saveStory', () => {
+    const imageUrl = document.getElementById('hp-story-url').value.trim();
+    return {
+      story: {
+        eyebrow: document.getElementById('hp-story-eyebrow').value.trim(),
+        heading: document.getElementById('hp-story-heading').value.trim(),
+        body: document.getElementById('hp-story-body').value.trim(),
+        ...(imageUrl ? { image_url: imageUrl } : {}),
+      },
+    };
+  });
 
   saveSection('savePromise', () => ({
     promise: {
@@ -3705,7 +3836,24 @@ const openPageDrawer = (id) => {
         <option value="draft" ${p?.status === 'draft' ? 'selected' : ''}>Draft</option>
       </select>
     </div>
+    <div class="form-row">
+      <label>Cover image</label>
+      <div id="pg-img-preview" class="img-picker-preview" style="${p?.metadata?.image_url ? '' : 'display:none'}">
+        <div class="img-tile" style="max-width:280px;width:100%;aspect-ratio:3/2">
+          <img id="pg-img-img" src="${escape(p?.metadata?.image_url || '')}" alt="">
+          <button class="rm" id="pg-img-rm" title="Remove image">×</button>
+        </div>
+      </div>
+      <div class="dropzone" id="pg-img-dz">
+        <input id="pg-img-file" type="file" accept="image/*" style="display:none" />
+        <div class="dz-title"><span id="pg-img-dz-label">Drop image here, or <span style="color:var(--gold-1);text-decoration:underline">choose</span></span></div>
+        <div class="dz-sub">PNG, JPG, WebP — auto-resized</div>
+      </div>
+      <input type="hidden" id="pg-img-url" value="${escape(p?.metadata?.image_url || '')}" />
+    </div>
   `;
+
+  bindImagePicker('pg-img');
 
   let slugTouched = !!p?.slug;
   $('#pg-title').addEventListener('input', (e) => {
@@ -3723,11 +3871,13 @@ const openPageDrawer = (id) => {
   $('#pgSave').addEventListener('click', async () => {
     const fb = $('#pgFb');
     const btn = $('#pgSave');
+    const coverUrl = document.getElementById('pg-img-url').value.trim();
     const data = {
       title: $('#pg-title').value.trim(),
       slug: slugify($('#pg-slug').value),
       body: $('#pg-body').value,
       status: $('#pg-status').value,
+      metadata: { ...(p?.metadata || {}), image_url: coverUrl || null },
     };
     if (!data.title) { fb.textContent = 'Title is required.'; fb.className = 'feedback error'; return; }
     if (!data.slug) { fb.textContent = 'Slug is required.'; fb.className = 'feedback error'; return; }

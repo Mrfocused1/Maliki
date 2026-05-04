@@ -31,17 +31,14 @@ module.exports = async (req, res) => {
     if (!title) return json(res, 400, { error: 'title_required' });
     if (!slug) return json(res, 400, { error: 'slug_required' });
 
+    const metadata = body.metadata && typeof body.metadata === 'object' ? body.metadata : undefined;
+
     try {
+      const row = { id: uid(), slug, title, body: pageBody, status, updated_at: new Date().toISOString() };
+      if (metadata !== undefined) row.metadata = metadata;
       const created = await supabaseFetch('/pages', {
         method: 'POST',
-        body: JSON.stringify({
-          id: uid(),
-          slug,
-          title,
-          body: pageBody,
-          status,
-          updated_at: new Date().toISOString(),
-        }),
+        body: JSON.stringify(row),
       });
       return json(res, 200, { page: created[0] || null });
     } catch (err) {
@@ -61,6 +58,7 @@ module.exports = async (req, res) => {
     if (body.slug !== undefined) patch.slug = slugify(body.slug);
     if (body.body !== undefined) patch.body = String(body.body).slice(0, 100000);
     if (body.status !== undefined && ['published', 'draft'].includes(body.status)) patch.status = body.status;
+    if (body.metadata !== undefined && typeof body.metadata === 'object') patch.metadata = body.metadata;
 
     try {
       const updated = await supabaseFetch(`/pages?id=eq.${encodeURIComponent(id)}`, {
