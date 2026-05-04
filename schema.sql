@@ -240,6 +240,8 @@ alter table orders add column if not exists gift_message text default '';
 alter table orders add column if not exists tracking_url text default '';
 alter table orders add column if not exists engraving_text text default '';
 
+alter table order_items add column if not exists engraving_text text default '';
+
 alter table customer_profiles add column if not exists wishlist jsonb default '[]';
 alter table customer_profiles add column if not exists comms_prefs jsonb default '{"new_collections": true, "restock_alerts": true, "order_updates": true}';
 alter table customer_profiles add column if not exists referral_code text;

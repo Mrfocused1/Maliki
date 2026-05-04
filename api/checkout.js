@@ -72,6 +72,7 @@ module.exports = async (req, res) => {
         image: images[0]?.url || '',
         quantity,
         price_cents: cents(product.price_cents),
+        engraving_text: engraving,
       });
     }
 

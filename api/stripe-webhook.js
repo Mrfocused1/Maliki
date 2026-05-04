@@ -40,7 +40,7 @@ const orderConfirmationHtml = (order) => {
       (item) => `
     <tr>
       <td style="padding:12px 0;border-bottom:1px solid rgba(217,176,112,0.15);font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;letter-spacing:0.05em;color:#f5ecda;">
-        ${esc(item.title)}&nbsp;&times;&nbsp;${item.quantity}
+        ${esc(item.title)}&nbsp;&times;&nbsp;${item.quantity}${item.engraving_text ? `<div style="font-size:12px;color:rgba(245,236,218,0.6);margin-top:4px;font-style:italic;">&ldquo;${esc(item.engraving_text)}&rdquo;</div>` : ''}
       </td>
       <td style="padding:12px 0;border-bottom:1px solid rgba(217,176,112,0.15);text-align:right;font-family:'Cormorant Garamond',Georgia,serif;font-style:italic;font-size:15px;color:#f3d89e;">
         ${fmtGBP(item.price_cents * item.quantity)}
@@ -61,7 +61,10 @@ const orderConfirmationHtml = (order) => {
     </tr>`
       : '';
 
-  const engravingNote = order.engraving_text
+  // Per-item engravings are shown inline in itemRows; only fall back to order-level
+  // engraving_text for legacy orders created before the per-item column was added.
+  const hasItemEngravings = items.some((i) => i.engraving_text);
+  const engravingNote = (!hasItemEngravings && order.engraving_text)
     ? `<div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(217,176,112,0.12);font-size:13px;color:rgba(245,236,218,0.72);letter-spacing:0.03em;font-style:italic;">Engraving: &ldquo;${esc(order.engraving_text)}&rdquo;</div>`
     : '';
   const giftNote = order.gift_wrap
@@ -150,7 +153,10 @@ const orderConfirmationHtml = (order) => {
 
 const orderConfirmationText = (order) => {
   const items = (order.order_items || [])
-    .map((i) => `  ${i.title} x${i.quantity}  ${fmtGBP(i.price_cents * i.quantity)}`)
+    .map((i) => {
+      const line = `  ${i.title} x${i.quantity}  ${fmtGBP(i.price_cents * i.quantity)}`;
+      return i.engraving_text ? `${line}\n    Engraving: "${i.engraving_text}"` : line;
+    })
     .join('\n');
   return [
     'MALIKI ATELIER',
