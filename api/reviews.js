@@ -48,6 +48,7 @@ module.exports = async (req, res) => {
     const product_id = String(body.product_id || '').trim();
     const name       = String(body.name       || '').trim().slice(0, 200);
     const email      = String(body.email      || '').trim().toLowerCase();
+    const ratingRaw  = Number(body.rating);
     const rating     = parseInt(body.rating, 10);
     const title      = String(body.title      || '').trim().slice(0, 200);
     const reviewBody = String(body.body       || '').trim().slice(0, 4000);
@@ -55,7 +56,7 @@ module.exports = async (req, res) => {
     if (!product_id)              return json(res, 400, { error: 'product_id_required' });
     if (!name)                    return json(res, 400, { error: 'name_required' });
     if (!EMAIL_RX.test(email))    return json(res, 400, { error: 'invalid_email' });
-    if (!rating || rating < 1 || rating > 5) return json(res, 400, { error: 'rating_must_be_1_to_5' });
+    if (!Number.isInteger(ratingRaw) || rating < 1 || rating > 5) return json(res, 400, { error: 'rating_must_be_1_to_5' });
     if (!reviewBody)              return json(res, 400, { error: 'body_required' });
 
     const productExists = await supabaseFetch(

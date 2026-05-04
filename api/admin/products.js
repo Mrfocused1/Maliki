@@ -20,7 +20,8 @@ const productPayload = (data) => {
   }
   out.category = String(out.category || 'jewellery');
   out.currency = String(out.currency || 'GBP').toUpperCase().slice(0, 3);
-  out.price_cents = Math.max(0, Math.round(Number(out.price_cents) || 0));
+  if (Object.prototype.hasOwnProperty.call(out, 'price_cents') && Number(out.price_cents) < 0) return null;
+  out.price_cents = Math.round(Number(out.price_cents) || 0);
   out.stock = out.stock === '' || out.stock == null ? null : Math.max(0, Math.floor(Number(out.stock) || 0));
   out.published = out.published !== false;
   out.featured = !!out.featured;
@@ -59,6 +60,7 @@ module.exports = async (req, res) => {
     if (req.method === 'POST') {
       const data = req.body || {};
       const product = productPayload(data);
+      if (!product) return json(res, 400, { error: 'invalid_price' });
       const created = await supabaseFetch('/products', {
         method: 'POST',
         body: JSON.stringify(product),
@@ -71,6 +73,7 @@ module.exports = async (req, res) => {
       const id = String((req.body || {}).id || '');
       if (!id) return json(res, 400, { error: 'id_required' });
       const product = productPayload(req.body || {});
+      if (!product) return json(res, 400, { error: 'invalid_price' });
       delete product.id;
       const updated = await supabaseFetch(`/products?id=eq.${encodeURIComponent(id)}`, {
         method: 'PATCH',

@@ -21,9 +21,11 @@ const verify = (email, token) =>
     Buffer.from(token, 'hex')
   );
 
-const url = (email) =>
-  `https://www.malikiatelier.com/api/unsubscribe?email=${encodeURIComponent(
+const url = (email) => {
+  const base = (process.env.SITE_URL || 'https://www.malikiatelier.com').replace(/\/$/, '');
+  return `${base}/api/unsubscribe?email=${encodeURIComponent(
     String(email).toLowerCase()
   )}&token=${generate(String(email).toLowerCase())}`;
+};
 
 module.exports = { generate, verify, url };

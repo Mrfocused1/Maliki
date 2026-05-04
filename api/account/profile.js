@@ -44,7 +44,7 @@ module.exports = async (req, res) => {
         body: JSON.stringify({ user_id: user.id, email: user.email, ...patch }),
       });
     }
-    return json(res, 200, result[0] || {});
+    return json(res, 200, (Array.isArray(result) ? result[0] : result) || {});
   }
 
   return json(res, 405, { error: 'method_not_allowed' });

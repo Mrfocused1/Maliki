@@ -149,8 +149,12 @@
 
 <script>
 (function () {
-  const SB_URL  = 'https://yvjjtbejnicwckzmcadj.supabase.co';
-  const SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2amp0YmVqbmljd2Nrem1jYWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTYxNDAsImV4cCI6MjA5MzE3MjE0MH0.lADuHfTnozqMVXOdbc-MGEG6Em0C2eFcXAOfMbelnMc';
+  let SB_URL  = 'https://yvjjtbejnicwckzmcadj.supabase.co';
+  let SB_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inl2amp0YmVqbmljd2Nrem1jYWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzc1OTYxNDAsImV4cCI6MjA5MzE3MjE0MH0.lADuHfTnozqMVXOdbc-MGEG6Em0C2eFcXAOfMbelnMc';
+  fetch('/api/config').then(r => r.json()).then(d => {
+    if (d.supabase_url) SB_URL = d.supabase_url;
+    if (d.supabase_anon_key) SB_ANON = d.supabase_anon_key;
+  }).catch(() => {});
 
   // Parse hash params
   const hash = {};

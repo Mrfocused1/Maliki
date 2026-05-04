@@ -247,7 +247,7 @@ module.exports = async (req, res) => {
             `/order_items?order_id=eq.${encodeURIComponent(orderId)}&select=product_id,quantity`
           );
           const stockItems = (items || []).filter((i) => i.product_id);
-          await Promise.allSettled(
+          const stockResults = await Promise.allSettled(
             stockItems.map((item) =>
               supabaseFetch('/rpc/decrement_stock', {
                 method: 'POST',
@@ -256,6 +256,10 @@ module.exports = async (req, res) => {
               })
             )
           );
+          stockResults.forEach((r, i) => {
+            if (r.status === 'rejected')
+              console.error('stripe-webhook: stock decrement failed for product', stockItems[i]?.product_id, r.reason?.message);
+          });
         } catch (stockErr) {
           console.error('stripe-webhook: stock decrement failed', stockErr.message);
         }
