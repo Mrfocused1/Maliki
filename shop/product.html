@@ -12,13 +12,14 @@
 <meta property="og:description" content="A piece from the Maliki Atelier collection." />
 <meta property="og:url" content="https://www.malikiatelier.com/shop/" />
 <meta property="og:image" content="https://www.malikiatelier.com/og.jpg" />
+<meta property="og:image:alt" content="Maliki Atelier — Hand-finished Jewellery, London" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Maliki Atelier" />
 <meta name="twitter:description" content="A piece from the Maliki Atelier collection." />
 <meta name="twitter:image" content="https://www.malikiatelier.com/og.jpg" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
-<script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/ScrollTrigger.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/ScrollTrigger.min.js" defer></script>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400;1,500&family=Playfair+Display:wght@400;500;600;700&family=Allura&display=swap" rel="stylesheet" />
@@ -1066,7 +1067,6 @@
               if (Store.addToCart.length >= 2) {
                 Store.addToCart(p.id, qty, cartOpts);
               } else {
-                if (engravingText) sessionStorage.setItem('maliki.pendingEngraving', engravingText);
                 Store.addToCart(p.id, qty);
               }
             }

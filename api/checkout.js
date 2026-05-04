@@ -170,7 +170,7 @@ module.exports = async (req, res) => {
           source: 'checkout',
           status: 'subscribed',
         }),
-      }).catch(() => {});
+      }).catch((e) => console.error('checkout: subscriber sync failed:', e.message));
     }
 
     // Record referral
@@ -185,7 +185,7 @@ module.exports = async (req, res) => {
           order_id: order.id,
           created_at: new Date().toISOString(),
         }),
-      }).catch(() => {});
+      }).catch((e) => console.error('checkout: referral sync failed:', e.message));
     }
 
     return json(res, 200, {

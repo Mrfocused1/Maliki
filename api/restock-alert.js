@@ -1,7 +1,6 @@
 const { supabaseFetch } = require('./_lib/supabase');
 const { rateLimit } = require('./_lib/rate-limit');
-
-const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const { EMAIL_RX } = require('./_lib/email');
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
