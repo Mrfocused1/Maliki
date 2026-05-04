@@ -18,6 +18,7 @@ const productPayload = (data) => {
   for (const key of productColumns) {
     if (Object.prototype.hasOwnProperty.call(data, key)) out[key] = data[key];
   }
+  out.category = String(out.category || 'jewellery');
   out.currency = String(out.currency || 'GBP').toUpperCase().slice(0, 3);
   out.price_cents = Math.max(0, Math.round(Number(out.price_cents) || 0));
   out.stock = out.stock === '' || out.stock == null ? null : Math.max(0, Math.floor(Number(out.stock) || 0));
