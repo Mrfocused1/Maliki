@@ -54,7 +54,11 @@ const parseCookies = (req) => {
     if (!kv) return;
     const i = kv.indexOf('=');
     if (i < 0) return;
-    out[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1));
+    try {
+      out[decodeURIComponent(kv.slice(0, i))] = decodeURIComponent(kv.slice(i + 1));
+    } catch {
+      // Skip malformed percent-encoded cookie values
+    }
   });
   return out;
 };

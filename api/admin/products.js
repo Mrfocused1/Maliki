@@ -30,8 +30,11 @@ const productPayload = (data) => {
 };
 
 const syncImages = async (productId, images = [], title = '') => {
-  // Skip base64 data URIs — they're too large for Supabase and come from local uploads.
-  const urls = (images || []).filter((u) => u && !u.startsWith('data:'));
+  // Keep only remote http/https URLs — strips data URIs and any javascript: URLs.
+  const urls = (images || []).filter((u) => {
+    if (!u) return false;
+    try { return /^https?:\/\//i.test(new URL(u).href); } catch { return false; }
+  });
 
   await supabaseFetch(`/product_images?product_id=eq.${encodeURIComponent(productId)}`, {
     method: 'DELETE',
@@ -66,8 +69,9 @@ module.exports = async (req, res) => {
         method: 'POST',
         body: JSON.stringify(product),
       });
-      await syncImages(product.id, data.images, product.title);
-      return json(res, 200, { product: created[0] || product });
+      const savedProduct = created[0] || product;
+      await syncImages(savedProduct.id, data.images, product.title);
+      return json(res, 200, { product: savedProduct });
     }
 
     if (req.method === 'PATCH') {
