@@ -4,17 +4,17 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>Maliki Atelier</title>
-<meta name="description" content="A piece from the Maliki Atelier ring collection." />
+<meta name="description" content="A piece from the Maliki Atelier collection." />
 <meta name="theme-color" content="#0a0908" />
 <meta property="og:type" content="product" />
 <meta property="og:site_name" content="Maliki Atelier" />
 <meta property="og:title" content="Maliki Atelier" />
-<meta property="og:description" content="A piece from the Maliki Atelier ring collection." />
+<meta property="og:description" content="A piece from the Maliki Atelier collection." />
 <meta property="og:url" content="https://www.malikiatelier.com/shop/" />
 <meta property="og:image" content="https://www.malikiatelier.com/og.jpg" />
 <meta name="twitter:card" content="summary_large_image" />
 <meta name="twitter:title" content="Maliki Atelier" />
-<meta name="twitter:description" content="A piece from the Maliki Atelier ring collection." />
+<meta name="twitter:description" content="A piece from the Maliki Atelier collection." />
 <meta name="twitter:image" content="https://www.malikiatelier.com/og.jpg" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
 <script src="https://cdn.jsdelivr.net/npm/gsap@3/dist/gsap.min.js" defer></script>
@@ -181,18 +181,6 @@
     letter-spacing: 0.42em; text-transform: uppercase; color: var(--softest); margin-bottom: 4px;
   }
   .specs .value { color: var(--soft); font-style: italic; font-size: 15px; letter-spacing: 0.04em; }
-
-  .size-guide-link {
-    display: inline-block;
-    font-family: 'Playfair Display', serif;
-    font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase;
-    color: var(--gold-1); border-bottom: 1px solid var(--line);
-    cursor: pointer; background: transparent; border-top: none; border-left: none; border-right: none;
-    padding: 0; padding-bottom: 2px;
-    transition: color 0.3s ease;
-    margin-top: -8px;
-  }
-  .size-guide-link:hover { color: var(--gold-hi); }
 
   .engraving-wrap {
     display: flex; flex-direction: column; gap: 6px;
@@ -590,37 +578,7 @@
   <div id="recently-viewed-root"></div>
   <div id="related-root"></div>
 
-  <!-- Ring size guide modal -->
-  <div class="modal-overlay" id="sizeModal" role="dialog" aria-modal="true" aria-label="Ring size guide">
-    <div class="modal-box">
-      <button class="modal-close" id="sizeModalClose" aria-label="Close size guide">&times;</button>
-      <h2 class="modal-title">Ring Size Guide</h2>
-      <table class="size-table">
-        <thead>
-          <tr>
-            <th>UK</th>
-            <th>EU</th>
-            <th>US</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr><td>G</td><td>44</td><td>3.5</td></tr>
-          <tr><td>K</td><td>49</td><td>5.5</td></tr>
-          <tr><td>M</td><td>52</td><td>6.5</td></tr>
-          <tr><td>O</td><td>55</td><td>7.5</td></tr>
-          <tr><td>P</td><td>57</td><td>8</td></tr>
-          <tr><td>Q</td><td>58</td><td>8.5</td></tr>
-          <tr><td>R</td><td>60</td><td>9</td></tr>
-          <tr><td>S</td><td>62</td><td>9.5</td></tr>
-          <tr><td>T</td><td>63</td><td>10</td></tr>
-          <tr><td>U</td><td>65</td><td>10.5</td></tr>
-        </tbody>
-      </table>
-      <div class="modal-measure">
-        <strong>How to measure:</strong> wrap a thin strip of paper around your finger, mark where it overlaps, measure the length in mm. Use the chart above to find your size.
-      </div>
-    </div>
-  </div>
+
 
   <footer class="footer">
     <span>&copy; Maliki Atelier</span>
@@ -1099,11 +1057,9 @@
             <div class="specs">
               ${p.metal ? `<div><div class="label">Metal</div><div class="value">${escape(p.metal)}</div></div>` : ''}
               ${p.stone ? `<div><div class="label">Stone</div><div class="value">${escape(p.stone)}</div></div>` : ''}
-              ${p.hand_size ? `<div><div class="label">Hand size</div><div class="value">${escape(p.hand_size)}</div></div>` : ''}
+              ${p.hand_size && !['earring','brooch'].includes(p.category) ? `<div><div class="label">${escape(({'ring':'Ring size','necklace':'Chain length','pendant':'Chain length','bracelet':'Length','anklet':'Length'})[p.category] || 'Size')}</div><div class="value">${escape(p.hand_size)}</div></div>` : ''}
               <div><div class="label">Delivery</div><div class="value">White-glove, insured</div></div>
             </div>
-
-            <button class="size-guide-link" id="sizeGuideBtn" type="button" aria-haspopup="dialog">Ring size guide &rarr;</button>
 
             ${engravingHtml}
 
@@ -1168,12 +1124,6 @@
           setTimeout(() => { added.classList.remove('show'); addBtn.disabled = false; }, 1800);
         });
       }
-
-      // Size guide modal
-      document.getElementById('sizeGuideBtn').addEventListener('click', () => {
-        document.getElementById('sizeModal').classList.add('open');
-        document.getElementById('sizeModalClose').focus();
-      });
 
       // Engraving input
       if (p.engraving_enabled) {
@@ -1255,20 +1205,6 @@
     };
 
     Store.on(() => updateCartCount());
-
-    // ── Size guide modal global handlers ────────────────────────────────
-    document.getElementById('sizeModalClose').addEventListener('click', () => {
-      document.getElementById('sizeModal').classList.remove('open');
-    });
-    document.getElementById('sizeModal').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('sizeModal')) {
-        document.getElementById('sizeModal').classList.remove('open');
-      }
-    });
-    const sizeModalKeydown = (e) => {
-      if (e.key === 'Escape') document.getElementById('sizeModal').classList.remove('open');
-    };
-    document.addEventListener('keydown', sizeModalKeydown);
 
     // ── Main init ───────────────────────────────────────────────────────
     if (!slug) {
