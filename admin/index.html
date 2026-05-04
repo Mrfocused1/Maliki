@@ -893,6 +893,19 @@ const fmtDate = (iso, opts = { dateStyle: 'medium' }) => {
   try { return new Date(iso).toLocaleString(undefined, opts); } catch { return iso; }
 };
 
+const apiSaveSettings = async (section, value) => {
+  Store.updateSettings(section, value);
+  const res = await fetch('/api/admin/settings', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ section, value }),
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+};
+
 const fmtRel = (iso) => {
   const ms = new Date(iso).getTime() - Date.now();
   const min = Math.round(ms / 60000);
@@ -3610,10 +3623,18 @@ const renderHomepageTab = () => {
   const saveSection = (btnId, getPayload) => {
     const btn = document.getElementById(btnId);
     if (!btn) return;
-    btn.addEventListener('click', () => {
-      const cur = Store.settings().homepage || {};
-      Store.updateSettings('homepage', { ...cur, ...getPayload() });
-      toast('Saved');
+    btn.addEventListener('click', async () => {
+      const orig = btn.textContent;
+      btn.disabled = true; btn.textContent = 'Saving…';
+      try {
+        const cur = Store.settings().homepage || {};
+        await apiSaveSettings('homepage', { ...cur, ...getPayload() });
+        toast('Saved');
+      } catch (e) {
+        toast(`Save failed: ${e.message}`, 'err');
+      } finally {
+        btn.disabled = false; btn.textContent = orig;
+      }
     });
   };
 
@@ -3786,9 +3807,18 @@ const renderSettings = () => {
   const flushSaveBars = () => {
     pendingSaveBars.splice(0).forEach(({ id, sectionKey, gather }) => {
       const btn = document.getElementById(id);
-      if (btn) btn.addEventListener('click', () => {
-        Store.updateSettings(sectionKey, gather());
-        toast('Saved');
+      if (!btn) return;
+      btn.addEventListener('click', async () => {
+        const orig = btn.textContent;
+        btn.disabled = true; btn.textContent = 'Saving…';
+        try {
+          await apiSaveSettings(sectionKey, gather());
+          toast('Saved');
+        } catch (e) {
+          toast(`Save failed: ${e.message}`, 'err');
+        } finally {
+          btn.disabled = false; btn.textContent = orig;
+        }
       });
     });
   };
@@ -3835,11 +3865,16 @@ const renderSettings = () => {
     `;
     flushSaveBars();
     const t = document.getElementById('siteModeToggle');
-    if (t) t.addEventListener('change', () => {
+    if (t) t.addEventListener('change', async () => {
       const mode = t.checked ? 'live' : 'coming_soon';
       const g = Store.settings().general || {};
-      Store.updateSettings('general', { ...g, site_mode: mode });
-      toast(t.checked ? 'Site is now live for all visitors' : 'Coming-soon page restored for all visitors');
+      try {
+        await apiSaveSettings('general', { ...g, site_mode: mode });
+        toast(t.checked ? 'Site is now live for all visitors' : 'Coming-soon page restored for all visitors');
+      } catch (e) {
+        t.checked = !t.checked;
+        toast(`Save failed: ${e.message}`, 'err');
+      }
     });
   } else if (state.settingsTab === 'branding') {
     const b = s.branding || {};
@@ -3882,13 +3917,17 @@ const renderSettings = () => {
         </div>
       </div>
     `;
-    $$('button[data-int]').forEach((b) => b.addEventListener('click', () => {
+    $$('button[data-int]').forEach((b) => b.addEventListener('click', async () => {
       const key = b.dataset.int;
       const cur = (Store.settings().integrations || {})[key] || {};
       const nextInts = { ...(Store.settings().integrations || {}) };
       nextInts[key] = { ...cur, connected: !cur.connected };
-      Store.updateSettings('integrations', nextInts);
-      toast(`${cur.connected ? 'Disconnected' : 'Connected'}`);
+      try {
+        await apiSaveSettings('integrations', nextInts);
+        toast(cur.connected ? 'Disconnected' : 'Connected');
+      } catch (e) {
+        toast(`Save failed: ${e.message}`, 'err');
+      }
     }));
   } else if (state.settingsTab === 'notifications') {
     const n = s.notifications || {};
@@ -3911,11 +3950,16 @@ const renderSettings = () => {
         </div>
       </div>
     `;
-    $$('input[data-nk]').forEach((cb) => cb.addEventListener('change', () => {
+    $$('input[data-nk]').forEach((cb) => cb.addEventListener('change', async () => {
       const k = cb.dataset.nk;
       const next = { ...(Store.settings().notifications || {}), [k]: cb.checked };
-      Store.updateSettings('notifications', next);
-      toast('Saved');
+      try {
+        await apiSaveSettings('notifications', next);
+        toast('Saved');
+      } catch (e) {
+        cb.checked = !cb.checked;
+        toast(`Save failed: ${e.message}`, 'err');
+      }
     }));
   } else if (state.settingsTab === 'shipping') {
     const sh = s.shipping || {};
