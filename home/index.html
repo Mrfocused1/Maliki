@@ -654,15 +654,15 @@
     <div class="hero-weave"   aria-hidden="true"></div>
 
     <div class="hero-content">
-      <p class="hero-eyebrow reveal r1">Atelier</p>
-      <h1 class="hero-headline reveal r2">Made by hand, for a person whose name we know.</h1>
+      <p class="hero-eyebrow reveal r1" id="heroEyebrow">Atelier</p>
+      <h1 class="hero-headline reveal r2" id="heroHeadline">Made by hand, for a person whose name we know.</h1>
       <div class="hero-rule reveal r3" aria-hidden="true">
         <span class="line"></span>
         <span class="dot"></span>
         <span class="line"></span>
       </div>
-      <p class="hero-sub reveal r4">London, by appointment.</p>
-      <a href="/shop" class="hero-cta reveal r5">Discover the collection</a>
+      <p class="hero-sub reveal r4" id="heroSub">London, by appointment.</p>
+      <a href="/shop" class="hero-cta reveal r5" id="heroCta">Discover the collection</a>
     </div>
   </section>
 
@@ -691,9 +691,9 @@
           <div class="story-visual-overlay" aria-hidden="true"></div>
         </div>
         <div class="story-text">
-          <span class="eyebrow">The Atelier</span>
-          <h2 class="section-title" style="font-style:italic">A quieter standard.</h2>
-          <p class="story-body">
+          <span class="eyebrow" id="storyEyebrow">The Atelier</span>
+          <h2 class="section-title" style="font-style:italic" id="storyHeading">A quieter standard.</h2>
+          <p class="story-body" id="storyBody">
             Maliki Atelier was founded as a considered response to the noise of the modern jewellery industry — a return to the practice of making one piece at a time, by hand, for a person whose name we know. Each piece is hand-finished in our London workshop, in metals we cast ourselves from recycled gold and platinum, and stones sourced through long-standing relationships in Antwerp, Bogotá, and Yangon.
           </p>
           <a href="/about" class="story-link">Read more &rarr;</a>
@@ -708,18 +708,18 @@
       <div class="promise-grid">
         <div class="promise-item">
           <span class="promise-glyph">&#9651;</span>
-          <span class="promise-label">Hand-finished in London</span>
-          <p class="promise-copy">Every piece passes through three hands — goldsmith, setter, and polisher — before it leaves the bench.</p>
+          <span class="promise-label" id="promiseLabel1">Hand-finished in London</span>
+          <p class="promise-copy" id="promiseCopy1">Every piece passes through three hands — goldsmith, setter, and polisher — before it leaves the bench.</p>
         </div>
         <div class="promise-item">
           <span class="promise-glyph">&#9651;</span>
-          <span class="promise-label">Lifetime Polish &amp; Inspection</span>
-          <p class="promise-copy">We offer complimentary inspection and re-polish for the lifetime of any piece that leaves the atelier.</p>
+          <span class="promise-label" id="promiseLabel2">Lifetime Polish &amp; Inspection</span>
+          <p class="promise-copy" id="promiseCopy2">We offer complimentary inspection and re-polish for the lifetime of any piece that leaves the atelier.</p>
         </div>
         <div class="promise-item">
           <span class="promise-glyph">&#9651;</span>
-          <span class="promise-label">Insured White-Glove Delivery</span>
-          <p class="promise-copy">All orders are dispatched by white-glove courier, fully insured, and signed for in person — worldwide.</p>
+          <span class="promise-label" id="promiseLabel3">Insured White-Glove Delivery</span>
+          <p class="promise-copy" id="promiseCopy3">All orders are dispatched by white-glove courier, fully insured, and signed for in person — worldwide.</p>
         </div>
       </div>
     </div>
@@ -803,6 +803,36 @@
   <script src="/assets/mock-data.js"></script>
   <script src="/assets/store.js"></script>
   <script src="/assets/supabase-sync.js"></script>
+  <script>
+    (function () {
+      const setText = (id, v) => { const el = document.getElementById(id); if (el && v) el.textContent = v; };
+      const applyHomepageContent = () => {
+        const hp = (window.Store && Store.settings().homepage) || {};
+        const h = hp.hero || {};
+        setText('heroEyebrow', h.eyebrow);
+        setText('heroHeadline', h.headline);
+        setText('heroSub', h.subheadline);
+        if (h.cta_text) setText('heroCta', h.cta_text);
+        if (h.cta_url) { const a = document.getElementById('heroCta'); if (a) a.href = h.cta_url; }
+        const s = hp.story || {};
+        setText('storyEyebrow', s.eyebrow);
+        setText('storyHeading', s.heading);
+        setText('storyBody', s.body);
+        const p = hp.promise || {};
+        for (let i = 1; i <= 3; i++) {
+          const it = (p['item' + i]) || {};
+          setText('promiseLabel' + i, it.label);
+          setText('promiseCopy' + i, it.copy);
+        }
+        const nl = hp.newsletter || {};
+        setText('nlEyebrow', nl.eyebrow);
+        setText('nlTitle', nl.title);
+        setText('nlBody', nl.body);
+      };
+      applyHomepageContent();
+      Store.on(applyHomepageContent);
+    })();
+  </script>
   <script>
     // ---- Video cross-fade ----
     (function () {
@@ -1017,9 +1047,9 @@
 <div class="nl-overlay" id="nlOverlay" role="dialog" aria-modal="true" aria-labelledby="nlTitle">
   <div class="nl-box">
     <button class="nl-close" id="nlClose" aria-label="Close">&#x2715;</button>
-    <span class="nl-eyebrow">The Atelier</span>
+    <span class="nl-eyebrow" id="nlEyebrow">The Atelier</span>
     <h2 class="nl-title" id="nlTitle">Join the inner circle.</h2>
-    <p class="nl-body">Be the first to know when a new piece is released, offered privately before it reaches the shop.</p>
+    <p class="nl-body" id="nlBody">Be the first to know when a new piece is released, offered privately before it reaches the shop.</p>
     <form class="nl-form" id="nlForm" novalidate>
       <input class="nl-input" id="nlEmail" type="email" aria-label="Email address" placeholder="Your email address" autocomplete="email" required />
       <button class="nl-submit" type="submit">Subscribe</button>

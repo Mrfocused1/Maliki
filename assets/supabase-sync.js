@@ -29,6 +29,11 @@
       if (!res.ok) return;
       const data = await res.json();
       if (Array.isArray(data.products)) replaceProducts(data.products);
+      if (data.homepage && typeof data.homepage === 'object') {
+        const cur = JSON.parse(localStorage.getItem(KEYS.settings) || '{}');
+        cur.homepage = data.homepage;
+        writeStore(KEYS.settings, cur);
+      }
     } catch {}
   };
 
