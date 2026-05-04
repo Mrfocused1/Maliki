@@ -1500,7 +1500,19 @@ const openProductDrawer = (productId) => {
     </div>
     <div class="form-row">
       <label for="f-subtitle">Subtitle</label>
-      <input class="input" id="f-subtitle" placeholder="e.g. Brilliant-cut diamond solitaire" value="${escape(p?.subtitle || '')}" />
+      <input class="input" id="f-subtitle" placeholder="e.g. Hand-finished 18ct gold pendant" value="${escape(p?.subtitle || '')}" />
+    </div>
+    <div class="form-row">
+      <label for="f-category">Category</label>
+      <select class="input" id="f-category">
+        <option value="ring"${(p?.category || 'ring') === 'ring' ? ' selected' : ''}>Ring</option>
+        <option value="necklace"${p?.category === 'necklace' ? ' selected' : ''}>Necklace</option>
+        <option value="earring"${p?.category === 'earring' ? ' selected' : ''}>Earring</option>
+        <option value="bracelet"${p?.category === 'bracelet' ? ' selected' : ''}>Bracelet</option>
+        <option value="brooch"${p?.category === 'brooch' ? ' selected' : ''}>Brooch</option>
+        <option value="anklet"${p?.category === 'anklet' ? ' selected' : ''}>Anklet</option>
+        <option value="pendant"${p?.category === 'pendant' ? ' selected' : ''}>Pendant</option>
+      </select>
     </div>
     <div class="form-row split-2">
       <div class="form-row" style="margin:0">
@@ -1536,9 +1548,9 @@ const openProductDrawer = (productId) => {
         <label for="f-stone">Stone</label>
         <input class="input" id="f-stone" placeholder="e.g. Diamond, 1.10ct" value="${escape(p?.stone || '')}" />
       </div>
-      <div class="form-row" style="margin:0">
-        <label for="f-size">Hand size</label>
-        <input class="input" id="f-size" placeholder="e.g. UK J – Q" value="${escape(p?.hand_size || '')}" />
+      <div class="form-row" id="sizeRow" style="margin:0">
+        <label id="sizeLbl" for="f-size">Ring size</label>
+        <input class="input" id="f-size" placeholder="e.g. UK J–Q" value="${escape(p?.hand_size || '')}" />
       </div>
     </div>
     <div class="form-row">
@@ -1566,6 +1578,31 @@ const openProductDrawer = (productId) => {
       </div>
     </div>
   `;
+
+  // Category-aware size field
+  const SIZE_MAP = {
+    ring:      ['Ring size',     'e.g. UK J–Q'],
+    necklace:  ['Chain length',  'e.g. 40cm, 45cm, 50cm'],
+    pendant:   ['Chain length',  'e.g. 40cm, 45cm, 50cm'],
+    bracelet:  ['Length',        'e.g. 16cm, 18cm, 20cm'],
+    anklet:    ['Length',        'e.g. 16cm, 18cm, 20cm'],
+  };
+  const updateSizeField = () => {
+    const cat = $('#f-category').value;
+    const sizeRow = document.getElementById('sizeRow');
+    const sizeLbl = document.getElementById('sizeLbl');
+    const sizeInput = $('#f-size');
+    const entry = SIZE_MAP[cat];
+    if (entry) {
+      sizeRow.style.display = '';
+      sizeLbl.textContent = entry[0];
+      sizeInput.placeholder = entry[1];
+    } else {
+      sizeRow.style.display = 'none';
+    }
+  };
+  $('#f-category').addEventListener('change', updateSizeField);
+  updateSizeField();
 
   // Slug auto-fill
   let slugTouched = !!p?.slug;
@@ -1640,6 +1677,7 @@ const collectProductForm = () => {
   return {
     title: $('#f-title').value.trim(),
     subtitle: $('#f-subtitle').value.trim(),
+    category: $('#f-category').value,
     slug: slugify($('#f-slug').value),
     currency: ($('#f-currency').value || 'GBP').toUpperCase().slice(0, 3),
     price_cents: Number.isFinite(priceUnits) ? Math.round(priceUnits * 100) : 0,
