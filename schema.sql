@@ -83,7 +83,7 @@ create table if not exists discounts (
   id text primary key,
   code text unique not null,
   type text not null default 'percent',
-  value numeric not null default 0,
+  value numeric not null default 0 check (value >= 0),
   minimum_cents integer not null default 0,
   applies_to text default 'all',
   status text not null default 'active',
@@ -94,7 +94,8 @@ create table if not exists discounts (
   description text default '',
   metadata jsonb,
   created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+  updated_at timestamptz not null default now(),
+  constraint discounts_percent_max_100 check (type != 'percent' or value <= 100)
 );
 
 -- Pages
@@ -213,10 +214,11 @@ create table if not exists product_reviews (
   created_at timestamptz not null default now()
 );
 create index if not exists product_reviews_product_idx on product_reviews(product_id, approved);
+create index if not exists product_reviews_email_idx on product_reviews(product_id, customer_email);
 
 create table if not exists restock_alerts (
   id text primary key,
-  product_id text not null,
+  product_id text not null references products(id) on delete cascade,
   email text not null,
   notified boolean default false,
   created_at timestamptz not null default now(),

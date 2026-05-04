@@ -31,7 +31,7 @@ module.exports = async (req, res) => {
       supabaseFetch('/products?select=*,product_images(url,alt,position)&order=created_at.asc'),
       supabaseFetch('/customers?select=*&order=joined_at.desc&limit=10000'),
       supabaseFetch('/orders?select=*,order_items(*)&order=created_at.desc&limit=10000'),
-      supabaseFetch('/subscribers?select=*&order=subscribed_at.desc'),
+      supabaseFetch('/subscribers?select=*&order=subscribed_at.desc&limit=10000'),
       supabaseFetch('/discounts?select=*&order=created_at.desc'),
       supabaseFetch('/pages?select=*&order=updated_at.desc'),
       supabaseFetch('/settings?select=*'),

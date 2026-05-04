@@ -42,11 +42,15 @@ module.exports = async (req, res) => {
         minimum_cents: discount.minimum_cents,
       });
 
+    const discountValue = Number(discount.value);
+    if (discount.type === 'percent' && discountValue > 100) {
+      return json(res, 500, { error: 'invalid_discount_configuration' });
+    }
     let discount_cents;
     if (discount.type === 'percent') {
-      discount_cents = Math.round(subtotal_cents * Number(discount.value) / 100);
+      discount_cents = Math.round(subtotal_cents * discountValue / 100);
     } else {
-      discount_cents = Math.min(Number(discount.value), subtotal_cents);
+      discount_cents = Math.min(discountValue, subtotal_cents);
     }
 
     const label =

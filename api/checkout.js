@@ -178,19 +178,24 @@ module.exports = async (req, res) => {
       }).catch((e) => console.error('checkout: subscriber sync failed:', e.message));
     }
 
-    // Record referral
+    // Record referral — only if the code maps to a real customer
     if (referral_code) {
-      supabaseFetch('/referrals', {
-        method: 'POST',
-        headers: { Prefer: 'return=minimal' },
-        body: JSON.stringify({
-          id: uid('ref'),
-          referral_code: referral_code,
-          referee_email: email,
-          order_id: order.id,
-          created_at: new Date().toISOString(),
-        }),
-      }).catch((e) => console.error('checkout: referral sync failed:', e.message));
+      supabaseFetch(`/customer_profiles?referral_code=eq.${encodeURIComponent(referral_code)}&select=user_id&limit=1`)
+        .then((rows) => {
+          if (!rows?.length) return;
+          return supabaseFetch('/referrals', {
+            method: 'POST',
+            headers: { Prefer: 'return=minimal' },
+            body: JSON.stringify({
+              id: uid('ref'),
+              referral_code,
+              referee_email: email,
+              order_id: order.id,
+              created_at: new Date().toISOString(),
+            }),
+          });
+        })
+        .catch((e) => console.error('checkout: referral sync failed:', e.message));
     }
 
     return json(res, 200, {
