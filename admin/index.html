@@ -3712,17 +3712,38 @@ const openPageDrawer = (id) => {
     if (!data.slug) { fb.textContent = 'Slug is required.'; fb.className = 'feedback error'; return; }
     btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Saving…';
     try {
-      if (p) Store.updatePage(p.id, data); else Store.addPage(data);
+      const payload = p ? { id: p.id, ...data } : data;
+      const res = await fetch('/api/admin/pages', {
+        method: p ? 'PATCH' : 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || `HTTP ${res.status}`);
+      }
+      const { page: saved } = await res.json().catch(() => ({}));
+      if (p) Store.updatePage(p.id, saved || data);
+      else if (saved) Store.addPage(saved);
       toast(p ? 'Page saved' : 'Page created');
       closeDrawer();
     } catch (e) {
-      fb.textContent = 'Save failed.'; fb.className = 'feedback error';
+      fb.textContent = `Save failed: ${e.message}`; fb.className = 'feedback error';
     } finally {
       btn.disabled = false; btn.textContent = btn.dataset.label || 'Save';
     }
   });
-  if (p) $('#pgDelete').addEventListener('click', () => {
-    if (confirm(`Delete "${p.title}"?`)) { Store.deletePage(p.id); toast('Deleted'); closeDrawer(); }
+  if (p) $('#pgDelete').addEventListener('click', async () => {
+    if (!confirm(`Delete "${p.title}"?`)) return;
+    try {
+      const res = await fetch(`/api/admin/pages?id=${encodeURIComponent(p.id)}`, { method: 'DELETE' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      Store.deletePage(p.id);
+      toast('Deleted');
+      closeDrawer();
+    } catch (e) {
+      toast(`Delete failed: ${e.message}`, 'error');
+    }
   });
 
   openDrawer();
