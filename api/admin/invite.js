@@ -1,4 +1,5 @@
 const { rateLimit } = require('../_lib/rate-limit');
+const { EMAIL_RX } = require('../_lib/email');
 
 const RESEND_BASE = 'https://api.resend.com';
 
@@ -70,7 +71,6 @@ module.exports = async (req, res) => {
     try { body = JSON.parse(body); } catch { body = {}; }
   }
 
-  const { EMAIL_RX } = require('../_lib/email');
   const email = String((body || {}).email || '').trim().toLowerCase();
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
 
