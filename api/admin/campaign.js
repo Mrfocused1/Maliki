@@ -1,6 +1,7 @@
 const { requireAdmin, sameOrigin } = require('../_lib/auth');
 const { supabaseFetch } = require('../_lib/supabase');
 const { sendTemplatedEmail } = require('../_lib/mailer');
+const { EMAIL_RX } = require('../_lib/email');
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
@@ -79,8 +80,8 @@ module.exports = async (req, res) => {
   try {
     const [tplRows, customers, subscribers, orders] = await Promise.all([
       supabaseFetch(`/email_templates?key=eq.${encodeURIComponent(template_key)}&limit=1`),
-      supabaseFetch('/customers?select=*&limit=10000'),
-      supabaseFetch('/subscribers?select=id,email,status&status=eq.subscribed&limit=10000'),
+      supabaseFetch('/customers?select=*&order=joined_at.desc&limit=5000'),
+      supabaseFetch('/subscribers?select=id,email,status&status=eq.subscribed&order=subscribed_at.desc&limit=5000'),
       supabaseFetch('/orders?select=customer_id,total_cents,status,created_at&status=not.in.(pending,failed)'),
     ]);
 
@@ -111,7 +112,6 @@ module.exports = async (req, res) => {
       });
     }
 
-    const { EMAIL_RX } = require('../_lib/email');
     let sent = 0;
     let failed = 0;
     for (const customer of targets) {
