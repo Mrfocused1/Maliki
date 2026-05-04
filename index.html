@@ -3,29 +3,12 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-<title>Maliki Atelier — Coming Soon</title>
-<meta name="description" content="Maliki Atelier — a new standard of craftsmanship is arriving." />
+<title>Maliki Atelier</title>
+<meta name="description" content="Maliki Atelier — a new standard of craftsmanship." />
 <meta name="theme-color" content="#0a0908" />
 
 <script>
-  // Fast path: localStorage hit — instant redirect, zero network cost
-  try {
-    if (localStorage.getItem('maliki.site_mode') === 'live') {
-      location.replace('/home/');
-    }
-  } catch (e) {}
-  // Slow path: fetch in background after page has painted; redirect if live
-  fetch('/api/site-mode')
-    .then(function (r) { return r.json(); })
-    .then(function (d) {
-      if (d.mode === 'live') {
-        try { localStorage.setItem('maliki.site_mode', 'live'); } catch (e) {}
-        location.replace('/home/');
-      } else {
-        try { localStorage.setItem('maliki.site_mode', 'coming_soon'); } catch (e) {}
-      }
-    })
-    .catch(function () {});
+  location.replace('/home/');
 </script>
 
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
