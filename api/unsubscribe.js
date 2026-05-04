@@ -35,11 +35,25 @@ const ERROR_BODY = `
   <p style="font-size:15px;line-height:1.7;color:rgba(245,236,218,0.7);margin:0;">If you would like to unsubscribe, please contact us at <a href="mailto:hello@malikiatelier.com" style="color:#d9b070;">hello@malikiatelier.com</a>.</p>`;
 
 const processUnsub = async (email) => {
-  await supabaseFetch(`/subscribers?email=eq.${encodeURIComponent(email)}`, {
+  // Update existing subscriber; if none exists, insert so future subscribe
+  // flows can't silently re-add this address.
+  const updated = await supabaseFetch(`/subscribers?email=eq.${encodeURIComponent(email)}`, {
     method: 'PATCH',
-    headers: { Prefer: 'return=minimal' },
+    headers: { Prefer: 'return=representation' },
     body: JSON.stringify({ status: 'unsubscribed' }),
-  }).catch(() => {});
+  }).catch(() => []);
+
+  if (!updated?.length) {
+    await supabaseFetch('/subscribers', {
+      method: 'POST',
+      headers: { Prefer: 'return=minimal' },
+      body: JSON.stringify({
+        id: `sub_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}`,
+        email,
+        status: 'unsubscribed',
+      }),
+    }).catch(() => {});
+  }
 
   const { RESEND_API_KEY, RESEND_AUDIENCE_ID } = process.env;
   if (RESEND_API_KEY && RESEND_AUDIENCE_ID) {

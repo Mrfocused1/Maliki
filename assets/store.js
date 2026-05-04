@@ -176,7 +176,10 @@
     const i = list.findIndex((it) => it.product_id === product_id);
     if (i >= 0) {
       list[i].quantity = Math.min(99, list[i].quantity + quantity);
-      if (opts.engraving) list[i].engraving = String(opts.engraving).slice(0, 60);
+      if (Object.prototype.hasOwnProperty.call(opts, 'engraving')) {
+        if (opts.engraving) list[i].engraving = String(opts.engraving).slice(0, 60);
+        else delete list[i].engraving;
+      }
     } else {
       const item = { product_id, quantity };
       if (opts.engraving) item.engraving = String(opts.engraving).slice(0, 60);

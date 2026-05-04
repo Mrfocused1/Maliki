@@ -325,11 +325,12 @@ module.exports = async (req, res) => {
     const [cur, prev] = await Promise.all([
       computeAnalytics(7),
       computeAnalytics(14).then((d) => {
-        // Derive the previous 7-day window from the 14-day dataset by re-slicing series
+        // Derive previous-week page views from the older half of the 14-day series.
+        // Visitors and revenue can't be accurately sliced from the aggregate,
+        // so we only expose page_views to avoid misleading week-over-week deltas.
         const prevSeries = d.series.slice(0, 7);
         const prevViews = prevSeries.reduce((s, x) => s + x.views, 0);
-        // Approximate previous-week KPIs from series (full re-compute would need date-filtered query)
-        return { kpis: { ...d.kpis, page_views: prevViews } };
+        return { kpis: { page_views: prevViews } };
       }),
     ]);
 

@@ -61,6 +61,13 @@ const orderConfirmationHtml = (order) => {
     </tr>`
       : '';
 
+  const engravingNote = order.engraving_text
+    ? `<div style="margin-top:16px;padding-top:14px;border-top:1px solid rgba(217,176,112,0.12);font-size:13px;color:rgba(245,236,218,0.72);letter-spacing:0.03em;font-style:italic;">Engraving: &ldquo;${esc(order.engraving_text)}&rdquo;</div>`
+    : '';
+  const giftNote = order.gift_wrap
+    ? `<div style="margin-top:${order.engraving_text ? 8 : 16}px;font-size:13px;color:rgba(245,236,218,0.72);letter-spacing:0.03em;">${order.gift_message ? `Gift message: &ldquo;${esc(order.gift_message)}&rdquo;` : 'Gift wrapping included'}</div>`
+    : '';
+
   return `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -118,6 +125,8 @@ const orderConfirmationHtml = (order) => {
                     </td>
                   </tr>
                 </table>
+                ${engravingNote}
+                ${giftNote}
                 ${
                   addrParts.length
                     ? `<div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(217,176,112,0.15);font-size:13px;color:rgba(245,236,218,0.6);letter-spacing:0.04em;line-height:1.7;">${addrParts.map(esc).join('<br/>')}</div>`
@@ -158,6 +167,10 @@ const orderConfirmationText = (order) => {
       ? `  Discount${order.discount_code ? ` (${order.discount_code})` : ''}: -${fmtGBP(order.discount_cents)}`
       : null,
     `  Total: ${fmtGBP(order.total_cents)}`,
+    order.engraving_text ? `  Engraving: "${order.engraving_text}"` : null,
+    order.gift_wrap
+      ? (order.gift_message ? `  Gift message: "${order.gift_message}"` : '  Gift wrapping included')
+      : null,
     '',
     '— Maliki Atelier · By Appointment',
   ]
