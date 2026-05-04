@@ -2590,13 +2590,20 @@ const renderEmails = () => {
 
     // Toggle → update enabled state
     $$('input[data-tkey]').forEach((cb) => {
-      cb.addEventListener('change', () => {
+      cb.addEventListener('change', async () => {
         const key = cb.dataset.tkey;
-        Store.updateTemplate(key, { enabled: cb.checked });
+        const tpl = Store.updateTemplate(key, { enabled: cb.checked });
         cb.closest('.tpl-card').classList.toggle('disabled', !cb.checked);
         cb.closest('.tpl-card').querySelector('.stats span:last-child').innerHTML =
           cb.checked ? '<span style="color:var(--ok)">Active</span>' : 'Inactive';
-        toast(cb.checked ? 'Automation activated' : 'Automation paused');
+        try {
+          if (tpl?.remoteSync) await tpl.remoteSync;
+          toast(cb.checked ? 'Automation activated' : 'Automation paused');
+        } catch {
+          toast('Could not save — please try again', 'err');
+          cb.checked = !cb.checked;
+          cb.closest('.tpl-card').classList.toggle('disabled', cb.checked);
+        }
       });
     });
 
@@ -2852,16 +2859,19 @@ const openTemplateDrawer = (key) => {
     fb.textContent = '';
     btn.disabled = true; btn.dataset.label = btn.textContent; btn.textContent = 'Saving…';
     try {
-      Store.updateTemplate(key, {
+      const tpl = Store.updateTemplate(key, {
         subject: toTemplate($('#t-subject').value),
         body: toTemplate($('#t-body').value),
         enabled: $('#tplEnabled').checked,
       });
+      if (tpl?.remoteSync) await tpl.remoteSync;
       toast('Template saved');
       closeDrawer();
       render();
     } catch (err) {
-      fb.textContent = err.message || 'Save failed';
+      fb.textContent = err.message === 'template_sync_failed'
+        ? 'Could not save to server. Please try again.'
+        : (err.message || 'Save failed');
       fb.className = 'feedback error';
     } finally {
       btn.disabled = false; btn.textContent = btn.dataset.label || 'Save';

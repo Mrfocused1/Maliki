@@ -157,14 +157,19 @@
     return result;
   };
 
-  const baseUpdateTemplate = window.Store.updateTemplate;
-  window.Store.updateTemplate = (key, patch) => {
-    const result = baseUpdateTemplate(key, patch);
-    fetch('/api/admin/emails', {
+  const syncTemplate = async (key, patch) => {
+    const res = await fetch('/api/admin/emails', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key, ...patch }),
-    }).catch((err) => emitSyncError(`Template save failed: ${err.message}`));
+    });
+    if (!res.ok) throw new Error('template_sync_failed');
+  };
+
+  const baseUpdateTemplate = window.Store.updateTemplate;
+  window.Store.updateTemplate = (key, patch) => {
+    const result = baseUpdateTemplate(key, patch);
+    if (result) result.remoteSync = syncTemplate(key, patch);
     return result;
   };
 
