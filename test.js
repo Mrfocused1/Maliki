@@ -411,7 +411,7 @@ async function main() {
       });
       await page.waitForFunction(() => document.body.textContent.includes('Celestine') || document.body.textContent.includes('Lumen'), { timeout: 5000 });
 
-      await test('Product list renders all 12 rings', async () => {
+      await test('Product list renders products', async () => {
         const body = await page.content();
         if (!body.includes('Celestine')) throw new Error('Product list empty');
       });
