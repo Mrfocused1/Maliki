@@ -52,9 +52,11 @@
   button { font-family: inherit; cursor: pointer; }
 
   .topbar {
+    position: sticky; top: 0; z-index: 50;
     display: flex; justify-content: space-between; align-items: center;
     padding: clamp(20px, 3.6vh, 36px) clamp(20px, 5vw, 56px);
     border-bottom: 1px solid var(--line);
+    background: var(--bg);
   }
   .wordmark {
     display: inline-flex;
