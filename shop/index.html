@@ -423,10 +423,13 @@
     const FILTERS = [
       { key: 'all', label: 'All' },
       { key: 'featured', label: 'Featured' },
-      { key: 'solitaire', label: 'Solitaire', match: (p) => /solitaire/i.test(p.subtitle) },
-      { key: 'halo', label: 'Halo', match: (p) => /halo/i.test(p.subtitle) },
-      { key: 'eternity', label: 'Eternity', match: (p) => /eternity|éternit/i.test(p.subtitle + ' ' + p.title) },
-      { key: 'signet', label: 'Signet', match: (p) => /signet|sceau/i.test(p.subtitle + ' ' + p.title) },
+      { key: 'ring', label: 'Ring' },
+      { key: 'necklace', label: 'Necklace' },
+      { key: 'earring', label: 'Earring' },
+      { key: 'bracelet', label: 'Bracelet' },
+      { key: 'brooch', label: 'Brooch' },
+      { key: 'anklet', label: 'Anklet' },
+      { key: 'pendant', label: 'Pendant' },
     ];
 
     let active = 'all';
