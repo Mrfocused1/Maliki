@@ -23,7 +23,7 @@ create table if not exists product_images (
   id bigserial primary key,
   product_id text not null references products(id) on delete cascade,
   url text not null,
-  alt text default '',
+  alt text not null default '',
   position integer not null default 0
 );
 create index if not exists product_images_product_id on product_images(product_id);

@@ -1937,6 +1937,15 @@ const openOrderDrawer = (orderId) => {
       ${o.gift_message ? `<div style="color:var(--softer);font-size:13px;font-style:italic">"${escape(o.gift_message)}"</div>` : ''}
     </div>` : ''}
 
+    ${o.engraving_text ? `
+    <div style="margin-bottom:16px;padding:12px 14px;background:var(--surface-2);border:1px solid var(--line-2);border-radius:6px;display:flex;flex-direction:column;gap:6px">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span style="font-size:16px">✍️</span>
+        <span style="color:var(--gold-1);font-size:12px;letter-spacing:0.1em;font-weight:600;text-transform:uppercase">Engraving</span>
+      </div>
+      <div style="color:var(--softer);font-size:13px;font-style:italic">"${escape(o.engraving_text)}"</div>
+    </div>` : ''}
+
     <div class="lbl" style="font-size:10px;letter-spacing:0.22em;text-transform:uppercase;color:var(--softest);margin-bottom:8px">Items</div>
     ${o.items.map((it) => `
       <div class="line-item">

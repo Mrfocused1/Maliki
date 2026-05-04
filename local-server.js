@@ -117,8 +117,27 @@ const sendFile = (req, res, filePath) => {
   });
 };
 
-const resolveStaticPath = (pathname) => {
+const resolveStaticPath = (pathname, req) => {
   let requestPath = decodeURIComponent(pathname);
+
+  // Mirror vercel.json rewrites
+  if (requestPath === '/admin/setup') {
+    return path.join(root, 'admin', 'setup.html');
+  }
+  if (requestPath === '/shipping') {
+    req.query = { ...req.query, slug: 'shipping-and-returns' };
+    return path.join(root, 'page', 'index.html');
+  }
+  if (requestPath === '/care') {
+    req.query = { ...req.query, slug: 'care' };
+    return path.join(root, 'page', 'index.html');
+  }
+  const pageSlugMatch = requestPath.match(/^\/page\/([^/]+)$/);
+  if (pageSlugMatch) {
+    req.query = { ...req.query, slug: pageSlugMatch[1] };
+    return path.join(root, 'page', 'index.html');
+  }
+
   if (requestPath.startsWith('/shop/') && !requestPath.endsWith('.html')) {
     return path.join(root, 'shop', 'product.html');
   }
@@ -149,7 +168,7 @@ http
         return res.end(JSON.stringify({ error: 'method_not_allowed' }));
       }
 
-      const filePath = resolveStaticPath(pathname);
+      const filePath = resolveStaticPath(pathname, req);
       if (!filePath) {
         res.writeHead(403, { 'Content-Type': 'text/plain; charset=utf-8' });
         return res.end('Forbidden');
