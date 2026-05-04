@@ -1,7 +1,7 @@
 const crypto = require('crypto');
 
 const secret = () => {
-  const s = process.env.UNSUB_TOKEN_SECRET || process.env.STRIPE_WEBHOOK_SECRET;
+  const s = process.env.UNSUB_TOKEN_SECRET;
   if (!s) throw new Error('unsub_token_secret_missing: set UNSUB_TOKEN_SECRET in env');
   return s;
 };

@@ -4,6 +4,7 @@ Allow: /
 Disallow: /admin
 Disallow: /api/
 Disallow: /cart/
+Disallow: /account/
 
 Sitemap: https://www.malikiatelier.com/sitemap.xml
 `;

@@ -10,6 +10,7 @@
     { "source": "/robots.txt",  "destination": "/api/robots"  },
     { "source": "/admin/setup", "destination": "/admin/setup.html" },
     { "source": "/shop/:slug", "destination": "/shop/product.html?slug=:slug" },
+    { "source": "/page/:slug", "destination": "/page/?slug=:slug" },
     { "source": "/shipping", "destination": "/page/?slug=shipping-and-returns" },
     { "source": "/care", "destination": "/page/?slug=care" }
   ],

@@ -46,10 +46,6 @@ module.exports = async (req, res) => {
 
     return json(res, 200, { success: true });
   } catch (err) {
-    // Gracefully handle unique constraint violations (23505)
-    if (err.data?.code === '23505') {
-      return json(res, 200, { success: true });
-    }
     console.error('restock-alert POST:', err.message);
     return json(res, 500, { error: 'insert_failed' });
   }

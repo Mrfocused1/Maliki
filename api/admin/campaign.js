@@ -77,16 +77,24 @@ module.exports = async (req, res) => {
   const MAX_RECIPIENTS = 500;
 
   try {
-    const [tplRows, customers, orders] = await Promise.all([
+    const [tplRows, customers, subscribers, orders] = await Promise.all([
       supabaseFetch(`/email_templates?key=eq.${encodeURIComponent(template_key)}&limit=1`),
       supabaseFetch('/customers?select=*&limit=10000'),
+      supabaseFetch('/subscribers?select=id,email,status&status=eq.subscribed&limit=10000'),
       supabaseFetch('/orders?select=customer_id,total_cents,status,created_at&status=not.in.(pending,failed)'),
     ]);
 
     const template = tplRows?.[0];
     if (!template) return json(res, 404, { error: 'template_not_found' });
 
-    const targets = await getTargets(segment, customers || [], orders || []);
+    // Merge subscribers-only contacts (not already in customers) for 'all' segment
+    const customerEmails = new Set((customers || []).map((c) => c.email));
+    const subscriberContacts = (subscribers || [])
+      .filter((s) => !customerEmails.has(s.email))
+      .map((s) => ({ id: s.id, email: s.email, name: '' }));
+    const allContacts = [...(customers || []), ...subscriberContacts];
+
+    const targets = await getTargets(segment, allContacts, orders || []);
 
     if (dry_run) {
       return json(res, 200, {

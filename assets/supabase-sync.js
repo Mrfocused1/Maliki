@@ -107,20 +107,6 @@
     return order;
   };
 
-  window.Store.placeRemoteOrder = async ({ customer, items, shipping_address, discount_code, gift_wrap, gift_message, newsletter_subscribe, referral_code }) => {
-    const res = await fetch('/api/checkout', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ customer, items, shipping_address, discount_code, gift_wrap, gift_message, newsletter_subscribe, referral_code }),
-    });
-    const data = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      const error = new Error(data.error || 'checkout_failed');
-      error.data = data;
-      throw error;
-    }
-    return data.order;
-  };
 
   const baseUpdateSettings = window.Store.updateSettings;
   window.Store.updateSettings = (section, value) => {

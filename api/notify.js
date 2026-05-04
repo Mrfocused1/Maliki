@@ -10,6 +10,7 @@ const uid = () => `em_${Date.now().toString(36)}${Math.random().toString(36).sli
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
+  res.setHeader('Cache-Control', 'no-store');
   res.send(JSON.stringify(body));
 };
 
@@ -59,7 +60,7 @@ const thankYouHtml = (email) => {
         <table role="presentation" width="520" cellspacing="0" cellpadding="0" border="0" style="max-width:520px;width:100%;">
           <tr>
             <td align="center" style="padding-bottom:40px;font-family:'Italiana', Georgia, serif;font-size:11px;letter-spacing:0.62em;text-transform:uppercase;color:rgba(245,236,218,0.78);">
-              By&nbsp;Invitation&nbsp;Only
+              By&nbsp;Appointment&nbsp;Only
             </td>
           </tr>
           <tr>
@@ -185,6 +186,20 @@ module.exports = async (req, res) => {
   // All Resend calls are fire-and-forget — signup acknowledged immediately
   // regardless of Resend uptime
   Promise.resolve().then(async () => {
+    // Persist to subscribers table so admin dashboard and campaigns see this signup
+    const subId = `sub_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
+    supabaseFetch('/subscribers', {
+      method: 'POST',
+      headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
+      body: JSON.stringify({
+        id: subId,
+        email,
+        source: 'waitlist',
+        status: 'subscribed',
+        subscribed_at: new Date().toISOString(),
+      }),
+    }).catch((e) => console.error('notify: subscriber persist failed:', e.message));
+
     const audience = await resend(`/audiences/${RESEND_AUDIENCE_ID}/contacts`, {
       email, unsubscribed: false,
     });

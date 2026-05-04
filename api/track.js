@@ -1,4 +1,5 @@
 const { supabaseFetch } = require('./_lib/supabase');
+const { rateLimit } = require('./_lib/rate-limit');
 
 const trim = (v, n) => String(v == null ? '' : v).slice(0, n);
 
@@ -8,6 +9,7 @@ module.exports = async (req, res) => {
   res.end();
 
   if (req.method !== 'POST') return;
+  if (rateLimit(req, { key: 'track', max: 60, windowMs: 60000 })) return;
 
   const body = req.body || {};
   const country = req.headers['x-vercel-ip-country'] || '';

@@ -27,8 +27,7 @@ module.exports = async (req, res) => {
     );
     const discount = rows?.[0];
 
-    if (!discount) return json(res, 404, { error: 'invalid_code' });
-    if (discount.status !== 'active') return json(res, 400, { error: 'code_inactive' });
+    if (!discount || discount.status !== 'active') return json(res, 404, { error: 'invalid_code' });
 
     const now = new Date().toISOString();
     if (discount.starts_at && discount.starts_at > now)

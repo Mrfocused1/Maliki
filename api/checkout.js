@@ -55,6 +55,7 @@ module.exports = async (req, res) => {
     const productById = new Map(products.map((p) => [p.id, p]));
     const lineItems = [];
 
+    let engravingText = '';
     for (const item of items) {
       const product = productById.get(String(item.product_id || ''));
       const quantity = Math.max(1, Math.min(99, Math.floor(Number(item.quantity) || 1)));
@@ -63,6 +64,8 @@ module.exports = async (req, res) => {
         return json(res, 409, { error: 'insufficient_stock', product_id: product.id });
       }
       const images = (product.product_images || []).sort((a, b) => a.position - b.position);
+      const engraving = String(item.engraving || '').trim().slice(0, 60);
+      if (engraving && !engravingText) engravingText = engraving;
       lineItems.push({
         product_id: product.id,
         title: product.title,
@@ -149,6 +152,7 @@ module.exports = async (req, res) => {
         stripe_payment_intent_id: intent.id,
         gift_wrap,
         gift_message,
+        engraving_text: engravingText,
       }),
     });
     const order = createdOrders[0];

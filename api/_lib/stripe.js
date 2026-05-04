@@ -51,7 +51,11 @@ const verifyWebhook = (rawBody, signature, secret) => {
   const actualBuf = Buffer.from(parts.v1 || '', 'hex');
   if (expectedBuf.length !== actualBuf.length || !crypto.timingSafeEqual(expectedBuf, actualBuf))
     throw new Error('invalid_stripe_signature');
-  if (Math.abs(Date.now() / 1000 - Number(parts.t)) > 60) throw new Error('webhook_expired');
+  const ageSecs = Math.abs(Date.now() / 1000 - Number(parts.t));
+  if (ageSecs > 300) {
+    console.error(`webhook_expired: timestamp delta ${Math.round(ageSecs)}s`);
+    throw new Error('webhook_expired');
+  }
   return JSON.parse(rawBody);
 };
 

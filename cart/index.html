@@ -12,6 +12,8 @@
 <meta property="og:description" content="Your Maliki Atelier shopping cart." />
 <meta property="og:image" content="https://www.malikiatelier.com/og.jpg" />
 <meta property="og:image:alt" content="Maliki Atelier — Hand-finished Jewellery, London" />
+<meta property="og:image:width" content="1200" />
+<meta property="og:image:height" content="630" />
 <meta name="theme-color" content="#0a0908" />
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230a0908'/%3E%3Ctext x='32' y='46' font-family='Georgia,serif' font-size='42' font-style='italic' text-anchor='middle' fill='%23d9b070'%3EM%3C/text%3E%3C/svg%3E" />
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.5/dist/gsap.min.js" defer></script>
@@ -738,14 +740,14 @@
               }
               <div class="lbl">Your details</div>
               <div class="row2">
-                <label class="field"><input id="ckName" type="text" autocomplete="name" placeholder="Full name" value="${esc(savedDetails.name || '')}" required /></label>
-                <label class="field"><input id="ckEmail" type="email" autocomplete="email" placeholder="Email" value="${esc(savedDetails.email || '')}" required /></label>
+                <label class="field"><input id="ckName" type="text" autocomplete="name" placeholder="Full name" aria-label="Full name" value="${esc(savedDetails.name || '')}" required /></label>
+                <label class="field"><input id="ckEmail" type="email" autocomplete="email" placeholder="Email" aria-label="Email address" value="${esc(savedDetails.email || '')}" required /></label>
               </div>
-              <label class="field"><input id="ckLine1" type="text" autocomplete="address-line1" placeholder="Street address" value="${esc(savedDetails.line1 || '')}" required /></label>
-              <label class="field"><input id="ckLine2" type="text" autocomplete="address-line2" placeholder="Apartment, suite, etc. (optional)" value="${esc(savedDetails.line2 || '')}" /></label>
+              <label class="field"><input id="ckLine1" type="text" autocomplete="address-line1" placeholder="Street address" aria-label="Street address" value="${esc(savedDetails.line1 || '')}" required /></label>
+              <label class="field"><input id="ckLine2" type="text" autocomplete="address-line2" placeholder="Apartment, suite, etc. (optional)" aria-label="Apartment, suite, etc. (optional)" value="${esc(savedDetails.line2 || '')}" /></label>
               <div class="row2">
-                <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" value="${esc(savedDetails.city || '')}" required /></label>
-                <label class="field"><input id="ckPostal" type="text" autocomplete="postal-code" placeholder="Postcode / ZIP" value="${esc(savedDetails.postal || '')}" required /></label>
+                <label class="field"><input id="ckCity" type="text" autocomplete="address-level2" placeholder="City" aria-label="City" value="${esc(savedDetails.city || '')}" required /></label>
+                <label class="field"><input id="ckPostal" type="text" autocomplete="postal-code" placeholder="Postcode / ZIP" aria-label="Postcode or ZIP" value="${esc(savedDetails.postal || '')}" required /></label>
               </div>
               <div class="row2">
                 <label class="field" style="grid-column:1/-1">

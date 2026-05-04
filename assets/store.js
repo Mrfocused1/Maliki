@@ -171,11 +171,17 @@
   const cart = () => read(KEYS.cart, []);
   const cartCount = () => cart().reduce((n, it) => n + it.quantity, 0);
 
-  const addToCart = (product_id, quantity = 1) => {
+  const addToCart = (product_id, quantity = 1, opts = {}) => {
     const list = cart();
     const i = list.findIndex((it) => it.product_id === product_id);
-    if (i >= 0) list[i].quantity = Math.min(99, list[i].quantity + quantity);
-    else list.push({ product_id, quantity });
+    if (i >= 0) {
+      list[i].quantity = Math.min(99, list[i].quantity + quantity);
+      if (opts.engraving) list[i].engraving = String(opts.engraving).slice(0, 60);
+    } else {
+      const item = { product_id, quantity };
+      if (opts.engraving) item.engraving = String(opts.engraving).slice(0, 60);
+      list.push(item);
+    }
     write(KEYS.cart, list);
     notify('cart');
   };

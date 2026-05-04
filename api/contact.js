@@ -9,6 +9,7 @@ const uid = () => `em_${Date.now().toString(36)}${Math.random().toString(36).sli
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
+  res.setHeader('Cache-Control', 'no-store');
   res.send(JSON.stringify(body));
 };
 

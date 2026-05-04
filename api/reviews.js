@@ -58,6 +58,11 @@ module.exports = async (req, res) => {
     if (!rating || rating < 1 || rating > 5) return json(res, 400, { error: 'rating_must_be_1_to_5' });
     if (!reviewBody)              return json(res, 400, { error: 'body_required' });
 
+    const productExists = await supabaseFetch(
+      `/products?id=eq.${encodeURIComponent(product_id)}&published=eq.true&select=id&limit=1`
+    ).catch(() => []);
+    if (!productExists?.length) return json(res, 404, { error: 'product_not_found' });
+
     const id = `rev_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
 
     try {

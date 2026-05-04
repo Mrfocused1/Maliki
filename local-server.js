@@ -21,7 +21,7 @@ const loadEnvFile = (name) => {
 loadEnvFile('.env');
 loadEnvFile('.env.local');
 
-process.env.ADMIN_SECRET ||= 'local-preview-secret-change-before-production';
+process.env.ADMIN_SECRET ||= 'local-dev-only-not-for-production-use-set-env';
 process.env.SUPABASE_URL ||= 'https://yvjjtbejnicwckzmcadj.supabase.co';
 
 const root = __dirname;
@@ -76,25 +76,6 @@ const types = {
   '.svg': 'image/svg+xml; charset=utf-8',
   '.webp': 'image/webp',
 };
-
-const readBody = (req) =>
-  new Promise((resolve, reject) => {
-    const chunks = [];
-    req.on('data', (chunk) => chunks.push(chunk));
-    req.on('end', () => {
-      const raw = Buffer.concat(chunks).toString('utf8');
-      if (!raw) return resolve({});
-      if ((req.headers['content-type'] || '').includes('application/json')) {
-        try {
-          return resolve(JSON.parse(raw));
-        } catch {
-          return resolve({});
-        }
-      }
-      resolve(raw);
-    });
-    req.on('error', reject);
-  });
 
 const runApi = async (handler, req, res) => {
   const chunks = [];
