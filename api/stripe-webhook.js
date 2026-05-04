@@ -1,6 +1,6 @@
 const { verifyWebhook } = require('./_lib/stripe');
 const { supabaseFetch } = require('./_lib/supabase');
-const { sendTemplatedEmail } = require('./_lib/mailer');
+const { sendTemplatedEmail, renderText } = require('./_lib/mailer');
 
 module.exports.config = { api: { bodyParser: false } };
 
@@ -30,7 +30,7 @@ const esc = (s) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
   );
 
-const orderConfirmationHtml = (order) => {
+const orderConfirmationHtml = (order, messageBody) => {
   const items = order.order_items || [];
   const addr = order.shipping_address || {};
   const addrParts = [addr.line1, addr.line2, [addr.city, addr.postal].filter(Boolean).join(' '), addr.country].filter(Boolean);
@@ -108,8 +108,10 @@ const orderConfirmationHtml = (order) => {
           </tr>
           <tr>
             <td align="center" style="padding:0 8px 32px;font-family:'Cormorant Garamond',Georgia,serif;font-size:15px;line-height:1.7;letter-spacing:0.04em;color:rgba(245,236,218,0.82);">
-              Dear ${esc(order.customer_name)}, we are preparing your piece with the care it deserves.<br/>
-              The atelier will be in touch to arrange your white-glove delivery.
+              ${messageBody
+                ? messageBody.split(/\n+/).filter(Boolean).map(esc).join('<br/>')
+                : `Dear ${esc(order.customer_name)}, we are preparing your piece with the care it deserves.<br/>
+              The atelier will be in touch to arrange your white-glove delivery.`}
             </td>
           </tr>
           <tr>
@@ -151,21 +153,22 @@ const orderConfirmationHtml = (order) => {
 </html>`;
 };
 
-const orderConfirmationText = (order) => {
+const orderConfirmationText = (order, messageBody) => {
   const items = (order.order_items || [])
     .map((i) => {
       const line = `  ${i.title} x${i.quantity}  ${fmtGBP(i.price_cents * i.quantity)}`;
       return i.engraving_text ? `${line}\n    Engraving: "${i.engraving_text}"` : line;
     })
     .join('\n');
+  const intro = messageBody
+    ? messageBody
+    : `Dear ${order.customer_name},\n\nYour order has been received. The atelier will be in touch to arrange your white-glove delivery.`;
   return [
     'MALIKI ATELIER',
     '',
     `Order ${order.number} — Confirmed`,
     '',
-    `Dear ${order.customer_name},`,
-    '',
-    'Your order has been received. The atelier will be in touch to arrange your white-glove delivery.',
+    intro,
     '',
     'ORDER SUMMARY',
     items,
@@ -193,15 +196,19 @@ const sendConfirmation = async (order) => {
   const tpl = tplRows?.[0];
   if (!tpl?.enabled) return;
 
+  const vars = { name: order.customer_name, order_number: order.number };
+  const subject = renderText(tpl.subject, vars);
+  const messageBody = renderText(tpl.body, vars);
+
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
       from: NOTIFY_FROM,
       to: order.customer_email,
-      subject: `Maliki Atelier — Order ${order.number} Confirmed`,
-      html: orderConfirmationHtml(order),
-      text: orderConfirmationText(order),
+      subject,
+      html: orderConfirmationHtml(order, messageBody),
+      text: orderConfirmationText(order, messageBody),
     }),
   });
   const status = r.ok ? 'sent' : 'failed';
@@ -217,7 +224,7 @@ const sendConfirmation = async (order) => {
       template_key: 'order_confirmation',
       recipient_email: order.customer_email,
       recipient_name: order.customer_name,
-      subject: `Maliki Atelier — Order ${order.number} Confirmed`,
+      subject,
       order_id: order.id,
       status,
       sent_at: new Date().toISOString(),
