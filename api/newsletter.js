@@ -55,6 +55,16 @@ const welcomeHtml = (email) => {
 
 module.exports = async (req, res) => {
   if (req.method !== 'POST') return json(res, 405, { error: 'method_not_allowed' });
+
+  const host = req.headers.host || '';
+  const origin = req.headers.origin || '';
+  const referer = req.headers.referer || '';
+  const expected = [`https://${host}`, `http://${host}`];
+  const isSameOrigin =
+    (origin && expected.includes(origin)) ||
+    (referer && expected.some((p) => referer.startsWith(p + '/') || referer === p));
+  if (!isSameOrigin) return json(res, 403, { error: 'forbidden' });
+
   if (rateLimit(req, { key: 'newsletter', max: 5, windowMs: 60000 })) {
     return json(res, 429, { error: 'too_many_requests' });
   }

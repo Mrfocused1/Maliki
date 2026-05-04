@@ -3,7 +3,7 @@ const { rateLimit } = require('./_lib/rate-limit');
 const { supabaseFetch } = require('./_lib/supabase');
 const { createPaymentIntent } = require('./_lib/stripe');
 
-const EMAIL_RX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+const { EMAIL_RX } = require('./_lib/email');
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
@@ -152,6 +152,7 @@ module.exports = async (req, res) => {
       }),
     });
     const order = createdOrders[0];
+    if (!order) throw new Error('order_insert_returned_empty');
 
     await supabaseFetch('/order_items', {
       method: 'POST',

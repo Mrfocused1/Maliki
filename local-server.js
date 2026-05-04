@@ -28,25 +28,40 @@ const root = __dirname;
 const port = Number(process.env.PORT || 8000);
 
 const api = {
-  '/api/admin/login': require('./api/admin/login'),
+  '/api/admin/analytics': require('./api/admin/analytics'),
   '/api/admin/campaign': require('./api/admin/campaign'),
   '/api/admin/data': require('./api/admin/data'),
   '/api/admin/emails': require('./api/admin/emails'),
+  '/api/admin/forgot-password': require('./api/admin/forgot-password'),
+  '/api/admin/invite': require('./api/admin/invite'),
+  '/api/admin/login': require('./api/admin/login'),
   '/api/admin/logout': require('./api/admin/logout'),
   '/api/admin/orders': require('./api/admin/orders'),
   '/api/admin/products': require('./api/admin/products'),
+  '/api/admin/restock': require('./api/admin/restock'),
+  '/api/admin/reviews': require('./api/admin/reviews'),
   '/api/admin/session': require('./api/admin/session'),
   '/api/admin/settings': require('./api/admin/settings'),
+  '/api/account/orders': require('./api/account/orders'),
+  '/api/account/profile': require('./api/account/profile'),
+  '/api/account/referral': require('./api/account/referral'),
+  '/api/account/wishlist': require('./api/account/wishlist'),
   '/api/catalog': require('./api/catalog'),
-  '/api/config': require('./api/config'),
-  '/api/pages': require('./api/pages'),
-  '/api/site-mode': require('./api/site-mode'),
-  '/api/stripe-webhook': require('./api/stripe-webhook'),
   '/api/checkout': require('./api/checkout'),
+  '/api/config': require('./api/config'),
   '/api/contact': require('./api/contact'),
   '/api/discount': require('./api/discount'),
+  '/api/newsletter': require('./api/newsletter'),
   '/api/notify': require('./api/notify'),
+  '/api/pages': require('./api/pages'),
+  '/api/restock-alert': require('./api/restock-alert'),
+  '/api/reviews': require('./api/reviews'),
+  '/api/robots': require('./api/robots'),
+  '/api/site-mode': require('./api/site-mode'),
+  '/api/sitemap': require('./api/sitemap'),
+  '/api/stripe-webhook': require('./api/stripe-webhook'),
   '/api/track': require('./api/track'),
+  '/api/unsubscribe': require('./api/unsubscribe'),
 };
 
 const types = {
@@ -136,9 +151,17 @@ const resolveStaticPath = (pathname) => {
 http
   .createServer(async (req, res) => {
     try {
-      const { pathname } = parse(req.url);
+      const { pathname, query } = parse(req.url, true);
+      req.query = query;
       const handler = api[pathname];
       if (handler) return await runApi(handler, req, res);
+
+      // Dynamic product slug route: /api/products/:slug
+      const productSlugMatch = pathname.match(/^\/api\/products\/([^/]+)$/);
+      if (productSlugMatch) {
+        req.query = { ...req.query, slug: productSlugMatch[1] };
+        return await runApi(require('./api/products/[slug]'), req, res);
+      }
 
       if (!['GET', 'HEAD'].includes(req.method)) {
         res.writeHead(405, { 'Content-Type': 'application/json; charset=utf-8' });

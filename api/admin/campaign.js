@@ -103,7 +103,7 @@ module.exports = async (req, res) => {
       });
     }
 
-    const EMAIL_RX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const { EMAIL_RX } = require('../_lib/email');
     let sent = 0;
     let failed = 0;
     for (const customer of targets) {

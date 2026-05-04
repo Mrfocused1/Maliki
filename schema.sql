@@ -232,6 +232,7 @@ create table if not exists referrals (
   created_at timestamptz not null default now()
 );
 
+alter table orders add column if not exists updated_at timestamptz not null default now();
 alter table orders add column if not exists gift_wrap boolean default false;
 alter table orders add column if not exists gift_message text default '';
 alter table orders add column if not exists tracking_url text default '';
@@ -309,3 +310,34 @@ $$;
 
 grant execute on function decrement_stock(text, integer) to anon, authenticated, service_role;
 grant execute on function increment_discount_usage(text) to anon, authenticated, service_role;
+
+-- Data integrity: add missing FK constraints and orders.updated_at
+-- (orders.updated_at added above via ALTER TABLE)
+
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.table_constraints
+    where constraint_name = 'product_reviews_product_id_fkey'
+      and table_name = 'product_reviews'
+  ) then
+    alter table product_reviews
+      add constraint product_reviews_product_id_fkey
+      foreign key (product_id) references products(id) on delete cascade;
+  end if;
+end;
+$$;
+
+do $$
+begin
+  if not exists (
+    select 1 from information_schema.table_constraints
+    where constraint_name = 'referrals_order_id_fkey'
+      and table_name = 'referrals'
+  ) then
+    alter table referrals
+      add constraint referrals_order_id_fkey
+      foreign key (order_id) references orders(id) on delete set null;
+  end if;
+end;
+$$;

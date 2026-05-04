@@ -449,8 +449,7 @@
     const filterProducts = (list) => {
       if (active === 'all') return list;
       if (active === 'featured') return list.filter((p) => p.featured);
-      const f = FILTERS.find((x) => x.key === active);
-      return f && f.match ? list.filter(f.match) : list;
+      return list.filter((p) => p.category === active);
     };
 
     const searchProducts = (list, query) => {

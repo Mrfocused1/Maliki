@@ -10,7 +10,8 @@
 <meta property="og:site_name" content="Maliki Atelier" />
 <meta property="og:title" content="Maliki Atelier" />
 <meta property="og:description" content="A piece from the Maliki Atelier collection." />
-<meta property="og:url" content="https://www.malikiatelier.com/shop/" />
+<meta property="og:url" content="" />
+<link rel="canonical" href="" />
 <meta property="og:image" content="https://www.malikiatelier.com/og.jpg" />
 <meta property="og:image:alt" content="Maliki Atelier — Hand-finished Jewellery, London" />
 <meta name="twitter:card" content="summary_large_image" />
@@ -867,7 +868,7 @@
       if (!container) return;
 
       let allProducts = [];
-      try { allProducts = Store.allProducts ? Store.allProducts() : []; } catch {}
+      try { allProducts = Store.publishedProducts(); } catch {}
       if (!allProducts.length) return;
 
       const related = allProducts.filter(pr => {

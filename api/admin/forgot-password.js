@@ -65,8 +65,8 @@ module.exports = async (req, res) => {
     try { body = JSON.parse(body); } catch { body = {}; }
   }
 
+  const { EMAIL_RX } = require('../_lib/email');
   const email = String((body || {}).email || '').trim().toLowerCase();
-  const EMAIL_RX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
 
   const siteUrl = process.env.SITE_URL || 'https://www.malikiatelier.com';
