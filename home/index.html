@@ -831,6 +831,7 @@
       };
       applyHomepageContent();
       Store.on(applyHomepageContent);
+      if (typeof Store.loadHomepageSettings === 'function') Store.loadHomepageSettings();
     })();
   </script>
   <script>

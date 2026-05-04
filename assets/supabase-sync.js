@@ -173,7 +173,21 @@
     return result;
   };
 
+  const loadHomepageSettings = async () => {
+    try {
+      const res = await fetch('/api/homepage', { cache: 'no-store', headers: { Accept: 'application/json' } });
+      if (!res.ok) return;
+      const data = await res.json();
+      if (data.homepage && typeof data.homepage === 'object') {
+        const cur = JSON.parse(localStorage.getItem(KEYS.settings) || '{}');
+        cur.homepage = data.homepage;
+        writeStore(KEYS.settings, cur);
+      }
+    } catch {}
+  };
+
   window.Store.loadRemoteCatalog = loadCatalog;
   window.Store.loadRemoteAdminData = loadAdminData;
+  window.Store.loadHomepageSettings = loadHomepageSettings;
   loadCatalog();
 })();

@@ -48,6 +48,7 @@ const api = {
   '/api/account/referral': require('./api/account/referral'),
   '/api/account/wishlist': require('./api/account/wishlist'),
   '/api/catalog': require('./api/catalog'),
+  '/api/homepage': require('./api/homepage'),
   '/api/checkout': require('./api/checkout'),
   '/api/config': require('./api/config'),
   '/api/contact': require('./api/contact'),
