@@ -92,7 +92,7 @@
       price_cents: Math.max(0, Math.round(Number(data.price_cents) || 0)),
       currency: (data.currency || 'GBP').toUpperCase(),
       images: Array.isArray(data.images) ? data.images.filter(Boolean).slice(0, 8) : [],
-      category: 'ring',
+      category: String(data.category || 'jewellery'),
       metal: String(data.metal || ''),
       stone: String(data.stone || ''),
       hand_size: String(data.hand_size || ''),

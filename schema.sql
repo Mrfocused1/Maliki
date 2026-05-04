@@ -7,7 +7,7 @@ create table if not exists products (
   description text default '',
   price_cents integer not null default 0,
   currency text not null default 'GBP',
-  category text not null default 'ring',
+  category text not null default 'jewellery',
   metal text default '',
   stone text default '',
   hand_size text default '',
