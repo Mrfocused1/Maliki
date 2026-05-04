@@ -1008,7 +1008,7 @@
             <div class="specs">
               ${p.metal ? `<div><div class="label">Metal</div><div class="value">${escape(p.metal)}</div></div>` : ''}
               ${p.stone ? `<div><div class="label">Stone</div><div class="value">${escape(p.stone)}</div></div>` : ''}
-              ${p.hand_size && !['earring','brooch'].includes(p.category) ? `<div><div class="label">${escape(({'ring':'Ring size','necklace':'Chain length','pendant':'Chain length','bracelet':'Length','anklet':'Length'})[p.category] || 'Size')}</div><div class="value">${escape(p.hand_size)}</div></div>` : ''}
+              ${p.hand_size ? `<div><div class="label">${escape(({'ring':'Ring size','necklace':'Chain length','pendant':'Chain length','bracelet':'Bracelet size','anklet':'Length','earring':'Type / Size','brooch':'Size'})[p.category] || 'Size')}</div><div class="value">${escape(p.hand_size)}</div></div>` : ''}
               <div><div class="label">Delivery</div><div class="value">White-glove, insured</div></div>
             </div>
 

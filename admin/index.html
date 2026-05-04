@@ -1581,11 +1581,13 @@ const openProductDrawer = (productId) => {
 
   // Category-aware size field
   const SIZE_MAP = {
-    ring:      ['Ring size',     'e.g. UK J–Q'],
-    necklace:  ['Chain length',  'e.g. 40cm, 45cm, 50cm'],
-    pendant:   ['Chain length',  'e.g. 40cm, 45cm, 50cm'],
-    bracelet:  ['Length',        'e.g. 16cm, 18cm, 20cm'],
-    anklet:    ['Length',        'e.g. 16cm, 18cm, 20cm'],
+    ring:      ['Ring size',      'e.g. UK J–Q'],
+    necklace:  ['Chain length',   'e.g. 40cm, 45cm, 50cm'],
+    pendant:   ['Chain length',   'e.g. 40cm, 45cm, 50cm'],
+    bracelet:  ['Bracelet size',  'e.g. 16cm, 17cm, 18cm'],
+    anklet:    ['Length',         'e.g. 23cm, 24cm, 25cm'],
+    earring:   ['Type / Size',    'e.g. Hoops, studs, drop'],
+    brooch:    ['Size',           'e.g. 35mm, 45mm'],
   };
   const updateSizeField = () => {
     const cat = $('#f-category').value;

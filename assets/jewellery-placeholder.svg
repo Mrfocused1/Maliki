@@ -1,0 +1,45 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="800" height="600" fill="#0a0908"/>
+
+  <!-- Subtle gradient-like depth effect with circles -->
+  <circle cx="400" cy="300" r="250" fill="none" stroke="#d9b070" stroke-width="0.5" opacity="0.2"/>
+  <circle cx="400" cy="300" r="180" fill="none" stroke="#d9b070" stroke-width="0.5" opacity="0.15"/>
+
+  <!-- Central jewellery form - abstract ring/band with gemstone -->
+  <g transform="translate(400, 300)">
+    <!-- Outer band curve -->
+    <path d="M -80 -40 Q -100 0 -80 40" fill="none" stroke="#d9b070" stroke-width="6" stroke-linecap="round"/>
+    <path d="M 80 -40 Q 100 0 80 40" fill="none" stroke="#d9b070" stroke-width="6" stroke-linecap="round"/>
+
+    <!-- Bridge connecting band -->
+    <line x1="-80" y1="-40" x2="80" y2="-40" stroke="#d9b070" stroke-width="5" stroke-linecap="round"/>
+    <line x1="-80" y1="40" x2="80" y2="40" stroke="#d9b070" stroke-width="5" stroke-linecap="round"/>
+
+    <!-- Central gemstone area -->
+    <ellipse cx="0" cy="0" rx="35" ry="45" fill="none" stroke="#d9b070" stroke-width="2"/>
+
+    <!-- Gemstone facets suggestion -->
+    <line x1="-15" y1="-30" x2="0" y2="0" stroke="#d9b070" stroke-width="1" opacity="0.7"/>
+    <line x1="15" y1="-30" x2="0" y2="0" stroke="#d9b070" stroke-width="1" opacity="0.7"/>
+    <line x1="-15" y1="30" x2="0" y2="0" stroke="#d9b070" stroke-width="1" opacity="0.7"/>
+    <line x1="15" y1="30" x2="0" y2="0" stroke="#d9b070" stroke-width="1" opacity="0.7"/>
+
+    <!-- Inner light reflection -->
+    <ellipse cx="-8" cy="-12" rx="6" ry="8" fill="#d9b070" opacity="0.5"/>
+  </g>
+
+  <!-- Subtle crafting detail lines - suggests artisan work -->
+  <g opacity="0.3">
+    <line x1="150" y1="200" x2="180" y2="190" stroke="#d9b070" stroke-width="0.8"/>
+    <line x1="620" y1="400" x2="650" y2="420" stroke="#d9b070" stroke-width="0.8"/>
+    <line x1="100" y1="500" x2="140" y2="480" stroke="#d9b070" stroke-width="0.8"/>
+    <line x1="700" y1="150" x2="750" y2="140" stroke="#d9b070" stroke-width="0.8"/>
+  </g>
+
+  <!-- Small accent marks for elegance -->
+  <circle cx="120" cy="150" r="2" fill="#d9b070" opacity="0.6"/>
+  <circle cx="680" cy="480" r="2" fill="#d9b070" opacity="0.6"/>
+  <circle cx="200" cy="550" r="1.5" fill="#d9b070" opacity="0.5"/>
+  <circle cx="750" cy="100" r="1.5" fill="#d9b070" opacity="0.5"/>
+</svg>

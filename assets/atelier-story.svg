@@ -1,0 +1,30 @@
+<svg viewBox="0 0 600 800" xmlns="http://www.w3.org/2000/svg">
+  <!-- Dark background -->
+  <rect width="600" height="800" fill="#0a0908"/>
+
+  <!-- Abstract pendant silhouette with gold accents -->
+  <g transform="translate(300, 200)">
+    <!-- Upper geometric form -->
+    <polygon points="0,-120 -40,-80 -35,-20 0,10 35,-20 40,-80" fill="none" stroke="#d9b070" stroke-width="2"/>
+
+    <!-- Central oval stone shape -->
+    <ellipse cx="0" cy="40" rx="38" ry="50" fill="none" stroke="#d9b070" stroke-width="2"/>
+
+    <!-- Inner highlight detail -->
+    <ellipse cx="-12" cy="20" rx="8" ry="12" fill="#d9b070" opacity="0.6"/>
+
+    <!-- Lower decorative base -->
+    <path d="M -28 85 L -15 110 L 0 115 L 15 110 L 28 85" fill="none" stroke="#d9b070" stroke-width="2"/>
+
+    <!-- Subtle chain line extending downward -->
+    <line x1="0" y1="115" x2="0" y2="180" stroke="#d9b070" stroke-width="1.5" opacity="0.7"/>
+  </g>
+
+  <!-- Decorative corner elements -->
+  <g opacity="0.4">
+    <circle cx="60" cy="80" r="3" fill="#d9b070"/>
+    <circle cx="540" cy="720" r="3" fill="#d9b070"/>
+    <line x1="80" y1="100" x2="120" y2="110" stroke="#d9b070" stroke-width="1"/>
+    <line x1="480" y1="680" x2="520" y2="695" stroke="#d9b070" stroke-width="1"/>
+  </g>
+</svg>

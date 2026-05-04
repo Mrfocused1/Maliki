@@ -514,11 +514,24 @@ const fmtPrice = c => { try { return new Intl.NumberFormat('en-GB',{style:'curre
 const fmtDate = s => { try { return new Date(s).toLocaleDateString('en-GB',{day:'numeric',month:'long',year:'numeric'}); } catch { return s; } };
 
 // ── Loyalty tier helpers ───────────────────────────────────────────────────
-const TIERS = [
-  { name: 'Atelier',  min: 0,    max: 49900,  desc: 'Welcome to the atelier' },
-  { name: 'Maison',   min: 50000, max: 199900, desc: 'Priority service & exclusive previews' },
+const DEFAULT_TIERS = [
+  { name: 'Atelier',  min: 0,      max: 49900,   desc: 'Welcome to the atelier' },
+  { name: 'Maison',   min: 50000,  max: 199900,  desc: 'Priority service & exclusive previews' },
   { name: 'Maître',   min: 200000, max: Infinity, desc: 'Dedicated concierge & complimentary resizing' },
 ];
+const TIERS = (() => {
+  try {
+    const stored = Store.settings()?.loyalty_tiers;
+    if (Array.isArray(stored) && stored.length) {
+      return stored.map((t, i, arr) => ({
+        ...t,
+        min: Number(t.min) || 0,
+        max: i === arr.length - 1 ? Infinity : Number(t.max) || Infinity,
+      }));
+    }
+  } catch {}
+  return DEFAULT_TIERS;
+})();
 
 function getTier(totalCents) {
   for (let i = TIERS.length - 1; i >= 0; i--) {
