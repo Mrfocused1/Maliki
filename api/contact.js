@@ -3,7 +3,7 @@ const { supabaseFetch } = require('./_lib/supabase');
 
 const RESEND_BASE = 'https://api.resend.com';
 
-const EMAIL_RX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+const { EMAIL_RX } = require('./_lib/email');
 
 const uid = () => `em_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 

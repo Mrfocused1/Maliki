@@ -3,7 +3,7 @@ const { supabaseFetch } = require('./_lib/supabase');
 const { url: unsubUrl } = require('./_lib/unsub-token');
 
 const RESEND_BASE = 'https://api.resend.com';
-const EMAIL_RX = /^[a-zA-Z0-9._%+\-]+@[a-zA-Z0-9.\-]+\.[a-zA-Z]{2,}$/;
+const { EMAIL_RX } = require('./_lib/email');
 
 const json = (res, status, body) => {
   res.status(status).setHeader('Content-Type', 'application/json');
