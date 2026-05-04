@@ -11,6 +11,7 @@ const productColumns = [
   'id', 'slug', 'title', 'subtitle', 'description', 'price_cents',
   'currency', 'category', 'metal', 'stone', 'hand_size', 'stock',
   'published', 'featured',
+  'engraving_enabled', 'engraving_label', 'engraving_max_chars',
 ];
 
 const productPayload = (data) => {

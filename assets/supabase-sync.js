@@ -70,11 +70,27 @@
   const emitSyncError = (msg) =>
     window.dispatchEvent(new CustomEvent('maliki:sync-error', { detail: msg }));
 
+  const syncPage = async (method, payload) => {
+    let url = '/api/admin/pages';
+    if (method === 'DELETE') url += `?id=${encodeURIComponent(payload.id)}`;
+    const body = method !== 'DELETE' ? JSON.stringify(payload) : undefined;
+    const res = await fetch(url, {
+      method,
+      headers: body ? { 'Content-Type': 'application/json' } : {},
+      ...(body ? { body } : {}),
+    });
+    if (!res.ok) throw new Error('page_sync_failed');
+    return res.json().catch(() => ({}));
+  };
+
   const base = {
     addProduct: window.Store.addProduct,
     updateProduct: window.Store.updateProduct,
     deleteProduct: window.Store.deleteProduct,
     updateOrderStatus: window.Store.updateOrderStatus,
+    addPage: window.Store.addPage,
+    updatePage: window.Store.updatePage,
+    deletePage: window.Store.deletePage,
   };
 
   window.Store.addProduct = (data) => {
@@ -95,6 +111,23 @@
     base.deleteProduct(id);
     return syncProduct('DELETE', { id })
       .catch((err) => emitSyncError(`Product delete failed: ${err.message}`));
+  };
+
+  window.Store.addPage = (data) => {
+    const page = base.addPage(data);
+    syncPage('POST', page).catch((err) => emitSyncError(`Page save failed: ${err.message}`));
+    return page;
+  };
+
+  window.Store.updatePage = (id, data) => {
+    const page = base.updatePage(id, data);
+    if (page) syncPage('PATCH', { id, ...data }).catch((err) => emitSyncError(`Page update failed: ${err.message}`));
+    return page;
+  };
+
+  window.Store.deletePage = (id) => {
+    base.deletePage(id);
+    return syncPage('DELETE', { id }).catch((err) => emitSyncError(`Page delete failed: ${err.message}`));
   };
 
   window.Store.updateOrderStatus = (id, status) => {

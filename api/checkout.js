@@ -122,6 +122,8 @@ module.exports = async (req, res) => {
     }
 
     const total = subtotal - discount_cents;
+    if (total <= 0) return json(res, 400, { error: 'total_must_be_positive' });
+
     const orderId = uid('ord');
     const orderNum = orderNumber();
 

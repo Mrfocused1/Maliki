@@ -37,6 +37,7 @@ const api = {
   '/api/admin/login': require('./api/admin/login'),
   '/api/admin/logout': require('./api/admin/logout'),
   '/api/admin/orders': require('./api/admin/orders'),
+  '/api/admin/pages': require('./api/admin/pages'),
   '/api/admin/products': require('./api/admin/products'),
   '/api/admin/restock': require('./api/admin/restock'),
   '/api/admin/reviews': require('./api/admin/reviews'),
