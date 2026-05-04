@@ -44,42 +44,51 @@ function findCachedEndpoints() {
   return results;
 }
 
-/** Returns true if the source file also reads from the settings table. */
-function servesSettings(relFile) {
+/**
+ * Admin-editable Supabase tables — any API endpoint that reads from these
+ * and is CDN-cached will serve stale content after an admin makes a change.
+ */
+const ADMIN_EDITABLE_TABLES = ['settings', 'pages'];
+
+/** Returns the first admin-editable table name found in the source, or null. */
+function servesAdminTable(relFile) {
   const src = fs.readFileSync(path.join(API_DIR, relFile), 'utf8');
-  return /settings/.test(src);
+  return ADMIN_EDITABLE_TABLES.find((table) => {
+    // Match supabaseFetch calls that query the table, e.g. /pages?... or /settings?...
+    return new RegExp(`supabaseFetch\\(['"]/` + table).test(src);
+  }) || null;
 }
 
 // ─── static analysis ──────────────────────────────────────────────────────────
 
 test.describe('Static: CDN caching on mutable-data endpoints', () => {
-  test('no CDN-cached endpoint also serves settings data', () => {
+  test('no CDN-cached endpoint serves admin-editable table data', () => {
     const cached = findCachedEndpoints();
 
-    // If we find cached endpoints that also serve settings, list them clearly
-    const violations = cached.filter(({ file }) => servesSettings(file));
+    const violations = cached
+      .map(({ file, cacheHeader }) => ({ file, cacheHeader, table: servesAdminTable(file) }))
+      .filter(({ table }) => table !== null);
 
     if (violations.length > 0) {
       const msg = violations
-        .map(({ file, cacheHeader }) => `  ${file}: Cache-Control: ${cacheHeader}`)
+        .map(({ file, cacheHeader, table }) => `  ${file}: Cache-Control: ${cacheHeader}  (reads: ${table})`)
         .join('\n');
       throw new Error(
-        `The following API endpoints have CDN caching AND serve settings data.\n` +
-        `Settings changes will be stale for visitors until the CDN TTL expires.\n` +
-        `Fix: split settings into a separate no-store endpoint (see api/homepage.js).\n\n` +
+        `The following API endpoints have CDN caching AND read admin-editable tables.\n` +
+        `Admin changes will be stale for visitors until the CDN TTL expires.\n` +
+        `Fix: use Cache-Control: no-store on any endpoint that reads: ${ADMIN_EDITABLE_TABLES.join(', ')}.\n\n` +
         msg
       );
     }
 
     // Document what IS cached (informational — not a failure)
     if (cached.length > 0) {
-      console.log('CDN-cached endpoints (settings-free, OK):');
+      console.log('CDN-cached endpoints (no admin-editable tables, OK):');
       cached.forEach(({ file, cacheHeader }) => console.log(`  ${file}: ${cacheHeader}`));
     }
   });
 
-  test('every api/ file that writes settings has no CDN caching', () => {
-    // Any file that UPSERTs to the settings table should never be CDN-cached
+  test('every api/ file that writes admin-editable tables has no CDN caching', () => {
     const violations = [];
     const walk = (dir) => {
       for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
@@ -87,15 +96,17 @@ test.describe('Static: CDN caching on mutable-data endpoints', () => {
         if (!entry.name.endsWith('.js')) continue;
         const full = path.join(dir, entry.name);
         const src = fs.readFileSync(full, 'utf8');
-        const writesSettings = /upsert.*settings|settings.*upsert|PATCH.*settings|settings.*PATCH/i.test(src)
-          || (src.includes('settings') && /\.upsert\(|method.*PATCH|method.*POST/i.test(src));
-        if (!writesSettings) continue;
+        const writesAdminTable = ADMIN_EDITABLE_TABLES.some((table) =>
+          new RegExp(`supabaseFetch\\([^)]*${table}[^)]*,\\s*\\{[^}]*method.*(?:POST|PATCH|DELETE)|upsert.*${table}`, 'i').test(src)
+          || (new RegExp(`/${table}`).test(src) && /Prefer.*upsert|method.*(?:POST|PATCH|DELETE)/i.test(src))
+        );
+        if (!writesAdminTable) continue;
         const hasCdn = /s-maxage|stale-while-revalidate/i.test(src);
         if (hasCdn) violations.push(path.relative(API_DIR, full));
       }
     };
     walk(API_DIR);
-    expect(violations, `Settings-write endpoints must not have CDN caching: ${violations.join(', ')}`).toHaveLength(0);
+    expect(violations, `Admin-write endpoints must not have CDN caching: ${violations.join(', ')}`).toHaveLength(0);
   });
 });
 
@@ -125,6 +136,13 @@ test.describe('Runtime: Cache-Control headers on mutable-data endpoints', () => 
     console.log(`/api/catalog Cache-Control: ${cc || '(none)'}`);
     // Not asserting a specific value — just ensuring the header exists and is logged
     expect(typeof cc).toBe('string');
+  });
+
+  test('/api/pages responds with no-store', async ({ request }) => {
+    const resp = await request.get('/api/pages');
+    expect([200, 500]).toContain(resp.status());
+    const cc = resp.headers()['cache-control'] || '';
+    expect(cc).toMatch(/no-store/i);
   });
 
   test('/api/admin/settings is not CDN-cached', async ({ request }) => {
@@ -160,6 +178,13 @@ test.describe('Vercel: live deployment smoke tests', () => {
     expect([200, 500]).toContain(resp.status());
     const cc = resp.headers()['cache-control'] || '';
     expect(cc, `/api/homepage must be Cache-Control: no-store on Vercel — got: "${cc}"`).toMatch(/no-store/i);
+  });
+
+  test('/api/pages on Vercel responds with no-store', async ({ request }) => {
+    const resp = await request.get(`${VERCEL_URL}/api/pages`);
+    expect([200, 500]).toContain(resp.status());
+    const cc = resp.headers()['cache-control'] || '';
+    expect(cc, `/api/pages must be Cache-Control: no-store on Vercel — got: "${cc}"`).toMatch(/no-store/i);
   });
 
   test('/api/catalog on Vercel returns products', async ({ request }) => {
