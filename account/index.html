@@ -594,22 +594,28 @@ function clearSession() {
   Object.values(KEYS).forEach(k => localStorage.removeItem(k));
 }
 
+let _refreshPromise = null;
 async function getValidToken() {
   const { token, refresh, expires } = getSession();
   if (!token) return null;
   if (expires > Date.now() + 60000) return token;
   if (!refresh) { clearSession(); return null; }
-  try {
-    const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`, {
-      method: 'POST',
-      headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refresh_token: refresh }),
-    });
-    if (!r.ok) { clearSession(); return null; }
-    const data = await r.json();
-    saveSession(data);
-    return data.access_token;
-  } catch { clearSession(); return null; }
+  if (_refreshPromise) return _refreshPromise;
+  _refreshPromise = (async () => {
+    try {
+      const r = await fetch(`${SB_URL}/auth/v1/token?grant_type=refresh_token`, {
+        method: 'POST',
+        headers: { apikey: SB_ANON, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: refresh }),
+      });
+      if (!r.ok) { clearSession(); return null; }
+      const data = await r.json();
+      saveSession(data);
+      return data.access_token;
+    } catch { clearSession(); return null; }
+    finally { _refreshPromise = null; }
+  })();
+  return _refreshPromise;
 }
 
 // ── Auth API calls (direct to Supabase Auth) ──────────────────────────────

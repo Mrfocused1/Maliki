@@ -8,6 +8,7 @@ const json = (res, status, body) => {
 };
 
 const FIELDS = ['name', 'line1', 'line2', 'city', 'postal', 'country'];
+const JSON_FIELDS = ['comms_prefs'];
 
 module.exports = async (req, res) => {
   const user = await requireCustomer(req, res);
@@ -29,6 +30,11 @@ module.exports = async (req, res) => {
     const patch = { updated_at: new Date().toISOString() };
     for (const f of FIELDS) {
       if (typeof body[f] === 'string') patch[f] = body[f].trim().slice(0, 300);
+    }
+    for (const f of JSON_FIELDS) {
+      if (body[f] !== undefined && body[f] !== null && typeof body[f] === 'object') {
+        patch[f] = body[f];
+      }
     }
 
     const existing = await supabaseFetch(`/customer_profiles?user_id=eq.${encodeURIComponent(user.id)}&limit=1`);

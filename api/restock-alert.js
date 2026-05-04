@@ -31,10 +31,15 @@ module.exports = async (req, res) => {
   if (!EMAIL_RX.test(email)) return json(res, 400, { error: 'invalid_email' });
 
   try {
+    const product = await supabaseFetch(
+      `/products?id=eq.${encodeURIComponent(product_id)}&published=eq.true&select=id&limit=1`
+    ).catch(() => []);
+    if (!product?.length) return json(res, 404, { error: 'product_not_found' });
+
     const alertId = `rst_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
     await supabaseFetch('/restock_alerts', {
       method: 'POST',
-      headers: { Prefer: 'resolution=merge-duplicates,return=minimal' },
+      headers: { Prefer: 'resolution=ignore-duplicates,return=minimal' },
       body: JSON.stringify({
         id: alertId,
         product_id,

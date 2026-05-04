@@ -1,14 +1,16 @@
 const { supabaseFetch } = require('./supabase');
 const { url: unsubUrl } = require('./unsub-token');
+const { EMAIL_RX } = require('./email');
 
 const RESEND_BASE = 'https://api.resend.com';
 
 const uid = () => `em_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
 
 const renderText = (text, vars) =>
-  String(text || '').replace(/\{\{(\w+)\}\}/g, (_, k) =>
-    vars[k] != null ? String(vars[k]) : ''
-  );
+  String(text || '').replace(/\{\{(\w+)\}\}/g, (_, k) => {
+    if (vars[k] == null) console.warn('mailer: missing template var:', k);
+    return vars[k] != null ? String(vars[k]) : '';
+  });
 
 const escHtml = (s) =>
   String(s || '').replace(/[&<>"']/g, (c) =>
@@ -61,6 +63,11 @@ const sendTemplatedEmail = async ({
   const { RESEND_API_KEY, NOTIFY_FROM } = process.env;
   if (!RESEND_API_KEY || !NOTIFY_FROM) {
     console.warn('mailer: RESEND_API_KEY or NOTIFY_FROM not configured');
+    return { ok: false };
+  }
+  const recipient = Array.isArray(to) ? to[0] : to;
+  if (!recipient || !EMAIL_RX.test(recipient)) {
+    console.error('mailer: invalid recipient email', recipient);
     return { ok: false };
   }
 
