@@ -18,14 +18,12 @@ function issueAdminToken() {
 }
 
 async function setAdminCookie(context) {
-  const vercelUrl = process.env.VERCEL_URL;
-  const domain = vercelUrl
-    ? new URL(vercelUrl).hostname
-    : '127.0.0.1';
+  // Always local — browser-navigation tests always hit 127.0.0.1 regardless of VERCEL_URL.
+  // Vercel-targeted auth is handled via direct Cookie headers in 10-admin-cms.spec.js.
   await context.addCookies([{
     name: 'mk_admin',
     value: issueAdminToken(),
-    domain,
+    domain: '127.0.0.1',
     path: '/',
     httpOnly: true,
     sameSite: 'Strict',
