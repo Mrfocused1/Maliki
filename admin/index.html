@@ -3512,22 +3512,19 @@ const renderContent = () => {
 
 const renderPagesTab = (list) => {
   document.getElementById('contentBody').innerHTML = `
-    <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
-      <button class="btn" id="newPageInner">+ New page</button>
-    </div>
     <div class="card">
-      <div class="card-body flush">
-        <table class="t">
-          <thead><tr><th>Title</th><th>URL</th><th>Status</th><th>Updated</th></tr></thead>
+      <div class="card-body flush" style="overflow-x:auto">
+        <table class="t" style="min-width:520px">
+          <thead><tr><th>Title</th><th>URL</th><th>Status</th><th style="white-space:nowrap">Updated</th></tr></thead>
           <tbody>
             ${list.length === 0
               ? '<tr class="no-hover"><td colspan="4"><div class="empty">No pages yet.</div></td></tr>'
               : list.map((p) => `
                 <tr data-pgid="${escape(p.id)}">
                   <td><strong style="color:#f5ecda">${escape(p.title)}</strong></td>
-                  <td><code style="color:var(--softer);font-size:12px">/pages/${escape(p.slug)}</code></td>
+                  <td><code style="color:var(--softer);font-size:12px;white-space:nowrap">/pages/${escape(p.slug)}</code></td>
                   <td><span class="pill ${p.status === 'published' ? 'live' : 'draft'}">${escape(p.status)}</span></td>
-                  <td style="color:var(--softer)">${escape(fmtRel(p.updated_at))}</td>
+                  <td style="color:var(--softer);white-space:nowrap">${escape(fmtRel(p.updated_at))}</td>
                 </tr>
               `).join('')}
           </tbody>
@@ -3535,8 +3532,6 @@ const renderPagesTab = (list) => {
       </div>
     </div>
   `;
-  const newBtn = document.getElementById('newPageInner');
-  if (newBtn) newBtn.addEventListener('click', () => openPageDrawer(null));
   $$('tr[data-pgid]').forEach((tr) => tr.addEventListener('click', () => openPageDrawer(tr.dataset.pgid)));
 };
 
