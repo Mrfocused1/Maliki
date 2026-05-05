@@ -529,7 +529,6 @@
   <main id="root"><div class="loading">Loading…</div></main>
 
   <!-- Sections rendered by JS after product loads -->
-  <div id="reviews-root"></div>
   <div id="recently-viewed-root"></div>
   <div id="related-root"></div>
 
@@ -1161,7 +1160,6 @@
       productRendered = true;
       updateRecentlyViewed(slug);
       renderProduct(p).then(() => {
-        renderReviews(p);
         renderRecentlyViewed(slug);
         renderRelated(p);
       });
