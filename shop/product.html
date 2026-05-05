@@ -829,7 +829,7 @@
             }
             <div class="shelf-card-body">
               <div class="shelf-card-name">${escape(prod.title)}</div>
-              <div class="shelf-card-price">${getAuthToken() ? escape(fmtPrice(prod.price_cents, prod.currency)) : '<a class="price-login" href="/account">Sign in to see price</a>'}</div>
+              <div class="shelf-card-price">${getAuthToken() ? escape(fmtPrice(prod.price_cents, prod.currency)) : '<span class="price-login">Sign in to see price</span>'}</div>
             </div>
           </a>
         `;
