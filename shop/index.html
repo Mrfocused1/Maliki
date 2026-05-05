@@ -256,6 +256,11 @@
   .price {
     font-style: italic; color: #f3d89e; letter-spacing: 0.12em; font-size: 15px; margin-top: 2px;
   }
+  .price-login {
+    font-style: italic; color: #a88a5a; letter-spacing: 0.10em; font-size: 13px;
+    text-decoration: none; border-bottom: 1px solid rgba(168,138,90,0.4);
+  }
+  .price-login:hover { color: #f3d89e; border-bottom-color: rgba(243,216,158,0.5); }
 
   .empty-state {
     grid-column: 1 / -1;
@@ -418,6 +423,13 @@
         return new Intl.NumberFormat('en-GB', { style: 'currency', currency: currency || 'GBP', maximumFractionDigits: 0 }).format((cents || 0) / 100);
       } catch { return `£${((cents || 0) / 100).toFixed(0)}`; }
     };
+    const isLoggedIn = () => {
+      try {
+        const token = localStorage.getItem('maliki.auth_token');
+        const expires = parseInt(localStorage.getItem('maliki.auth_expires') || '0', 10);
+        return !!(token && Date.now() < expires);
+      } catch { return false; }
+    };
     const escape = (s) =>
       String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
         ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
@@ -490,7 +502,7 @@
             <div class="meta">
               <div class="title">${escape(p.title)}</div>
               <div class="subtitle">${escape(p.subtitle || '')}</div>
-              <div class="price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
+              <div class="price">${isLoggedIn() ? escape(fmtPrice(p.price_cents, p.currency)) : '<a class="price-login" href="/account">Sign in to see price</a>'}</div>
             </div>
           </a>
         `;
@@ -538,7 +550,7 @@
             <div class="rv-meta">
               <div class="rv-title">${escape(p.title)}</div>
               <div class="rv-subtitle">${escape(p.subtitle || '')}</div>
-              <div class="rv-price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
+              <div class="rv-price">${isLoggedIn() ? escape(fmtPrice(p.price_cents, p.currency)) : '<a class="price-login" href="/account">Sign in to see price</a>'}</div>
             </div>
           </a>
         `;

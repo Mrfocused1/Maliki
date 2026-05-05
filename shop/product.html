@@ -164,6 +164,11 @@
     font-style: italic; font-size: clamp(20px, 1.9vw, 24px);
     letter-spacing: 0.14em; color: #f3d89e;
   }
+  .price-login {
+    font-style: italic; color: #a88a5a; letter-spacing: 0.10em; font-size: 14px;
+    text-decoration: none; border-bottom: 1px solid rgba(168,138,90,0.4);
+  }
+  .price-login:hover { color: #f3d89e; border-bottom-color: rgba(243,216,158,0.5); }
 .rule { width: 80px; height: 1px; background: linear-gradient(90deg, transparent, rgba(217, 176, 112, 0.55), transparent); }
   .info .desc {
     color: var(--soft); line-height: 1.75; font-size: 16px; letter-spacing: 0.03em; white-space: pre-wrap;
@@ -825,7 +830,7 @@
             }
             <div class="shelf-card-body">
               <div class="shelf-card-name">${escape(prod.title)}</div>
-              <div class="shelf-card-price">${escape(fmtPrice(prod.price_cents, prod.currency))}</div>
+              <div class="shelf-card-price">${getAuthToken() ? escape(fmtPrice(prod.price_cents, prod.currency)) : '<a class="price-login" href="/account">Sign in to see price</a>'}</div>
             </div>
           </a>
         `;
@@ -995,7 +1000,7 @@
             <div class="eyebrow">Shop</div>
             <h1>${escape(p.title)}</h1>
             ${p.subtitle ? `<div class="subtitle">${escape(p.subtitle)}</div>` : ''}
-            <div class="price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
+            <div class="price">${getAuthToken() ? escape(fmtPrice(p.price_cents, p.currency)) : '<a class="price-login" href="/account">Sign in to see price</a>'}</div>
             <div class="rule"></div>
             <div class="desc">${escape(p.description || '')}</div>
 
