@@ -502,7 +502,7 @@
             <div class="meta">
               <div class="title">${escape(p.title)}</div>
               <div class="subtitle">${escape(p.subtitle || '')}</div>
-              <div class="price">${isLoggedIn() ? escape(fmtPrice(p.price_cents, p.currency)) : '<a class="price-login" href="/account">Sign in to see price</a>'}</div>
+              <div class="price">${isLoggedIn() ? escape(fmtPrice(p.price_cents, p.currency)) : '<span class="price-login">Sign in to see price</span>'}</div>
             </div>
           </a>
         `;
@@ -550,7 +550,7 @@
             <div class="rv-meta">
               <div class="rv-title">${escape(p.title)}</div>
               <div class="rv-subtitle">${escape(p.subtitle || '')}</div>
-              <div class="rv-price">${isLoggedIn() ? escape(fmtPrice(p.price_cents, p.currency)) : '<a class="price-login" href="/account">Sign in to see price</a>'}</div>
+              <div class="rv-price">${isLoggedIn() ? escape(fmtPrice(p.price_cents, p.currency)) : '<span class="price-login">Sign in to see price</span>'}</div>
             </div>
           </a>
         `;
