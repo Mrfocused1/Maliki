@@ -16,16 +16,19 @@ const productColumns = [
 
 const productPayload = (data) => {
   const out = {};
+  const has = (k) => Object.prototype.hasOwnProperty.call(data, k);
   for (const key of productColumns) {
-    if (Object.prototype.hasOwnProperty.call(data, key)) out[key] = data[key];
+    if (has(key)) out[key] = data[key];
   }
-  out.category = String(out.category || 'jewellery');
-  out.currency = String(out.currency || 'GBP').toUpperCase().slice(0, 3);
-  if (Object.prototype.hasOwnProperty.call(out, 'price_cents') && Number(out.price_cents) < 0) return null;
-  out.price_cents = Math.round(Number(out.price_cents) || 0);
-  out.stock = out.stock === '' || out.stock == null ? null : Math.max(0, Math.floor(Number(out.stock) || 0));
-  out.published = out.published !== false;
-  out.featured = !!out.featured;
+  if (has('category')) out.category = String(out.category || 'jewellery');
+  if (has('currency')) out.currency = String(out.currency || 'GBP').toUpperCase().slice(0, 3);
+  if (has('price_cents')) {
+    if (Number(out.price_cents) < 0) return null;
+    out.price_cents = Math.round(Number(out.price_cents) || 0);
+  }
+  if (has('stock')) out.stock = out.stock === '' || out.stock == null ? null : Math.max(0, Math.floor(Number(out.stock) || 0));
+  if (has('published')) out.published = out.published !== false;
+  if (has('featured')) out.featured = !!out.featured;
   return out;
 };
 
@@ -84,7 +87,9 @@ module.exports = async (req, res) => {
         method: 'PATCH',
         body: JSON.stringify(product),
       });
-      await syncImages(id, req.body.images, product.title);
+      if (Object.prototype.hasOwnProperty.call(req.body, 'images')) {
+        await syncImages(id, req.body.images, product.title);
+      }
       return json(res, 200, { product: updated[0] || { id, ...product } });
     }
 
