@@ -1669,7 +1669,7 @@ const openProductDrawer = (productId) => {
 
 // ---------- Shared image upload helpers ----------
 const uploadToStorage = async (dataUrl, mimeType) => {
-  const res = await fetch('/api/admin/upload', {
+  const res = await adminFetch('/api/admin/upload', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ data: dataUrl, contentType: mimeType }),
