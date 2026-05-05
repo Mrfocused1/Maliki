@@ -355,6 +355,9 @@
   .card-price {
     font-style: italic; color: #f3d89e; letter-spacing: 0.12em; font-size: 14px; margin-top: 2px;
   }
+  .price-login {
+    font-style: italic; color: #a88a5a; letter-spacing: 0.10em; font-size: 13px;
+  }
   .collection-link {
     text-align: center;
     margin-top: clamp(32px, 5vh, 48px);
@@ -845,6 +848,13 @@
     const escape = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) =>
       ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])
     );
+    const isLoggedIn = () => {
+      try {
+        const token = localStorage.getItem('maliki.auth_token');
+        const expires = parseInt(localStorage.getItem('maliki.auth_expires') || '0', 10);
+        return !!(token && Date.now() < expires);
+      } catch { return false; }
+    };
 
     // ---- Featured collection grid ----
     (function () {
@@ -869,7 +879,7 @@
             <div class="card-meta">
               <div class="card-title">${escape(p.title)}</div>
               <div class="card-subtitle">${escape(p.subtitle || '')}</div>
-              <div class="card-price">${escape(fmtPrice(p.price_cents, p.currency))}</div>
+              <div class="card-price">${isLoggedIn() ? escape(fmtPrice(p.price_cents, p.currency)) : '<span class="price-login">Sign in to see price</span>'}</div>
             </div>
           </a>
         `;
