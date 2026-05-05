@@ -83,12 +83,26 @@ module.exports = async (req, res) => {
       const product = productPayload(req.body || {});
       if (!product) return json(res, 400, { error: 'invalid_price' });
       delete product.id;
-      const updated = await supabaseFetch(`/products?id=eq.${encodeURIComponent(id)}`, {
-        method: 'PATCH',
-        body: JSON.stringify(product),
-      });
+      let updated = [];
+      if (Object.keys(product).length > 0) {
+        updated = await supabaseFetch(`/products?id=eq.${encodeURIComponent(id)}`, {
+          method: 'PATCH',
+          body: JSON.stringify(product),
+        });
+      }
       if (Object.prototype.hasOwnProperty.call(req.body, 'images')) {
-        await syncImages(id, req.body.images, product.title);
+        // Prefer the title from this PATCH body, but fall back to the existing
+        // row title so alt text is always populated (e.g. images-only saves).
+        let altTitle = product.title || req.body.title || '';
+        if (!altTitle) {
+          try {
+            const existing = await supabaseFetch(
+              `/products?id=eq.${encodeURIComponent(id)}&select=title&limit=1`,
+            );
+            altTitle = existing?.[0]?.title || '';
+          } catch { /* non-fatal — alt will fall back to '' */ }
+        }
+        await syncImages(id, req.body.images, altTitle);
       }
       return json(res, 200, { product: updated[0] || { id, ...product } });
     }

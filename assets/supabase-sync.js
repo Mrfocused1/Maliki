@@ -21,6 +21,20 @@
     } catch {}
   };
 
+  // Send the admin session cookie explicitly. The browser default for fetch is
+  // `same-origin`, but being explicit matches the adminFetch pattern that
+  // proved necessary to fix a 401 on /api/admin/upload (commit c02b4cd).
+  // If we hit 401 on any admin sync call, reload to bounce the user back
+  // through the login flow rather than silently swallowing the failure.
+  const adminApiFetch = async (url, opts = {}) => {
+    const res = await fetch(url, { credentials: 'same-origin', ...opts });
+    if (res.status === 401 && /^\/admin(\/|$)/.test(location.pathname)) {
+      location.reload();
+      throw new Error('unauthorized');
+    }
+    return res;
+  };
+
   const replaceProducts = (products) => writeStore(KEYS.products, products);
 
   const loadCatalog = async () => {
@@ -33,7 +47,7 @@
   };
 
   const loadAdminData = async () => {
-    const res = await fetch('/api/admin/data', { headers: { Accept: 'application/json' } });
+    const res = await adminApiFetch('/api/admin/data', { headers: { Accept: 'application/json' } });
     if (!res.ok) throw new Error('admin_data_unavailable');
     const data = await res.json();
     for (const [name, key] of Object.entries(KEYS)) {
@@ -58,7 +72,7 @@
       }
       body = JSON.stringify(clean);
     }
-    const res = await fetch(url, {
+    const res = await adminApiFetch(url, {
       method,
       headers: body ? { 'Content-Type': 'application/json' } : {},
       ...(body ? { body } : {}),
@@ -74,7 +88,7 @@
     let url = '/api/admin/pages';
     if (method === 'DELETE') url += `?id=${encodeURIComponent(payload.id)}`;
     const body = method !== 'DELETE' ? JSON.stringify(payload) : undefined;
-    const res = await fetch(url, {
+    const res = await adminApiFetch(url, {
       method,
       headers: body ? { 'Content-Type': 'application/json' } : {},
       ...(body ? { body } : {}),
@@ -93,17 +107,24 @@
     deletePage: window.Store.deletePage,
   };
 
+  // Emit a sync-error toast AND re-throw so callers awaiting `remoteSync`
+  // see the failure (e.g. saveProduct keeps the drawer open on error).
+  const reportAndRethrow = (label) => (err) => {
+    emitSyncError(`${label}: ${err.message}`);
+    throw err;
+  };
+
   window.Store.addProduct = (data) => {
     const product = base.addProduct(data);
     product.remoteSync = syncProduct('POST', product)
-      .catch((err) => emitSyncError(`Product save failed: ${err.message}`));
+      .catch(reportAndRethrow('Product save failed'));
     return product;
   };
 
   window.Store.updateProduct = (id, data) => {
     const product = base.updateProduct(id, data);
     if (product) product.remoteSync = syncProduct('PATCH', product)
-      .catch((err) => emitSyncError(`Product update failed: ${err.message}`));
+      .catch(reportAndRethrow('Product update failed'));
     return product;
   };
 
@@ -132,7 +153,7 @@
 
   window.Store.updateOrderStatus = (id, status) => {
     const order = base.updateOrderStatus(id, status);
-    fetch('/api/admin/orders', {
+    adminApiFetch('/api/admin/orders', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, status }),
@@ -144,7 +165,7 @@
   const baseUpdateSettings = window.Store.updateSettings;
   window.Store.updateSettings = (section, value) => {
     const result = baseUpdateSettings(section, value);
-    fetch('/api/admin/settings', {
+    adminApiFetch('/api/admin/settings', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ section, value }),
@@ -153,7 +174,7 @@
   };
 
   const syncTemplate = async (key, patch) => {
-    const res = await fetch('/api/admin/emails', {
+    const res = await adminApiFetch('/api/admin/emails', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ key, ...patch }),
